@@ -15,7 +15,7 @@ import '../services/networking/api_service.dart';
 import '../services/networking/dio_service.dart';
 import 'forgot_password_provider.dart';
 
-final KeyValueStorageServiceProvider = Provider<KeyValueStorageService>(
+final keyValueStorageServiceProvider = Provider<KeyValueStorageService>(
   (ref) => KeyValueStorageService(),
 );
 
@@ -49,10 +49,15 @@ final _authRepositoryProvider = Provider<AuthRepository>((ref) {
   return AuthRepository(apiService: _apiService);
 });
 
+final _eventsRepositoryProvider = Provider<EventsRepository>((ref) {
+  final _apiService = ref.watch(_apiServiceProvider);
+  return EventsRepository(apiService: _apiService);
+});
+
 // notifier providers
 final authProvider = StateNotifierProvider<AuthProvider, AuthState>((ref) {
   final _authRepository = ref.watch(_authRepositoryProvider);
-  final _keyValueStorageService = ref.watch(KeyValueStorageServiceProvider);
+  final _keyValueStorageService = ref.watch(keyValueStorageServiceProvider);
   return AuthProvider(
     ref: ref,
     authRepository: _authRepository,
@@ -70,3 +75,8 @@ final forgotPasswordProvider = StateNotifierProvider.autoDispose<
 });
 
 // data providers
+
+final eventsProvider = Provider<EventsProvider>((ref) {
+  final _eventsRepository = ref.watch(_eventsRepositoryProvider);
+  return EventsProvider(_eventsRepository);
+});

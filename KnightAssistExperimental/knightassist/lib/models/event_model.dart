@@ -1,6 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../helper/utils/constants.dart';
 import '../helper/typedefs.dart';
 
 import 'event_links_model.dart';
@@ -20,7 +19,6 @@ class EventModel with _$EventModel {
     required String location,
     required String sponsoringOrganization,
     required List<String> registeredVolunteers,
-    required String profilePicPath,
     required DateTime startTime,
     required DateTime endTime,
     required EventLinksModel eventLinks,
@@ -40,8 +38,8 @@ class EventModel with _$EventModel {
       location: '',
       sponsoringOrganization: '',
       registeredVolunteers: [],
-      profilePicPath: '',
-      // TODO: Event links
+      eventLinks: const EventLinksModel(
+          facebook: '', twitter: '', instagram: '', website: ''),
       // TODO: CheckedInStudents
       // TODO: Feedback
       startTime: DateTime.now(),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../views/screens/app_startup_screen.dart';
 import '../views/screens/change_password_screen.dart';
+import '../views/screens/forgot_password_screen.dart';
 import '../views/screens/home_screen.dart';
 import '../views/screens/login_screen.dart';
 import '../views/screens/profile_screen.dart';
