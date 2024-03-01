@@ -24,4 +24,7 @@ class OrganizationModel with _$OrganizationModel {
       required String backgroundUrl,
       required String events,
       required String location}) = _OrganizationModel;
+
+  factory OrganizationModel.fromJson(JSON json) =>
+      _$OrganizationModelFromJson(json);
 }

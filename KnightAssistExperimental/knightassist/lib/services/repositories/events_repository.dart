@@ -10,7 +10,7 @@ class EventsRepository {
 
   EventsRepository({
     required ApiService apiService,
-    required CancelToken? cancelToken,
+    CancelToken? cancelToken,
   })  : _apiService = apiService,
         _cancelToken = cancelToken;
 
@@ -27,6 +27,7 @@ class EventsRepository {
   }
 
   Future<String> update({
+    required String eventId,
     required JSON data,
   }) async {
     return await _apiService.updateData(

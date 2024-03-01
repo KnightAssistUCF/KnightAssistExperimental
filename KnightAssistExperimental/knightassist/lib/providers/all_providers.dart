@@ -13,6 +13,8 @@ import '../services/local_storage/key_value_storage_service.dart';
 import '../services/networking/api_endpoint.dart';
 import '../services/networking/api_service.dart';
 import '../services/networking/dio_service.dart';
+import '../services/repositories/events_repository.dart';
+import 'events_provider.dart';
 import 'forgot_password_provider.dart';
 
 final keyValueStorageServiceProvider = Provider<KeyValueStorageService>(

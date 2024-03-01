@@ -1,7 +1,10 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:knightassist/models/event_links_model.dart';
 
+import '../models/event_links_model.dart';
 import '../models/event_model.dart';
+
+import '../services/repositories/events_repository.dart';
+
 import 'all_providers.dart';
 
 final eventsFuture = FutureProvider.autoDispose<List<EventModel>>((ref) async {
@@ -15,7 +18,7 @@ final selectedEventProvider = StateProvider<EventModel>((ref) {
 });
 
 class EventsProvider {
-  final EventsRepository = _eventsRepository;
+  final EventsRepository _eventsRepository;
   EventsProvider(this._eventsRepository);
 
   Future<List<EventModel>> getAllEvents() async {

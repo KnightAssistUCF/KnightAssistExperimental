@@ -23,6 +23,31 @@ class Constants {
   static const Gradient buttonGradientGrey =
       LinearGradient(colors: [textGreyColor, scaffoldGreyColor]);
 
+  /// The white [LinearGradient] for fading events carousel in the app
+  static const Gradient movieCarouselGradient = LinearGradient(
+    begin: Alignment.bottomCenter,
+    end: Alignment.topCenter,
+    stops: [0.3, 0.6, 1],
+    colors: [
+      Color.fromRGBO(255, 255, 255, 0.95),
+      Colors.white70,
+      Colors.transparent,
+    ],
+  );
+
+  /// The black [LinearGradient] used to overlay event backgrounds in the app
+  static const Gradient blackOverlayGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    stops: [0.2, 0.5, 0.7, 1],
+    colors: [
+      Color.fromRGBO(0, 0, 0, 0.6),
+      Color.fromRGBO(0, 0, 0, 0.45),
+      Color.fromRGBO(0, 0, 0, 0.3),
+      Colors.transparent,
+    ],
+  );
+
   static const Color buttonGreyColor = Color(0xFF1c1c1c);
 
   static const Color scaffoldColor = Color(0xFF141414);
@@ -76,6 +101,9 @@ class Constants {
 
   /// The error message for invalid new password input.
   static const invalidNewPwError = "Current and new password can't be same";
+
+  /// The error message for invalid name input.
+  static const invalidNameError = 'Please enter a valid name';
 
   static T? toNull<T>(Object? _) => null;
 }

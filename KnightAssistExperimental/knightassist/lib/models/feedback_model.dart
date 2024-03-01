@@ -12,6 +12,7 @@ class FeedbackModel with _$FeedbackModel {
     required String eventId,
     required DateTime timeFeedbackSubmitted,
     required String volunteerName,
+    required String volunteerEmail,
     required String eventName,
     required double rating,
     required String feedbackText,

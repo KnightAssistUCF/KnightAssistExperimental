@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../helper/typedefs.dart';
-
+import '../helper/utils/constants.dart';
 import 'event_links_model.dart';
 
 part 'event_model.freezed.dart';
@@ -12,17 +12,18 @@ class EventModel with _$EventModel {
   EventModel._();
 
   factory EventModel({
-    // @JSONKey(toJson: Constants.toNull, includeIfNull: false)
+    @JsonKey(toJson: Constants.toNull, includeIfNull: false)
     required String? eventId,
     required String name,
     required String description,
     required String location,
     required String sponsoringOrganization,
+    @JsonKey(fromJson: Constants.toNull, includeIfNull: false)
     required List<String> registeredVolunteers,
     required DateTime startTime,
     required DateTime endTime,
     required EventLinksModel eventLinks,
-    // TODO: CheckedInStudents
+
     // TODO: Feedback
     required List<String> eventTags,
     required String semester,

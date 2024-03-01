@@ -13,6 +13,10 @@ import '../widgets/common/custom_dialog.dart';
 import '../widgets/common/rounded_bottom_container.dart';
 import '../widgets/common/scrollable_column.dart';
 import '../widgets/forgot_password/forgot_button_widget.dart';
+import '../widgets/forgot_password/forgot_message_widget.dart';
+import '../widgets/forgot_password/forgot_name_widget.dart';
+import '../widgets/forgot_password/forgot_resend_widget.dart';
+import '../widgets/forgot_password/forgot_text_fields.dart';
 
 class ForgotPasswordScreen extends HookConsumerWidget {
   const ForgotPasswordScreen();
@@ -47,7 +51,7 @@ class ForgotPasswordScreen extends HookConsumerWidget {
           emailController.clear();
           newPasswordController.clear();
           confirmNewPasswordController.clear();
-          AppRouter.pop().then<bool>((_) async {
+          AppRouter.pop().then<bool?>((_) async {
             return await showDialog<bool>(
               context: context,
               barrierColor: Constants.barrierColor.withOpacity(0.75),

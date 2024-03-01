@@ -41,6 +41,11 @@ class FormValidator {
     return null;
   }
 
+  static String? nameValidator(String? name) {
+    if (name != null) return null;
+    return Constants.invalidNameError;
+  }
+
   static String? otpDigitValidator(String? digit) {
     if (digit != null && digit.isValidOtpDigit) return null;
     return '!';

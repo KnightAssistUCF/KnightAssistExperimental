@@ -85,7 +85,13 @@ class AuthProvider extends StateNotifier<AuthState> {
     required String lastName,
     UserRole role = UserRole.VOLUNTEER,
   }) async {
-    // TODO: Make volunteer model object on this line
+    final volunteer = UserModel(
+      userId: null,
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      role: role,
+    );
     state = const AuthState.authenticating();
     try {
       _currentUser = await _authRepository.sendRegisterVolunteerData(
@@ -103,11 +109,11 @@ class AuthProvider extends StateNotifier<AuthState> {
   Future<void> registerOrganization({
     required String email,
     required String password,
-    required String firstName,
-    required String lastName,
+    required String name,
     UserRole role = UserRole.ORGANIZATION,
   }) async {
-    // TODO: Make organization model object on this line
+    final organization =
+        UserModel(userId: null, name: name, email: email, role: role);
     state = const AuthState.authenticating();
     try {
       _currentUser = await _authRepository.sendRegisterOrganizationData(

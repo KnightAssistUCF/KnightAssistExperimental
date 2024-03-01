@@ -6,6 +6,7 @@ import '../views/screens/forgot_password_screen.dart';
 import '../views/screens/home_screen.dart';
 import '../views/screens/login_screen.dart';
 import '../views/screens/profile_screen.dart';
+import '../views/screens/register_screen.dart';
 import 'routes.dart';
 
 @immutable
