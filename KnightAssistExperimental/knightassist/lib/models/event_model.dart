@@ -1,8 +1,11 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:knightassist/models/checked_in_volunteer_model.dart';
 
 import '../helper/typedefs.dart';
 import '../helper/utils/constants.dart';
 import 'event_links_model.dart';
+import 'feedback_model.dart';
+import 's3_bucket_image_model.dart';
 
 part 'event_model.freezed.dart';
 part 'event_model.g.dart';
@@ -18,17 +21,16 @@ class EventModel with _$EventModel {
     required String description,
     required String location,
     required String sponsoringOrganization,
-    @JsonKey(fromJson: Constants.toNull, includeIfNull: false)
     required List<String> registeredVolunteers,
     required DateTime startTime,
     required DateTime endTime,
     required EventLinksModel eventLinks,
-
-    // TODO: Feedback
+    required List<CheckedInVolunteerModel> checkedInVolunteers,
+    required List<FeedbackModel> feedback,
     required List<String> eventTags,
     required String semester,
     required int maxAttendees,
-    // TODO: Image details
+    required S3BucketImageModel image,
   }) = _EventModel;
 
   factory EventModel.initial() {
@@ -39,20 +41,20 @@ class EventModel with _$EventModel {
       location: '',
       sponsoringOrganization: '',
       registeredVolunteers: [],
-      eventLinks: const EventLinksModel(
-          facebook: '', twitter: '', instagram: '', website: ''),
-      // TODO: CheckedInStudents
-      // TODO: Feedback
       startTime: DateTime.now(),
       endTime: DateTime.now(),
+      eventLinks: const EventLinksModel(
+          facebook: '', twitter: '', instagram: '', website: ''),
+      checkedInVolunteers: [],
+      feedback: [],
       eventTags: [],
       semester: '',
       maxAttendees: 0,
-      // TODO: Image details
+      image: const S3BucketImageModel(type: '', url: '', imageName: ''),
     );
   }
 
-  // TODO: Add event links to update json
+  // TODO: Add event links and image to update json
   JSON toUpdateJson({
     String? name,
     String? description,

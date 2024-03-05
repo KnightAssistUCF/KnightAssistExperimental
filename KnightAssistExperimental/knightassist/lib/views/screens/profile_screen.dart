@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:knightassist/enums/user_role_enum.dart';
+import 'package:knightassist/views/widgets/profile/user_profile_details.dart';
 
 import '../../helper/extensions/context_extensions.dart';
 import '../../helper/utils/constants.dart';
@@ -66,7 +68,7 @@ class ProfileScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 50),
-            const Flexible(
+            Flexible(
               child: SizedBox(
                 width: double.infinity,
                 child: UserProfileDetails(),

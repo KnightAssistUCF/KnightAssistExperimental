@@ -1,5 +1,6 @@
 import '../../helper/typedefs.dart';
 import '../../models/user_model.dart';
+import '../networking/api_endpoint.dart';
 import '../networking/api_service.dart';
 
 class AuthRepository {
@@ -12,8 +13,7 @@ class AuthRepository {
     required void Function(String newToken) updateTokenCallback,
   }) async {
     return await _apiService.setData<UserModel>(
-      // TODO: Add correct endpoint for login
-      endpoint: '',
+      endpoint: ApiEndpoint.auth(AuthEndpoint.LOGIN),
       data: data,
       requiresAuthToken: false,
       converter: (response) {
@@ -28,8 +28,7 @@ class AuthRepository {
     required void Function(String newToken) updateTokenCallback,
   }) async {
     return await _apiService.setData<UserModel>(
-      // TODO: Add correct endpoint for register volunteer
-      endpoint: '',
+      endpoint: ApiEndpoint.auth(AuthEndpoint.REGISTER_VOLUNTEER),
       data: data,
       requiresAuthToken: false,
       converter: (response) {
@@ -45,8 +44,7 @@ class AuthRepository {
     required void Function(String newToken) updateTokenCallback,
   }) async {
     return await _apiService.setData<UserModel>(
-      // TODO: Add correct endpoint for register org
-      endpoint: '',
+      endpoint: ApiEndpoint.auth(AuthEndpoint.REGISTER_ORGANIZATION),
       data: data,
       requiresAuthToken: false,
       converter: (response) {
@@ -61,8 +59,7 @@ class AuthRepository {
     required JSON data,
   }) async {
     return await _apiService.setData<String>(
-      // TODO: Add correct endpoint for forgot password
-      endpoint: '',
+      endpoint: ApiEndpoint.auth(AuthEndpoint.FORGOT_PASSWORD),
       data: data,
       requiresAuthToken: false,
       converter: (response) => response['headers']['message'] as String,

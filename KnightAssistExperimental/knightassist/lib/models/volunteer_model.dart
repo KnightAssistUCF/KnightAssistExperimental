@@ -12,7 +12,6 @@ class VolunteerModel with _$VolunteerModel {
     required String firstName,
     required String lastName,
     required String email,
-    required String profilePicPath,
     required List<String> favoritedOrganizations,
     required List<String> eventsRSVP,
     required List<String> eventsHistory,

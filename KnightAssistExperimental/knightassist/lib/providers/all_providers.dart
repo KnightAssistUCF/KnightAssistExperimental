@@ -14,9 +14,12 @@ import '../services/networking/api_endpoint.dart';
 import '../services/networking/api_service.dart';
 import '../services/networking/dio_service.dart';
 import '../services/repositories/events_repository.dart';
+import '../services/repositories/volunteers_repository.dart';
 import 'events_provider.dart';
 import 'forgot_password_provider.dart';
+import 'volunteers_provider.dart';
 
+// services
 final keyValueStorageServiceProvider = Provider<KeyValueStorageService>(
   (ref) => KeyValueStorageService(),
 );
@@ -56,6 +59,11 @@ final _eventsRepositoryProvider = Provider<EventsRepository>((ref) {
   return EventsRepository(apiService: _apiService);
 });
 
+final _volunteersRepositoryProvider = Provider<VolunteersRepository>((ref) {
+  final _apiService = ref.watch(_apiServiceProvider);
+  return VolunteersRepository(apiService: _apiService);
+});
+
 // notifier providers
 final authProvider = StateNotifierProvider<AuthProvider, AuthState>((ref) {
   final _authRepository = ref.watch(_authRepositoryProvider);
@@ -77,8 +85,14 @@ final forgotPasswordProvider = StateNotifierProvider.autoDispose<
 });
 
 // data providers
+// Pass in ref if the provider needs to consult the auth provider
 
 final eventsProvider = Provider<EventsProvider>((ref) {
   final _eventsRepository = ref.watch(_eventsRepositoryProvider);
   return EventsProvider(_eventsRepository);
+});
+
+final volunteersProvider = Provider<VolunteersProvider>((ref) {
+  final _volunteersRepository = ref.watch(_volunteersRepositoryProvider);
+  return VolunteersProvider(_volunteersRepository);
 });

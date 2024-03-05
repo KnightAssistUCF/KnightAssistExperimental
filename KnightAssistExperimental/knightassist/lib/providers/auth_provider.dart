@@ -33,11 +33,13 @@ class AuthProvider extends StateNotifier<AuthState> {
     init();
   }
 
-  int get currentUserId => _currentUser!.userId!;
+  String get currentUserId => _currentUser!.userId!;
 
   String get currentUserEmail => _currentUser!.email;
 
   String get currentUserPassword => _password;
+
+  UserRole get currentUserRole => _currentUser!.role;
 
   void updateToken(String value) {
     _keyValueStorageService.setAuthToken(value);

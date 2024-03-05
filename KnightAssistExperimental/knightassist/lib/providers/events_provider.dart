@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../models/event_links_model.dart';
 import '../models/event_model.dart';
 
+import '../models/s3_bucket_image_model.dart';
 import '../services/repositories/events_repository.dart';
 
 import 'all_providers.dart';
@@ -22,40 +23,46 @@ class EventsProvider {
   EventsProvider(this._eventsRepository);
 
   Future<List<EventModel>> getAllEvents() async {
-    // TODO: Handle query params
     return await _eventsRepository.fetchAll();
   }
 
   Future<EventModel> getEventById({required String eventId}) async {
-    return await _eventsRepository.fetchOne(eventId: eventId);
+    final queryParams = {
+      'eventId': eventId,
+    };
+    return await _eventsRepository.fetchOne(queryParameters: queryParams);
   }
 
-  Future<EventModel> createNewEvent({
+  Future<EventModel> createEvent({
     required String name,
     required String description,
     required String location,
     required String sponsoringOrganization,
-    required List<String> registeredVolunteers,
     required DateTime startTime,
     required DateTime endTime,
     required EventLinksModel eventLinks,
     required List<String> eventTags,
     required String semester,
     required int maxAttendees,
+    required S3BucketImageModel image,
   }) async {
     final event = EventModel(
-        eventId: null,
-        name: name,
-        description: description,
-        location: location,
-        sponsoringOrganization: sponsoringOrganization,
-        registeredVolunteers: registeredVolunteers,
-        startTime: startTime,
-        endTime: endTime,
-        eventLinks: eventLinks,
-        eventTags: eventTags,
-        semester: semester,
-        maxAttendees: maxAttendees);
+      eventId: null,
+      name: name,
+      description: description,
+      location: location,
+      sponsoringOrganization: sponsoringOrganization,
+      registeredVolunteers: [],
+      startTime: startTime,
+      endTime: endTime,
+      eventLinks: eventLinks,
+      checkedInVolunteers: [],
+      feedback: [],
+      eventTags: eventTags,
+      semester: semester,
+      maxAttendees: maxAttendees,
+      image: image,
+    );
 
     final data = <String, Object?>{
       ...event.toJson(),
@@ -87,13 +94,55 @@ class EventsProvider {
       maxAttendees: maxAttendees,
     );
     if (data.isEmpty) return "nothing to update";
-    return await _eventsRepository.update(eventId: event.eventId!, data: data);
+    return await _eventsRepository.update(data: data);
   }
 
-  Future<String> removeEvent({
+  Future<String> deleteEvent({
     required String eventId,
   }) async {
-    return await _eventsRepository.delete(eventId: eventId);
+    final data = {
+      'eventId': eventId,
+    };
+    return await _eventsRepository.delete(data: data);
+  }
+
+  Future<List<EventModel>> getOrgEvents({
+    required String orgId,
+  }) async {
+    final queryParams = {
+      'orgId': orgId,
+    };
+    return await _eventsRepository.fetchOrgEvents(queryParameters: queryParams);
+  }
+
+  Future<List<EventModel>> getRsvpedEvents({
+    required String userId,
+  }) async {
+    final queryParams = {
+      'userId': userId,
+    };
+    return await _eventsRepository.fetchRsvpedEvents(
+        queryParameters: queryParams);
+  }
+
+  Future<List<EventModel>> getFavoritedOrgEvents({
+    required String userId,
+  }) async {
+    final queryParams = {
+      'userId': userId,
+    };
+    return await _eventsRepository.fetchFavoritedOrgsEvents(
+        queryParameters: queryParams);
+  }
+
+  Future<List<EventModel>> getSuggestedEvents({
+    required String userId,
+  }) async {
+    final queryParams = {
+      'userId': userId,
+    };
+    return await _eventsRepository.fetchSuggestedEvents(
+        queryParameters: queryParams);
   }
 
   void cancelNetworkRequest() {

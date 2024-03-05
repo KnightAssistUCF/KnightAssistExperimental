@@ -14,7 +14,7 @@ part 'user_model.g.dart';
 @freezed
 class UserModel with _$UserModel {
   const factory UserModel({
-    @JsonKey(includeIfNull: false) required int? userId,
+    @JsonKey(includeIfNull: false) required String? userId,
     @JsonKey(includeIfNull: false) String? name,
     @JsonKey(includeIfNull: false) String? firstName,
     @JsonKey(includeIfNull: false) String? lastName,

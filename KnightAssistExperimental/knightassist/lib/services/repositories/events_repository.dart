@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:knightassist/models/event_model.dart';
 
 import '../../helper/typedefs.dart';
+import '../networking/api_endpoint.dart';
 import '../networking/api_service.dart';
 
 class EventsRepository {
@@ -14,12 +15,32 @@ class EventsRepository {
   })  : _apiService = apiService,
         _cancelToken = cancelToken;
 
+  Future<List<EventModel>> fetchAll({
+    JSON? queryParameters,
+  }) async {
+    return await _apiService.getCollectionData(
+        endpoint: ApiEndpoint.events(EventEndpoint.FETCH_ALL_EVENTS),
+        queryParams: queryParameters,
+        cancelToken: _cancelToken,
+        converter: (responseBody) => EventModel.fromJson(responseBody));
+  }
+
+  Future<EventModel> fetchOne({
+    required JSON queryParameters,
+  }) async {
+    return await _apiService.getDocumentData(
+      endpoint: ApiEndpoint.events(EventEndpoint.FETCH_EVENT),
+      queryParams: queryParameters,
+      cancelToken: _cancelToken,
+      converter: (responseBody) => EventModel.fromJson(responseBody),
+    );
+  }
+
   Future<String> create({
     required JSON data,
   }) async {
     return await _apiService.setData(
-      // TODO: Set endpoint for creating event
-      endpoint: '',
+      endpoint: ApiEndpoint.events(EventEndpoint.ADD_EVENT),
       data: data,
       cancelToken: _cancelToken,
       converter: (response) => response['body']['event_id'] as String,
@@ -27,12 +48,10 @@ class EventsRepository {
   }
 
   Future<String> update({
-    required String eventId,
     required JSON data,
   }) async {
     return await _apiService.updateData(
-      // TODO: Set endpoint for updating event
-      endpoint: '',
+      endpoint: ApiEndpoint.events(EventEndpoint.EDIT_EVENT),
       data: data,
       cancelToken: _cancelToken,
       converter: (response) => response['headers']['message'] as String,
@@ -40,37 +59,79 @@ class EventsRepository {
   }
 
   Future<String> delete({
-    required String eventId,
     JSON? data,
   }) async {
     return await _apiService.deleteData(
-      // TODO: Set endpoint for deleting event
-      endpoint: '',
+      endpoint: ApiEndpoint.events(EventEndpoint.DELETE_EVENT),
       data: data,
       cancelToken: _cancelToken,
       converter: (response) => response['headers']['message'] as String,
     );
   }
 
-  Future<List<EventModel>> fetchAll({
-    JSON? queryParameters,
+  Future<List<EventModel>> fetchOrgEvents({
+    required JSON queryParameters,
   }) async {
     return await _apiService.getCollectionData(
-        // TODO: Set endpoint for fetching list of events
-        endpoint: '',
-        queryParams: queryParameters,
-        cancelToken: _cancelToken,
-        converter: (responseBody) => EventModel.fromJson(responseBody));
-  }
-
-  Future<EventModel> fetchOne({
-    required String eventId,
-  }) async {
-    return await _apiService.getDocumentData(
-      // TODO: Set endpoint for fetching event
-      endpoint: '',
+      endpoint: ApiEndpoint.events(EventEndpoint.FETCH_ORG_EVENTS),
+      queryParams: queryParameters,
       cancelToken: _cancelToken,
       converter: (responseBody) => EventModel.fromJson(responseBody),
+    );
+  }
+
+  Future<List<EventModel>> fetchRsvpedEvents({
+    required JSON queryParameters,
+  }) async {
+    return await _apiService.getCollectionData(
+      endpoint: ApiEndpoint.events(EventEndpoint.FETCH_RSVPED_EVENTS),
+      queryParams: queryParameters,
+      cancelToken: _cancelToken,
+      converter: (responseBody) => EventModel.fromJson(responseBody),
+    );
+  }
+
+  Future<List<EventModel>> fetchFavoritedOrgsEvents({
+    required JSON queryParameters,
+  }) async {
+    return await _apiService.getCollectionData<EventModel>(
+      endpoint: ApiEndpoint.events(EventEndpoint.FETCH_FAVORITED_ORGS_EVENTS),
+      queryParams: queryParameters,
+      cancelToken: _cancelToken,
+      converter: (responseBody) => EventModel.fromJson(responseBody),
+    );
+  }
+
+  Future<List<EventModel>> fetchSuggestedEvents({
+    required JSON queryParameters,
+  }) async {
+    return await _apiService.getCollectionData(
+      endpoint: ApiEndpoint.events(EventEndpoint.FETCH_SUGGESTED_EVENTS),
+      queryParams: queryParameters,
+      cancelToken: _cancelToken,
+      converter: (responseBody) => EventModel.fromJson(responseBody),
+    );
+  }
+
+  Future<String> addRsvp({
+    required JSON data,
+  }) async {
+    return await _apiService.setData(
+      endpoint: ApiEndpoint.events(EventEndpoint.ADD_RSVP),
+      data: data,
+      cancelToken: _cancelToken,
+      converter: (response) => response['headers']['message'] as String,
+    );
+  }
+
+  Future<String> removeRsvp({
+    JSON? data,
+  }) async {
+    return await _apiService.deleteData(
+      endpoint: ApiEndpoint.events(EventEndpoint.REMOVE_RSVP),
+      data: data,
+      cancelToken: _cancelToken,
+      converter: (response) => response['headers']['message'] as String,
     );
   }
 
