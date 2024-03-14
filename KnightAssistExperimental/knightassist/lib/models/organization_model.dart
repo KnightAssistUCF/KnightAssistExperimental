@@ -25,6 +25,27 @@ class OrganizationModel with _$OrganizationModel {
       required String events,
       required String location}) = _OrganizationModel;
 
+  // TODO: Complete org update json model
+  JSON toUpdateJson({
+    String? name,
+    String? email,
+    String? password,
+    String? description,
+    String? logoUrl,
+  }) {
+    if (name == null &&
+        email == null &&
+        password == null &&
+        description == null &&
+        logoUrl == null) return const <String, Object>{};
+    return copyWith(
+      name: name ?? this.name,
+      email: email ?? this.email,
+      description: description ?? this.description,
+      logoUrl: logoUrl ?? this.logoUrl,
+    ).toJson();
+  }
+
   factory OrganizationModel.fromJson(JSON json) =>
       _$OrganizationModelFromJson(json);
 }

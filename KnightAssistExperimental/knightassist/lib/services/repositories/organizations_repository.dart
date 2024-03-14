@@ -54,8 +54,7 @@ class OrganizationsRepository {
   }
 
   Future<String> delete({
-    required String orgId,
-    JSON? data,
+    required JSON data,
   }) async {
     return await _apiService.deleteData<String>(
       endpoint:

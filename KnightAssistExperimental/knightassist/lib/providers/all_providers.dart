@@ -14,9 +14,13 @@ import '../services/networking/api_endpoint.dart';
 import '../services/networking/api_service.dart';
 import '../services/networking/dio_service.dart';
 import '../services/repositories/events_repository.dart';
+import '../services/repositories/feedback_repository.dart';
+import '../services/repositories/organizations_repository.dart';
 import '../services/repositories/volunteers_repository.dart';
 import 'events_provider.dart';
+import 'feedback_provider.dart';
 import 'forgot_password_provider.dart';
+import 'organizations_provider.dart';
 import 'volunteers_provider.dart';
 
 // services
@@ -59,6 +63,17 @@ final _eventsRepositoryProvider = Provider<EventsRepository>((ref) {
   return EventsRepository(apiService: _apiService);
 });
 
+final _feedbackRepositoryProvider = Provider<FeedbackRepository>((ref) {
+  final _apiService = ref.watch(_apiServiceProvider);
+  return FeedbackRepository(apiService: _apiService);
+});
+
+final _organizationsRepositoryProvider =
+    Provider<OrganizationsRepository>((ref) {
+  final _apiService = ref.watch(_apiServiceProvider);
+  return OrganizationsRepository(apiService: _apiService);
+});
+
 final _volunteersRepositoryProvider = Provider<VolunteersRepository>((ref) {
   final _apiService = ref.watch(_apiServiceProvider);
   return VolunteersRepository(apiService: _apiService);
@@ -90,6 +105,16 @@ final forgotPasswordProvider = StateNotifierProvider.autoDispose<
 final eventsProvider = Provider<EventsProvider>((ref) {
   final _eventsRepository = ref.watch(_eventsRepositoryProvider);
   return EventsProvider(_eventsRepository);
+});
+
+final feedbackProvider = Provider<FeedbackProvider>((ref) {
+  final _feedbackRepository = ref.watch(_feedbackRepositoryProvider);
+  return FeedbackProvider(_feedbackRepository);
+});
+
+final organizationsProvider = Provider<OrganizationsProvider>((ref) {
+  final _organizationsRepository = ref.watch(_organizationsRepositoryProvider);
+  return OrganizationsProvider(_organizationsRepository);
 });
 
 final volunteersProvider = Provider<VolunteersProvider>((ref) {

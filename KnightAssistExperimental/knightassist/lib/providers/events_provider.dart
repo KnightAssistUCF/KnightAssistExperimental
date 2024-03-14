@@ -26,7 +26,9 @@ class EventsProvider {
     return await _eventsRepository.fetchAll();
   }
 
-  Future<EventModel> getEventById({required String eventId}) async {
+  Future<EventModel> getEventById({
+    required String eventId,
+  }) async {
     final queryParams = {
       'eventId': eventId,
     };
