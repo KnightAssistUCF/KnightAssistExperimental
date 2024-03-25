@@ -1,4 +1,5 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:knightassist/src/global/providers/all_providers.dart';
 
 // Models
 import '../../../core/networking/custom_exception.dart';
@@ -8,6 +9,12 @@ import '../models/event_model.codegen.dart';
 
 // Repositories
 import '../repositories/events_repository.dart';
+
+final eventsFuture = FutureProvider.autoDispose<List<EventModel>>((ref) async {
+  final _eventsProvider = ref.watch(eventsProvider);
+
+  return await _eventsProvider.getAllEvents();
+});
 
 final eventStateProvider = StateProvider<EditState>((ref) {
   return const EditState.unprocessed();

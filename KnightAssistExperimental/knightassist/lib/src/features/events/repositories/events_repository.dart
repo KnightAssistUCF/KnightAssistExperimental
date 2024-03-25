@@ -39,7 +39,7 @@ class EventsRepository {
     return await _apiService.setData(
       endpoint: EventsEndpoint.ADD_EVENT.route(),
       data: data,
-      converter: (response) => response.body['event_id'],
+      converter: (response) => response['body']['event_id'],
     );
   }
 
@@ -49,7 +49,7 @@ class EventsRepository {
     return await _apiService.updateData(
       endpoint: EventsEndpoint.EDIT_EVENT.route(),
       data: data,
-      converter: (response) => response.headers.message,
+      converter: (response) => response['headers']['message'],
     );
   }
 
@@ -59,7 +59,7 @@ class EventsRepository {
     return await _apiService.deleteData(
       endpoint: EventsEndpoint.DELETE_EVENT.route(),
       data: data,
-      converter: (response) => response.headers.message,
+      converter: (response) => response['headers']['message'],
     );
   }
 
@@ -109,7 +109,7 @@ class EventsRepository {
     return await _apiService.setData(
       endpoint: EventsEndpoint.ADD_RSVP.route(),
       data: data,
-      converter: (response) => response.headers.message,
+      converter: (response) => response['headers']['message'],
     );
   }
 
@@ -119,7 +119,7 @@ class EventsRepository {
     return await _apiService.deleteData(
       endpoint: EventsEndpoint.REMOVE_RSVP.route(),
       data: data,
-      converter: (response) => response.headers.message,
+      converter: (response) => response['headers']['message'],
     );
   }
 }

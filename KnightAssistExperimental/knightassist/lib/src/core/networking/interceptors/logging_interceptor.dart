@@ -84,12 +84,6 @@ class LoggingInterceptor extends Interceptor {
 
     debugPrint('\tStatus code: ${response.statusCode}');
 
-    if (response.statusCode == 304) {
-      debugPrint('\tSource: Cache');
-    } else {
-      debugPrint('\tSource: Network');
-    }
-
     debugPrint('\tResponse: ${response.data}');
 
     debugPrint('<-- END HTTP');

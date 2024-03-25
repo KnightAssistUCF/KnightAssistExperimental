@@ -18,7 +18,7 @@ class Config {
   /// ```
   static const baseUrl = String.fromEnvironment(
     'BASE_URL',
-    defaultValue: 'https://knightassist-43ab3aeaada9.herokuapp.com/api',
+    defaultValue: 'https://knightassist-43ab3aeaada9.herokuapp.com/api/',
   );
 
   /// The client key for sentry SDK. The DSN tells the SDK where to

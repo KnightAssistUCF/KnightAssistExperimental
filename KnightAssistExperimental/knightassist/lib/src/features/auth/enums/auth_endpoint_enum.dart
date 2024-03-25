@@ -12,15 +12,15 @@ enum AuthEndpoint {
   String route() {
     switch (this) {
       case AuthEndpoint.REGISTER_VOLUNTEER:
-        return '/userSignUp';
+        return 'userSignUp';
       case AuthEndpoint.REGISTER_ORGANIZATION:
-        return '/organizationSignUp';
+        return 'organizationSignUp';
       case AuthEndpoint.LOGIN:
-        return '/Login';
+        return 'Login';
       case AuthEndpoint.REFRESH_TOKEN:
-        return '/refreshJWT';
+        return 'refreshJWT';
       case AuthEndpoint.FORGOT_PASSWORD:
-        return '/forgotPassword';
+        return 'forgotPassword';
     }
   }
 }

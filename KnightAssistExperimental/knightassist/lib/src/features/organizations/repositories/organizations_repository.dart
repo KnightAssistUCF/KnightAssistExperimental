@@ -46,7 +46,7 @@ class OrganizationsRepository {
       endpoint: OrganizationsEndpoint.EDIT_ORGANIZATION.route(),
       data: data,
       cancelToken: _cancelToken,
-      converter: (response) => response.headers.message,
+      converter: (response) => response['headers']['message'],
     );
   }
 
@@ -57,7 +57,7 @@ class OrganizationsRepository {
       endpoint: OrganizationsEndpoint.DELETE_ORGANIZATION.route(),
       data: data,
       cancelToken: _cancelToken,
-      converter: (response) => response.headers.message,
+      converter: (response) => response['headers']['message'],
     );
   }
 

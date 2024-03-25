@@ -4,8 +4,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../../helpers/typedefs.dart';
 
 // Enums
-import '../../images/models/s3_bucket_image_model.codegen.dart';
-
 part 'event_model.codegen.freezed.dart';
 part 'event_model.codegen.g.dart';
 
@@ -22,13 +20,12 @@ class EventModel with _$EventModel {
     required List<String> registeredVolunteers,
     required DateTime startTime,
     required DateTime endTime,
-    required EventLinksModel eventLinks,
     required List<CheckedInVolunteerModel> checkedInVolunteers,
     required List<FeedbackModel> feedback,
     required List<String> eventTags,
     required String semester,
     required int maxAttendees,
-    required S3BucketImageModel image,
+    required String image,
   }) = _EventModel;
 
   factory EventModel.initial() {
@@ -41,14 +38,12 @@ class EventModel with _$EventModel {
       registeredVolunteers: [],
       startTime: DateTime.now(),
       endTime: DateTime.now(),
-      eventLinks: const EventLinksModel(
-          facebook: '', twitter: '', instagram: '', website: ''),
       checkedInVolunteers: [],
       feedback: [],
       eventTags: [],
       semester: '',
       maxAttendees: 0,
-      image: const S3BucketImageModel(type: '', url: '', imageName: ''),
+      image: '',
     );
   }
 

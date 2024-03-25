@@ -33,7 +33,7 @@ class ImagesRepository {
       endpoint: ImagesEndpoint.STORE_IMAGE.route(),
       data: data,
       cancelToken: _cancelToken,
-      converter: (response) => response.headers.message,
+      converter: (response) => response['headers']['message'],
     );
   }
 
@@ -44,7 +44,7 @@ class ImagesRepository {
       endpoint: ImagesEndpoint.DELETE_IMAGE.route(),
       data: data,
       cancelToken: _cancelToken,
-      converter: (response) => response.headers.message,
+      converter: (response) => response['headers']['message'],
     );
   }
 }

@@ -4,6 +4,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:knightassist/src/config/config.dart';
 import 'package:knightassist/src/core/core.dart';
 import 'package:knightassist/src/features/images/providers/images_provider.dart';
+import 'package:knightassist/src/features/qr/providers/qr_provider.codegen.dart';
+import 'package:knightassist/src/features/qr/repositories/qr_repository.codegen.dart';
 import 'package:knightassist/src/global/states/auth_state.codegen.dart';
 
 import '../../core/networking/interceptors/refresh_token_interceptor.dart';
@@ -85,6 +87,11 @@ final _organizationsRepositoryProvider =
   return OrganizationsRepository(apiService: apiService);
 });
 
+final _qrRepositoryProvider = Provider<QrRepository>((ref) {
+  final apiService = ref.watch(_apiServiceProvider);
+  return QrRepository(apiService: apiService);
+});
+
 final _volunteersRepositoryProvider = Provider<VolunteersRepository>((ref) {
   final apiService = ref.watch(_apiServiceProvider);
   return VolunteersRepository(apiService: apiService);
@@ -133,6 +140,11 @@ final imagesProvider = Provider<ImagesProvider>((ref) {
 final organizationsProvider = Provider<OrganizationsProvider>((ref) {
   final organizationsRepository = ref.watch(_organizationsRepositoryProvider);
   return OrganizationsProvider(organizationsRepository);
+});
+
+final qrProvider = Provider<QrProvider>((ref) {
+  final qrRepository = ref.watch(_qrRepositoryProvider);
+  return QrProvider(qrRepository);
 });
 
 final volunteersProvider = Provider<VolunteersProvider>((ref) {

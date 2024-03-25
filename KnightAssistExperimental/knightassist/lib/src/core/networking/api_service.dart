@@ -1,18 +1,11 @@
 import 'package:dio/dio.dart';
-import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 
-// Exceptions
-import './custom_exception.dart';
-
-// Services
-import './api_interface.dart';
+//services
+import '../../helpers/typedefs.dart';
+import 'api_interface.dart';
 import 'dio_service.dart';
 
-// Helpers
-import '../../helpers/typedefs.dart';
-
-// Models
-import 'response_model.dart';
+//helpers
 
 /// A service class implementing methods for basic API requests.
 class ApiService implements ApiInterface {
@@ -45,44 +38,23 @@ class ApiService implements ApiInterface {
     required String endpoint,
     JSON? queryParams,
     CancelToken? cancelToken,
-    CachePolicy? cachePolicy,
-    int? cacheAgeDays,
     bool requiresAuthToken = true,
     required T Function(JSON responseBody) converter,
   }) async {
-    List<Object?> body;
+    //Entire map of response
+    final data = await _dioService.get<List<dynamic>>(
+      endpoint: endpoint,
+      options: Options(
+          headers: <String, Object?>{'requiresAuthToken': requiresAuthToken}),
+      queryParams: queryParams,
+      cancelToken: cancelToken,
+    );
 
-    try {
-      // Entire map of response
-      final data = await _dioService.get<List<Object?>>(
-        endpoint: endpoint,
-        cacheOptions: _dioService.globalCacheOptions?.copyWith(
-          policy: cachePolicy,
-          maxStale: cacheAgeDays != null
-              ? Nullable(Duration(days: cacheAgeDays))
-              : null,
-        ),
-        options: Options(
-          extra: <String, Object?>{
-            'requiresAuthToken': requiresAuthToken,
-          },
-        ),
-        queryParams: queryParams,
-        cancelToken: cancelToken,
-      );
+    //Items of table as json
+    final body = data;
 
-      // Items of table as json
-      body = data.body;
-    } on Exception catch (ex) {
-      throw CustomException.fromDioException(ex);
-    }
-
-    try {
-      // Returning the deserialized objects
-      return body.map((dataMap) => converter(dataMap! as JSON)).toList();
-    } on Exception catch (ex) {
-      throw CustomException.fromParsingException(ex);
-    }
+    //Returning the deserialized objects
+    return body.map((dataMap) => converter(dataMap as JSON)).toList();
   }
 
   /// An implementation of the base method for requesting a document of data
@@ -107,42 +79,20 @@ class ApiService implements ApiInterface {
     required String endpoint,
     JSON? queryParams,
     CancelToken? cancelToken,
-    CachePolicy? cachePolicy,
-    int? cacheAgeDays,
     bool requiresAuthToken = true,
-    required T Function(JSON response) converter,
+    required T Function(JSON responseBody) converter,
   }) async {
-    JSON body;
-    try {
-      // Entire map of response
-      final data = await _dioService.get<JSON>(
-        endpoint: endpoint,
-        queryParams: queryParams,
-        cacheOptions: _dioService.globalCacheOptions?.copyWith(
-          policy: cachePolicy,
-          maxStale: cacheAgeDays != null
-              ? Nullable(Duration(days: cacheAgeDays))
-              : null,
-        ),
-        options: Options(
-          extra: <String, Object?>{
-            'requiresAuthToken': requiresAuthToken,
-          },
-        ),
-        cancelToken: cancelToken,
-      );
+    //Entire map of response
+    final data = await _dioService.get<JSON>(
+      endpoint: endpoint,
+      queryParams: queryParams,
+      options: Options(
+          headers: <String, Object?>{'requiresAuthToken': requiresAuthToken}),
+      cancelToken: cancelToken,
+    );
 
-      body = data.body;
-    } on Exception catch (ex) {
-      throw CustomException.fromDioException(ex);
-    }
-
-    try {
-      // Returning the deserialized object
-      return converter(body);
-    } on Exception catch (ex) {
-      throw CustomException.fromParsingException(ex);
-    }
+    //Returning the deserialized object
+    return converter(data['body'] as JSON);
   }
 
   /// An implementation of the base method for inserting [data] at
@@ -151,9 +101,9 @@ class ApiService implements ApiInterface {
   ///
   /// The [data] contains body for the request.
   ///
-  /// The [converter] callback is used to **deserialize** the [ResponseModel]
+  /// The [converter] callback is used to **deserialize** the response body
   /// into an object of type [T].
-  /// The callback is executed on the response.
+  /// The callback is executed on the response `body`.
   ///
   /// [cancelToken] is used to cancel the request pre-maturely. If null,
   /// the **default** [cancelToken] inside [DioService] is used.
@@ -167,86 +117,18 @@ class ApiService implements ApiInterface {
     required JSON data,
     CancelToken? cancelToken,
     bool requiresAuthToken = true,
-    required T Function(ResponseModel<JSON> response) converter,
-  }) async {
-    ResponseModel<JSON> response;
-
-    try {
-      // Entire map of response
-      response = await _dioService.post<JSON>(
-        endpoint: endpoint,
-        data: data,
-        options: Options(
-          extra: <String, Object?>{
-            'requiresAuthToken': requiresAuthToken,
-          },
-        ),
-        cancelToken: cancelToken,
-      );
-    } on Exception catch (ex) {
-      throw CustomException.fromDioException(ex);
-    }
-
-    try {
-      // Returning the serialized object
-      return converter(response);
-    } on Exception catch (ex) {
-      throw CustomException.fromParsingException(ex);
-    }
-  }
-
-  /// An implementation of the base method for sending some data to the
-  /// [endpoint] and receiving some data in return.
-  /// The response body must be a [List], else the [converter] fails.
-  ///
-  /// The [converter] callback is used to **deserialize** the response body
-  /// into a [List] of objects of type [T].
-  /// The callback is executed on each member of the response `body` List.
-  /// [T] is usually set to a `Model`.
-  ///
-  /// [queryParams] holds any query parameters for the request.
-  ///
-  /// [cancelToken] is used to cancel the request pre-maturely. If null,
-  /// the **default** [cancelToken] inside [DioService] is used.
-  ///
-  /// [requiresAuthToken] is used to decide if a token will be inserted
-  /// in the **headers** of the request using an [ApiInterceptor].
-  /// The default value is `true`.
-  @override
-  Future<List<T>> setAndGetCollectionData<T>({
-    required String endpoint,
-    required JSON data,
-    CancelToken? cancelToken,
-    bool requiresAuthToken = true,
     required T Function(JSON response) converter,
   }) async {
-    List<Object?> body;
+    //Entire map of response
+    final dataMap = await _dioService.post(
+      endpoint: endpoint,
+      data: data,
+      options: Options(
+          headers: <String, Object?>{'requiresAuthToken': requiresAuthToken}),
+      cancelToken: cancelToken,
+    );
 
-    try {
-      // Entire map of response
-      final response = await _dioService.post<List<JSON>>(
-        endpoint: endpoint,
-        data: data,
-        options: Options(
-          extra: <String, Object?>{
-            'requiresAuthToken': requiresAuthToken,
-          },
-        ),
-        cancelToken: cancelToken,
-      );
-
-      // Items of table as json
-      body = response.body;
-    } on Exception catch (ex) {
-      throw CustomException.fromDioException(ex);
-    }
-
-    try {
-      // Returning the deserialized objects
-      return body.map((dataMap) => converter(dataMap! as JSON)).toList();
-    } on Exception catch (ex) {
-      throw CustomException.fromParsingException(ex);
-    }
+    return converter(dataMap);
   }
 
   /// An implementation of the base method for updating [data]
@@ -255,9 +137,9 @@ class ApiService implements ApiInterface {
   ///
   /// The [data] contains body for the request.
   ///
-  /// The [converter] callback is used to **deserialize** the [ResponseModel]
+  /// The [converter] callback is used to **deserialize** the response body
   /// into an object of type [T].
-  /// The callback is executed on the response.
+  /// The callback is executed on the response `body`.
   ///
   /// [cancelToken] is used to cancel the request pre-maturely. If null,
   /// the **default** [cancelToken] inside [DioService] is used.
@@ -271,32 +153,18 @@ class ApiService implements ApiInterface {
     required JSON data,
     CancelToken? cancelToken,
     bool requiresAuthToken = true,
-    required T Function(ResponseModel<JSON> response) converter,
+    required T Function(JSON response) converter,
   }) async {
-    ResponseModel<JSON> response;
+    //Entire map of response
+    final dataMap = await _dioService.patch(
+      endpoint: endpoint,
+      data: data,
+      options: Options(
+          headers: <String, Object?>{'requiresAuthToken': requiresAuthToken}),
+      cancelToken: cancelToken,
+    );
 
-    try {
-      // Entire map of response
-      response = await _dioService.patch<JSON>(
-        endpoint: endpoint,
-        data: data,
-        options: Options(
-          extra: <String, Object?>{
-            'requiresAuthToken': requiresAuthToken,
-          },
-        ),
-        cancelToken: cancelToken,
-      );
-    } on Exception catch (ex) {
-      throw CustomException.fromDioException(ex);
-    }
-
-    try {
-      // Returning the serialized object
-      return converter(response);
-    } on Exception catch (ex) {
-      throw CustomException.fromParsingException(ex);
-    }
+    return converter(dataMap);
   }
 
   /// An implementation of the base method for deleting [data]
@@ -305,9 +173,9 @@ class ApiService implements ApiInterface {
   ///
   /// The [data] contains body for the request.
   ///
-  /// The [converter] callback is used to **deserialize** the [ResponseModel]
+  /// The [converter] callback is used to **deserialize** the response body
   /// into an object of type [T].
-  /// The callback is executed on the response.
+  /// The callback is executed on the response `body`.
   ///
   /// [cancelToken] is used to cancel the request pre-maturely. If null,
   /// the **default** [cancelToken] inside [DioService] is used.
@@ -321,32 +189,18 @@ class ApiService implements ApiInterface {
     JSON? data,
     CancelToken? cancelToken,
     bool requiresAuthToken = true,
-    required T Function(ResponseModel<JSON> response) converter,
+    required T Function(JSON response) converter,
   }) async {
-    ResponseModel<JSON> response;
+    //Entire map of response
+    final dataMap = await _dioService.delete(
+      endpoint: endpoint,
+      data: data,
+      options: Options(
+          headers: <String, Object?>{'requiresAuthToken': requiresAuthToken}),
+      cancelToken: cancelToken,
+    );
 
-    try {
-      // Entire map of response
-      response = await _dioService.delete<JSON>(
-        endpoint: endpoint,
-        data: data,
-        options: Options(
-          extra: <String, Object?>{
-            'requiresAuthToken': requiresAuthToken,
-          },
-        ),
-        cancelToken: cancelToken,
-      );
-    } on Exception catch (ex) {
-      throw CustomException.fromDioException(ex);
-    }
-
-    try {
-      // Returning the serialized object
-      return converter(response);
-    } on Exception catch (ex) {
-      throw CustomException.fromParsingException(ex);
-    }
+    return converter(dataMap);
   }
 
   /// An implementation of the base method for cancelling

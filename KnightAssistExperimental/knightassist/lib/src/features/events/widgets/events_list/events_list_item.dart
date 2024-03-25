@@ -35,7 +35,8 @@ class EventsListItem extends ConsumerWidget {
                 child: CustomNetworkImage(
                   fit: BoxFit.cover,
                   borderRadius: Corners.none,
-                  imageUrl: event.image.url,
+                  // TODO: Set up image provider
+                  imageUrl: '',
                   placeholder: const ListImagePlaceholder(),
                   errorWidget: const ListImagePlaceholder(),
                 ),
