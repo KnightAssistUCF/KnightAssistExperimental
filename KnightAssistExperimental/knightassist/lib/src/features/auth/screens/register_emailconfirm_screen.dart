@@ -1,23 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:knightassist/src/config/routing/app_router.dart';
-import 'package:knightassist/src/global/providers/all_providers.dart';
 
-import '../../../../config/routing/routes.dart';
-import '../../../../global/widgets/responsive_scrollable_card.dart';
+import '../../../config/routing/routes.dart';
+import '../../../global/widgets/responsive_scrollable_card.dart';
 
-final _emailController = TextEditingController();
-
-String get email => _emailController.text;
-
-class ForgotPassword extends ConsumerWidget {
-  const ForgotPassword({super.key});
+class ConfirmScreen extends ConsumerWidget {
+  const ConfirmScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Password Reset'),
+        title: const Text('Email Confirmation'),
       ),
       body: ResponsiveScrollableCard(
         child: SizedBox(
@@ -31,7 +26,7 @@ class ForgotPassword extends ConsumerWidget {
                 alignment: Alignment.center,
               ),
               const Text(
-                'Please enter your email address below to reset your password.',
+                'Thanks for signing up! Please enter a confirmation code from your email to verify your account.',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                 textAlign: TextAlign.center,
               ),
@@ -49,7 +44,7 @@ class ForgotPassword extends ConsumerWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: [
-                    _buildTextField(labelText: 'Email address'),
+                    _buildTextField(labelText: 'Verification code'),
                     const Padding(
                       padding: EdgeInsets.all(8.0),
                       child: BuildTextButton(),
@@ -67,7 +62,6 @@ class ForgotPassword extends ConsumerWidget {
 
 TextField _buildTextField({String labelText = '', bool obscureText = false}) {
   return TextField(
-    controller: _emailController,
     cursorColor: Colors.black54,
     cursorWidth: 1,
     obscureText: obscureText,
@@ -100,32 +94,28 @@ TextField _buildTextField({String labelText = '', bool obscureText = false}) {
   );
 }
 
-class BuildTextButton extends ConsumerWidget {
+class BuildTextButton extends StatelessWidget {
   const BuildTextButton({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final authProv = ref.watch(authProvider.notifier);
-
+  Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () async {
-        // TODO: Implement reset password
-        // await authProv.resetPassword(email);
-
-        showDialog(
-            context: context,
-            builder: (BuildContext context) => AlertDialog(
-                  title: const Text(
-                      'Check your email for a temporary new password for KnightAssist.'),
-                  actions: <Widget>[
-                    TextButton(
-                      onPressed: () =>
-                          AppRouter.pushNamed(Routes.LoginScreenRoute),
-                      child: const Text('OK'),
-                    ),
-                  ],
-                ));
-      },
+      onPressed: () => showDialog(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                title: const Text('Email confirmed'),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, 'Cancel'),
+                    child: const Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () =>
+                        AppRouter.pushNamed(Routes.LoginScreenRoute),
+                    child: const Text('OK'),
+                  ),
+                ],
+              )),
       style: ButtonStyle(
         //padding: MaterialStateProperty.all(
         //const EdgeInsets.symmetric(vertical: 20),

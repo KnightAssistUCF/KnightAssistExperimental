@@ -7,27 +7,25 @@ import 'package:knightassist/src/global/providers/all_providers.dart';
 import 'package:knightassist/src/global/widgets/scrollable_column.dart';
 import 'package:knightassist/src/helpers/form_validator.dart';
 
-import '../../../../global/states/auth_state.codegen.dart';
-import '../../../../global/widgets/custom_dialog.dart';
-import '../../../../global/widgets/custom_text_button.dart';
-import '../../../../global/widgets/custom_text_field.dart';
+import '../../../global/states/auth_state.codegen.dart';
+import '../../../global/widgets/custom_dialog.dart';
+import '../../../global/widgets/custom_text_button.dart';
+import '../../../global/widgets/custom_text_field.dart';
 
-class RegisterVolunteerScreen extends HookConsumerWidget {
-  const RegisterVolunteerScreen();
+class RegisterOrganizationScreen extends HookConsumerWidget {
+  const RegisterOrganizationScreen();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formKey = useMemoized(() => GlobalKey<FormState>());
     final emailController = useTextEditingController(text: '');
-    final firstNameController = useTextEditingController(text: '');
-    final lastNameController = useTextEditingController(text: '');
+    final nameController = useTextEditingController(text: '');
     final passwordController = useTextEditingController(text: '');
     final repeatPasswordController = useTextEditingController(text: '');
 
     void onAuthStateAuthenticated(String? currentUserEmail) {
       emailController.clear();
-      firstNameController.clear();
-      lastNameController.clear();
+      nameController.clear();
       passwordController.clear();
       repeatPasswordController.clear();
       AppRouter.popUntilRoot();
@@ -73,7 +71,7 @@ class RegisterVolunteerScreen extends HookConsumerWidget {
 
                     // Page Name
                     const Text(
-                      'Register Volunteer',
+                      'Register Organization',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 32,
@@ -97,23 +95,11 @@ class RegisterVolunteerScreen extends HookConsumerWidget {
 
                         const SizedBox(height: 10),
 
-                        // First Name
+                        // Name
                         CustomTextField(
-                          controller: firstNameController,
+                          controller: nameController,
                           floatingText: 'First Name',
-                          hintText: 'John',
-                          keyboardType: TextInputType.name,
-                          textInputAction: TextInputAction.next,
-                          validator: FormValidator.nameValidator,
-                        ),
-
-                        const SizedBox(height: 10),
-
-                        // Last Name
-                        CustomTextField(
-                          controller: lastNameController,
-                          floatingText: 'Last Name',
-                          hintText: 'Doe',
+                          hintText: 'UCF',
                           keyboardType: TextInputType.name,
                           textInputAction: TextInputAction.next,
                           validator: FormValidator.nameValidator,
@@ -153,11 +139,12 @@ class RegisterVolunteerScreen extends HookConsumerWidget {
                         onPressed: () {
                           if (formKey.currentState!.validate()) {
                             formKey.currentState!.save();
-                            ref.read(authProvider.notifier).registerVolunteer(
+                            ref
+                                .read(authProvider.notifier)
+                                .registerOrganization(
                                   email: emailController.text,
                                   password: passwordController.text,
-                                  firstName: firstNameController.text,
-                                  lastName: lastNameController.text,
+                                  name: nameController.text,
                                 );
                           }
                         },

@@ -9,7 +9,7 @@ import '../models/user_model.codegen.dart';
 // Repositories
 import '../repositories/auth_repository.dart';
 
-final changePasswordStateProvider = StateProvider<FutureState<String>>(
+final editProfileStateProvider = StateProvider<FutureState<String>>(
   (ref) => const FutureState<String>.idle(),
 );
 
@@ -31,6 +31,30 @@ class AuthProvider extends StateNotifier<AuthState> {
   String get currentUserId => _currentUser!.userId!;
 
   String get currentUserEmail => _currentUser!.email;
+
+  String get currentUserName {
+    if (_currentUser!.role == UserRole.VOLUNTEER) {
+      return '${_currentUser!.firstName!} ${_currentUser!.lastName!}';
+    } else {
+      return _currentUser!.name!;
+    }
+  }
+
+  String? get currentUserFirstName {
+    if (_currentUser!.role == UserRole.VOLUNTEER) {
+      return _currentUser!.firstName!;
+    } else {
+      return null;
+    }
+  }
+
+  String? get currentUserLastName {
+    if (_currentUser!.role == UserRole.VOLUNTEER) {
+      return _currentUser!.lastName!;
+    } else {
+      return null;
+    }
+  }
 
   String get currentUserPassword => _password;
 

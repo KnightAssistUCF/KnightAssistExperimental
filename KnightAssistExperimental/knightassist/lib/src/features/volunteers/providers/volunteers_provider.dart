@@ -26,15 +26,18 @@ class VolunteersProvider {
   }
 
   Future<String> editVolunteer({
-    required VolunteerModel volunteer,
+    required String volunteerId,
     String? firstName,
     String? lastName,
     String? email,
+    String? password,
   }) async {
     final data = {
+      'id': volunteerId,
       'firstName': firstName,
       'lastName': lastName,
       'email': email,
+      'password': password,
     };
     if (data.isEmpty) return "nothing to update";
     return await _volunteersRepository.update(data: data);

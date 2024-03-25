@@ -1,18 +1,19 @@
 // ignore_for_file: constant_identifier_names
 import 'package:flutter/material.dart';
-import 'package:knightassist/src/features/home/screens/app_startup_screen.dart';
-import 'package:knightassist/src/features/organizations/screens/edit_organization_screen.dart';
-import 'package:knightassist/src/features/organizations/screens/organization_details_screen.dart';
-import 'package:knightassist/src/features/organizations/screens/organizations_list_screen.dart';
 
-import '../../features/auth/screens/forgot_password/forgot_password_screen.dart';
-import '../../features/auth/screens/login/login_screen.dart';
-import '../../features/auth/screens/register/register_organization_screen.dart';
-import '../../features/auth/screens/register/register_volunteer_screen.dart';
+import '../../features/auth/screens/forgot_password_screen.dart';
+import '../../features/auth/screens/login_screen.dart';
+import '../../features/auth/screens/profile_screen.dart';
+import '../../features/auth/screens/register_organization_screen.dart';
+import '../../features/auth/screens/register_volunteer_screen.dart';
 import '../../features/events/screens/edit_event_screen.dart';
 import '../../features/events/screens/event_details_screen.dart';
 import '../../features/events/screens/events_list_screen.dart';
+import '../../features/home/screens/app_startup_screen.dart';
 import '../../features/home/screens/home_screen.dart';
+import '../../features/organizations/screens/edit_organization_screen.dart';
+import '../../features/organizations/screens/organization_details_screen.dart';
+import '../../features/organizations/screens/organizations_list_screen.dart';
 import '../../helpers/typedefs.dart';
 
 @immutable
@@ -36,6 +37,9 @@ class Routes {
   static const String OrganizationsListScreenRoute = '/orgs-list-screen';
   static const String OrganizationDetailsScreenRoute = '/org-details-screen';
   static const String EditOrganizationScreenRoute = '/edit-org-screen';
+  static const String ProfileScreenRoute = '/profile-screen';
+  static const String EditProfileScreenRoute = '/edit-profile-screen';
+  static const String EventHistoryScreenRoute = '/event-history-screen';
 
   static final Map<String, RouteBuilder> _routesMap = {
     AppStartupScreenRoute: (_) => const AppStartupScreen(),
@@ -50,7 +54,10 @@ class Routes {
     OrganizationsListScreenRoute: (_) => const OrganizationsListScreen(),
     OrganizationDetailsScreenRoute: (_) => const OrganizationDetailsScreen(),
     EditOrganizationScreenRoute: (_) => const EditOrganizationScreen(),
+    ProfileScreenRoute: (_) => const ProfileScreen(),
     NotFoundScreenRoute: (_) => const SizedBox.shrink(),
+    // Edit profile screen
+    // Event history screen
   };
 
   static RouteBuilder getRoute(String? routeName) {

@@ -8,12 +8,12 @@ import 'package:knightassist/src/global/widgets/custom_dialog.dart';
 import 'package:knightassist/src/global/widgets/custom_text_field.dart';
 import 'package:knightassist/src/global/widgets/scrollable_column.dart';
 
-import '../../../../config/routing/routes.dart';
-import '../../../../global/states/auth_state.codegen.dart';
-import '../../../../global/widgets/custom_text_button.dart';
-import '../../../../helpers/constants/app_colors.dart';
-import '../../../../helpers/constants/app_sizes.dart';
-import '../../../../helpers/form_validator.dart';
+import '../../../config/routing/routes.dart';
+import '../../../global/states/auth_state.codegen.dart';
+import '../../../global/widgets/custom_text_button.dart';
+import '../../../helpers/constants/app_colors.dart';
+import '../../../helpers/constants/app_sizes.dart';
+import '../../../helpers/form_validator.dart';
 
 class LoginScreen extends HookConsumerWidget {
   const LoginScreen();
