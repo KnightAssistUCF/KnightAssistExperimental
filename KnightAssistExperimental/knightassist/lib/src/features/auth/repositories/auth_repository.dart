@@ -21,8 +21,8 @@ class AuthRepository {
       data: data,
       requiresAuthToken: false,
       converter: (response) {
-        updateTokenCallback(response['body']['token'] as String);
-        return UserModel.fromJson(response['body']['user']);
+        updateTokenCallback(response['token'] as String);
+        return UserModel.fromJson(response['user']);
       },
     );
   }
@@ -34,7 +34,7 @@ class AuthRepository {
       endpoint: AuthEndpoint.REGISTER_VOLUNTEER.route(),
       data: data,
       requiresAuthToken: false,
-      converter: (response) => response['body']['user_id'],
+      converter: (response) => response['user_id'],
     );
   }
 
@@ -45,7 +45,7 @@ class AuthRepository {
       endpoint: AuthEndpoint.REGISTER_ORGANIZATION.route(),
       data: data,
       requiresAuthToken: false,
-      converter: (response) => response['body']['user_id'],
+      converter: (response) => response['user_id'],
     );
   }
 
@@ -55,7 +55,7 @@ class AuthRepository {
     return await _apiService.setData<String>(
       endpoint: AuthEndpoint.REFRESH_TOKEN.route(),
       data: data,
-      converter: (response) => response['body']['token'],
+      converter: (response) => response['token'],
     );
   }
 

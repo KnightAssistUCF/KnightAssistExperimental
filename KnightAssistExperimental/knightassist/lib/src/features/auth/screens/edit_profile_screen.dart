@@ -12,6 +12,7 @@ import 'package:knightassist/src/helpers/form_validator.dart';
 import '../../../global/states/future_state.codegen.dart';
 import '../../../global/widgets/custom_text_button.dart';
 import '../../../global/widgets/custom_text_field.dart';
+import '../../../helpers/constants/app_colors.dart';
 import '../providers/auth_provider.dart';
 
 class EditProfileScreen extends HookConsumerWidget {
@@ -65,85 +66,117 @@ class EditProfileScreen extends HookConsumerWidget {
     );
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: ScrollableColumn(
           children: [
-            Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20, top: 40),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  // TODO: Handle optional fields
-                  (authProv.currentUserRole == UserRole.VOLUNTEER)
-                      ? Column(
-                          children: [
-                            CustomTextField(
-                              controller: firstNameController,
-                              floatingText: 'First Name',
-                              textInputAction: TextInputAction.next,
-                            ),
-                            CustomTextField(
-                              controller: lastNameController,
-                              floatingText: 'Last Name',
-                              textInputAction: TextInputAction.next,
-                            ),
-                          ],
-                        )
-                      : CustomTextField(
-                          controller: nameController,
-                          floatingText: 'Name',
-                          textInputAction: TextInputAction.next,
-                        ),
-                  CustomTextField(
-                    controller: emailController,
-                    floatingText: 'Email',
-                    keyboardType: TextInputType.emailAddress,
-                    textInputAction: TextInputAction.next,
-                    validator: FormValidator.emailValidator,
-                  ),
-                  CustomTextField(
-                    controller: currentPasswordController,
-                    floatingText: 'Current Password',
-                    keyboardType: TextInputType.visiblePassword,
-                    textInputAction: TextInputAction.next,
-                    validator: (inputPw) =>
-                        FormValidator.currentPasswordValidator(
-                            inputPw, authProv.currentUserPassword),
-                  ),
-                  const SizedBox(height: 25),
-                  CustomTextField(
-                    controller: newPasswordController,
-                    floatingText: 'New Password',
-                    keyboardType: TextInputType.visiblePassword,
-                    textInputAction: TextInputAction.next,
-                    validator: (newPw) => FormValidator.newPasswordValidator(
-                      newPw,
-                      authProv.currentUserPassword,
+                  InkResponse(
+                    child: const Icon(
+                      Icons.arrow_back_sharp,
+                      size: 32,
+                      color: Colors.white,
                     ),
+                    onTap: () => AppRouter.pop(),
                   ),
-                  const SizedBox(height: 25),
-                  CustomTextField(
-                    controller: confirmNewPasswordController,
-                    floatingText: 'Confirm New Password',
-                    keyboardType: TextInputType.visiblePassword,
-                    textInputAction: TextInputAction.done,
-                    validator: (confirmPw) =>
-                        FormValidator.confirmPasswordValidator(
-                      confirmPw,
-                      newPasswordController.text,
+                  const SizedBox(width: 82.5),
+                  const Text(
+                    'Edit Profile',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],
               ),
             ),
-
-            const Spacer(),
+            Form(
+              key: _formKey,
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // TODO: Handle optional fields
+                    (authProv.currentUserRole == UserRole.VOLUNTEER)
+                        ? Column(
+                            children: [
+                              CustomTextField(
+                                controller: firstNameController,
+                                floatingText: 'First Name',
+                                textInputAction: TextInputAction.next,
+                              ),
+                              const SizedBox(height: 20),
+                              CustomTextField(
+                                controller: lastNameController,
+                                floatingText: 'Last Name',
+                                textInputAction: TextInputAction.next,
+                              ),
+                            ],
+                          )
+                        : CustomTextField(
+                            controller: nameController,
+                            floatingText: 'Name',
+                            textInputAction: TextInputAction.next,
+                          ),
+                    const SizedBox(height: 20),
+                    CustomTextField(
+                      controller: emailController,
+                      floatingText: 'Email',
+                      keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
+                      validator: FormValidator.emailValidator,
+                    ),
+                    const SizedBox(height: 20),
+                    CustomTextField(
+                      controller: currentPasswordController,
+                      floatingText: 'Current Password',
+                      keyboardType: TextInputType.visiblePassword,
+                      textInputAction: TextInputAction.next,
+                      validator: (inputPw) =>
+                          FormValidator.currentPasswordValidator(
+                              inputPw, authProv.currentUserPassword),
+                    ),
+                    const SizedBox(height: 20),
+                    CustomTextField(
+                      controller: newPasswordController,
+                      floatingText: 'New Password',
+                      keyboardType: TextInputType.visiblePassword,
+                      textInputAction: TextInputAction.next,
+                      validator: (newPw) => FormValidator.newPasswordValidator(
+                        newPw,
+                        authProv.currentUserPassword,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    CustomTextField(
+                      controller: confirmNewPasswordController,
+                      floatingText: 'Confirm New Password',
+                      keyboardType: TextInputType.visiblePassword,
+                      textInputAction: TextInputAction.done,
+                      validator: (confirmPw) =>
+                          FormValidator.confirmPasswordValidator(
+                        confirmPw,
+                        newPasswordController.text,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
 
             // Save Button
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 40, 20, 2),
+              padding: const EdgeInsets.fromLTRB(20, 10, 20, 2),
               child: CustomTextButton(
+                color: AppColors.primaryColor,
                 width: double.infinity,
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
@@ -198,8 +231,6 @@ class EditProfileScreen extends HookConsumerWidget {
                 ),
               ),
             ),
-
-            const SizedBox(height: 5),
           ],
         ),
       ),

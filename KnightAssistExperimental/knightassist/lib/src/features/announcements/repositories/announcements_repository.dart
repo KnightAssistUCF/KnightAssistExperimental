@@ -44,7 +44,7 @@ class AnnouncementsRepository {
       endpoint: AnnouncementsEndpoint.ADD_ANNOUNCEMENT.route(),
       data: data,
       cancelToken: _cancelToken,
-      converter: (response) => response['headers']['message'],
+      converter: (response) => response as String,
     );
   }
 
@@ -55,7 +55,7 @@ class AnnouncementsRepository {
       endpoint: AnnouncementsEndpoint.EDIT_ANNOUNCEMENT.route(),
       data: data,
       cancelToken: _cancelToken,
-      converter: (response) => response['headers']['message'],
+      converter: (response) => response as String,
     );
   }
 
@@ -66,7 +66,7 @@ class AnnouncementsRepository {
       endpoint: AnnouncementsEndpoint.DELETE_ANNOUNCEMENT.route(),
       data: data,
       cancelToken: _cancelToken,
-      converter: (response) => response['headers']['message'],
+      converter: (response) => response as String,
     );
   }
 

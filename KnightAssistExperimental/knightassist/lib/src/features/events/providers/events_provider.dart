@@ -10,17 +10,50 @@ import '../models/event_model.codegen.dart';
 // Repositories
 import '../repositories/events_repository.dart';
 
-final eventsFuture = FutureProvider.autoDispose<List<EventModel>>((ref) async {
+final allEventsProvider =
+    FutureProvider.autoDispose<List<EventModel>>((ref) async {
   final _eventsProvider = ref.watch(eventsProvider);
 
   return await _eventsProvider.getAllEvents();
+});
+
+// Only call this if user role is org
+final orgEventsProvider =
+    FutureProvider.autoDispose<List<EventModel>>((ref) async {
+  final _userId = ref.watch(authProvider.notifier).currentUserId;
+  final _eventsProvider = ref.watch(eventsProvider);
+  return await _eventsProvider.getOrgEvents(orgId: _userId);
+});
+
+// Only call these if user role is volunteer
+final suggestedEventsProvider =
+    FutureProvider.autoDispose<List<EventModel>>((ref) async {
+  final _userId = ref.watch(authProvider.notifier).currentUserId;
+  final _eventsProvider = ref.watch(eventsProvider);
+  return await _eventsProvider.getSuggestedEvents(userId: _userId);
+});
+
+final favOrgEventsProvider =
+    FutureProvider.autoDispose<List<EventModel>>((ref) async {
+  final _userId = ref.watch(authProvider.notifier).currentUserId;
+  final _eventsProvider = ref.watch(eventsProvider);
+  return await _eventsProvider.getFavoritedOrgEvents(userId: _userId);
+});
+
+final rsvpedEventsProvider =
+    FutureProvider.autoDispose<List<EventModel>>((ref) async {
+  final _userId = ref.watch(authProvider.notifier).currentUserId;
+  final _eventsProvider = ref.watch(eventsProvider);
+  return await _eventsProvider.getRsvpedEvents(userId: _userId);
 });
 
 final eventStateProvider = StateProvider<EditState>((ref) {
   return const EditState.unprocessed();
 });
 
-final currentEventProvider = StateProvider<EventModel?>((_) => null);
+final currentEventProvider = StateProvider<EventModel?>((ref) {
+  return EventModel.initial();
+});
 
 class EventsProvider {
   final EventsRepository _eventsRepository;

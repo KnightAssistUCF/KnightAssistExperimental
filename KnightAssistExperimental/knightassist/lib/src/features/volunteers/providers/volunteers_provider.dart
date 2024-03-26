@@ -4,7 +4,7 @@ import '../../../global/providers/all_providers.dart';
 import '../models/volunteer_model.codegen.dart';
 import '../repositories/volunteers_repository.dart';
 
-final UserVolunteerProvider = FutureProvider.autoDispose((ref) async {
+final userVolunteerProvider = FutureProvider.autoDispose((ref) async {
   final _userId = ref.watch(authProvider.notifier).currentUserId;
   final _volunteersProvider = ref.watch(volunteersProvider);
   return await _volunteersProvider.getVolunteer(volunteerId: _userId);

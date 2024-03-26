@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:knightassist/src/features/qr/providers/qr_provider.codegen.dart';
+import 'package:knightassist/src/helpers/constants/app_colors.dart';
 
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
@@ -137,7 +138,7 @@ class _QrScreenState extends ConsumerState<QrScreen> {
       key: qrKey,
       onQRViewCreated: _onQRViewCreated,
       overlay: QrScannerOverlayShape(
-          borderColor: Colors.red,
+          borderColor: AppColors.primaryColor,
           borderRadius: 10,
           borderLength: 30,
           borderWidth: 10,

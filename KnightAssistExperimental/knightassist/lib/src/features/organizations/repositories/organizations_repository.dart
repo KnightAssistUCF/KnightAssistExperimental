@@ -22,18 +22,18 @@ class OrganizationsRepository {
       endpoint: OrganizationsEndpoint.FETCH_ALL_ORGANIZATIONS.route(),
       queryParams: queryParameters,
       cancelToken: _cancelToken,
-      converter: (responseBody) => OrganizationModel.fromJson(responseBody),
+      converter: OrganizationModel.fromJson,
     );
   }
 
   Future<OrganizationModel> fetchOrganization({
     required JSON queryParameters,
   }) async {
-    return await _apiService.getDocumentData<OrganizationModel>(
+    return await _apiService.getDocumentData(
       endpoint: OrganizationsEndpoint.FETCH_ORGANIZATION.route(),
       queryParams: queryParameters,
       cancelToken: _cancelToken,
-      converter: (responseBody) => OrganizationModel.fromJson(responseBody),
+      converter: OrganizationModel.fromJson,
     );
   }
 
@@ -42,7 +42,7 @@ class OrganizationsRepository {
   Future<String> editOrganization({
     required JSON data,
   }) async {
-    return await _apiService.updateData<String>(
+    return await _apiService.setData<String>(
       endpoint: OrganizationsEndpoint.EDIT_ORGANIZATION.route(),
       data: data,
       cancelToken: _cancelToken,
@@ -68,7 +68,7 @@ class OrganizationsRepository {
       endpoint: OrganizationsEndpoint.FETCH_FAVORITED_ORGS.route(),
       queryParams: queryParameters,
       cancelToken: _cancelToken,
-      converter: (responseBody) => OrganizationModel.fromJson(responseBody),
+      converter: OrganizationModel.fromJson,
     );
   }
 
@@ -79,7 +79,7 @@ class OrganizationsRepository {
       endpoint: OrganizationsEndpoint.FETCH_SUGGESTED_ORGS.route(),
       queryParams: queryParameters,
       cancelToken: _cancelToken,
-      converter: (responseBody) => OrganizationModel.fromJson(responseBody),
+      converter: OrganizationModel.fromJson,
     );
   }
 

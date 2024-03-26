@@ -23,25 +23,19 @@ class ProfileScreen extends HookConsumerWidget {
           children: [
             const SizedBox(height: 65),
 
-            // Logout
+            // Top bar
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Logout Icon
-                RotatedBox(
-                  quarterTurns: 2,
-                  child: InkResponse(
-                    radius: 26,
-                    child: const Icon(
-                      Icons.logout,
-                      color: Colors.white,
-                      size: 30,
-                    ),
-                    onTap: () {
-                      ref.read(authProvider.notifier).logout();
-                      AppRouter.popUntilRoot();
-                    },
+                // Back Icon
+                InkResponse(
+                  radius: 26,
+                  child: const Icon(
+                    Icons.arrow_back_sharp,
+                    size: 32,
+                    color: Colors.white,
                   ),
+                  onTap: () => AppRouter.pop(),
                 ),
 
                 // Edit profile icon
@@ -50,12 +44,26 @@ class ProfileScreen extends HookConsumerWidget {
                   child: const Icon(
                     Icons.manage_accounts_sharp,
                     color: Colors.white,
-                    size: 30,
+                    size: 32,
                   ),
                   onTap: () {
                     AppRouter.pushNamed(Routes.EditProfileScreenRoute);
                   },
-                )
+                ),
+
+                // Logout Icon
+                InkResponse(
+                  radius: 26,
+                  child: const Icon(
+                    Icons.logout,
+                    color: Colors.white,
+                    size: 32,
+                  ),
+                  onTap: () {
+                    ref.read(authProvider.notifier).logout();
+                    AppRouter.popUntilRoot();
+                  },
+                ),
               ],
             ),
 
@@ -66,7 +74,7 @@ class ProfileScreen extends HookConsumerWidget {
                 width: double.infinity,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     // Name Label
                     const Text(
@@ -87,7 +95,7 @@ class ProfileScreen extends HookConsumerWidget {
                       ),
                     ),
 
-                    const Spacer(),
+                    const SizedBox(height: 20),
 
                     // Email Label
                     const Text(
@@ -112,8 +120,6 @@ class ProfileScreen extends HookConsumerWidget {
               ),
             ),
 
-            const SizedBox(height: 50),
-
             // Event History Button for volunteers
             (authProv.currentUserRole == UserRole.VOLUNTEER)
                 ? CustomTextButton(
@@ -135,7 +141,7 @@ class ProfileScreen extends HookConsumerWidget {
                     ),
                   )
                 : const SizedBox.shrink(),
-            const SizedBox(height: 5),
+            const SizedBox(height: 40),
           ],
         ),
       ),

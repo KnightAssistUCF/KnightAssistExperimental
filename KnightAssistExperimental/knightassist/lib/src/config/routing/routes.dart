@@ -1,5 +1,7 @@
 // ignore_for_file: constant_identifier_names
 import 'package:flutter/material.dart';
+import 'package:knightassist/src/features/auth/screens/edit_profile_screen.dart';
+import 'package:knightassist/src/features/qr/screens/qr_screen.dart';
 
 import '../../features/auth/screens/forgot_password_screen.dart';
 import '../../features/auth/screens/login_screen.dart';
@@ -40,6 +42,8 @@ class Routes {
   static const String ProfileScreenRoute = '/profile-screen';
   static const String EditProfileScreenRoute = '/edit-profile-screen';
   static const String EventHistoryScreenRoute = '/event-history-screen';
+  static const String QrScreenRoute = '/qr-screen';
+  static const String FeedbackListScreenRoute = 'feedback-list-screen';
 
   static final Map<String, RouteBuilder> _routesMap = {
     AppStartupScreenRoute: (_) => const AppStartupScreen(),
@@ -47,7 +51,7 @@ class Routes {
     RegisterVolunteerScreenRoute: (_) => const RegisterVolunteerScreen(),
     RegisterOrgScreenRoute: (_) => const RegisterOrganizationScreen(),
     ForgotPasswordScreenRoute: (_) => const ForgotPassword(),
-    HomeScreenRoute: (_) => const HomeScreen(),
+    HomeScreenRoute: (_) => HomeScreen(),
     EventsListScreenRoute: (_) => const EventsListScreen(),
     EventDetailsScreenRoute: (_) => const EventDetailsScreen(),
     EditEventScreenRoute: (_) => const EditEventScreen(),
@@ -55,9 +59,11 @@ class Routes {
     OrganizationDetailsScreenRoute: (_) => const OrganizationDetailsScreen(),
     EditOrganizationScreenRoute: (_) => const EditOrganizationScreen(),
     ProfileScreenRoute: (_) => const ProfileScreen(),
+    EditProfileScreenRoute: (_) => const EditProfileScreen(),
+    QrScreenRoute: (_) => const QrScreen(),
     NotFoundScreenRoute: (_) => const SizedBox.shrink(),
-    // Edit profile screen
     // Event history screen
+    // Feedback screen
   };
 
   static RouteBuilder getRoute(String? routeName) {

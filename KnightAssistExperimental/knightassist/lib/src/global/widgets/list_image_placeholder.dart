@@ -37,7 +37,7 @@ class ListImagePlaceholder extends StatelessWidget {
       child: Align(
         alignment: childXAlign,
         child: Icon(
-          Icons.movie_creation_rounded,
+          Icons.event,
           color: AppColors.primaryColor,
           size: iconSize,
         ),

@@ -12,7 +12,6 @@ import '../../../config/routing/routes.dart';
 import '../../../global/states/auth_state.codegen.dart';
 import '../../../global/widgets/custom_text_button.dart';
 import '../../../helpers/constants/app_colors.dart';
-import '../../../helpers/constants/app_sizes.dart';
 import '../../../helpers/form_validator.dart';
 
 class LoginScreen extends HookConsumerWidget {
@@ -112,7 +111,6 @@ class LoginScreen extends HookConsumerWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -130,11 +128,9 @@ class LoginScreen extends HookConsumerWidget {
               ],
             ),
 
-            const Spacer(),
-
             // Login Button
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 40, 20, 20),
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
               child: CustomTextButton(
                 width: double.infinity,
                 color: AppColors.primaryColor,
@@ -214,7 +210,7 @@ class LoginScreen extends HookConsumerWidget {
             ),
 
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 25),
               child: CustomTextButton(
                 color: AppColors.primaryColor,
                 child: const Center(

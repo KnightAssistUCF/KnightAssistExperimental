@@ -29,7 +29,7 @@ class EventsRepository {
     return await _apiService.getDocumentData(
       endpoint: EventsEndpoint.FETCH_EVENT.route(),
       queryParams: queryParameters,
-      converter: (responseBody) => EventModel.fromJson(responseBody),
+      converter: EventModel.fromJson,
     );
   }
 
@@ -46,7 +46,7 @@ class EventsRepository {
   Future<String> editEvent({
     required JSON data,
   }) async {
-    return await _apiService.updateData(
+    return await _apiService.setData(
       endpoint: EventsEndpoint.EDIT_EVENT.route(),
       data: data,
       converter: (response) => response['headers']['message'],
@@ -66,20 +66,20 @@ class EventsRepository {
   Future<List<EventModel>> fetchOrgEvents({
     required JSON queryParameters,
   }) async {
-    return await _apiService.getCollectionData(
+    return await _apiService.getCollectionData<EventModel>(
       endpoint: EventsEndpoint.FETCH_ORG_EVENTS.route(),
       queryParams: queryParameters,
-      converter: (responseBody) => EventModel.fromJson(responseBody),
+      converter: EventModel.fromJson,
     );
   }
 
   Future<List<EventModel>> fetchRsvpedEvents({
     required JSON queryParameters,
   }) async {
-    return await _apiService.getCollectionData(
+    return await _apiService.getCollectionData<EventModel>(
       endpoint: EventsEndpoint.FETCH_RSVPED_EVENTS.route(),
       queryParams: queryParameters,
-      converter: (responseBody) => EventModel.fromJson(responseBody),
+      converter: EventModel.fromJson,
     );
   }
 
@@ -89,17 +89,17 @@ class EventsRepository {
     return await _apiService.getCollectionData<EventModel>(
       endpoint: EventsEndpoint.FETCH_FAVORITED_ORGS_EVENTS.route(),
       queryParams: queryParameters,
-      converter: (responseBody) => EventModel.fromJson(responseBody),
+      converter: EventModel.fromJson,
     );
   }
 
   Future<List<EventModel>> fetchSuggestedEvents({
     required JSON queryParameters,
   }) async {
-    return await _apiService.getCollectionData(
+    return await _apiService.getCollectionData<EventModel>(
       endpoint: EventsEndpoint.FETCH_SUGGESTED_EVENTS.route(),
       queryParams: queryParameters,
-      converter: (responseBody) => EventModel.fromJson(responseBody),
+      converter: EventModel.fromJson,
     );
   }
 

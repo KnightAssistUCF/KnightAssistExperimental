@@ -22,7 +22,11 @@ class OrganizationsSearchBar extends ConsumerWidget {
                   .read(searchProvider.notifier)
                   .update((_) => searchTerm ?? ''),
               textInputAction: TextInputAction.search,
-              prefix: const Icon(Icons.search_rounded, size: 22),
+              prefix: const Icon(
+                Icons.search_rounded,
+                size: 22,
+                color: Colors.black,
+              ),
             ),
           ),
 
