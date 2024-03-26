@@ -34,6 +34,27 @@ class _QrScreenState extends ConsumerState<QrScreen> {
     controller!.resumeCamera();
   }
 
+  Future<String> processQr(Barcode result) async {
+    final authProv = ref.watch(authProvider.notifier);
+    final qrProv = ref.watch(qrProvider);
+    // Currently crashes if you try to scan an unrelated code
+    if (result.code!.substring(result.code!.length - 3) == 'out') {
+      String eventId = result.code!.substring(0, result.code!.length - 3);
+      final data = <String, Object?>{
+        'qrCodeData_eventID': eventId,
+        'studentId': authProv.currentUserId,
+      };
+      return await qrProv.checkOut(data: data);
+    } else {
+      String eventId = result.code!;
+      final data = <String, Object?>{
+        'qrCodeData_eventID': eventId,
+        'studentId': authProv.currentUserId,
+      };
+      return await qrProv.checkOut(data: data);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,9 +68,12 @@ class _QrScreenState extends ConsumerState<QrScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  if (result != null)
-                    Text(
-                        'Barcode Type: ${describeEnum(result!.format)}   Data: ${result!.code}')
+                  if (result != null && result!.code != null)
+                    
+                    showDialog(context: context, builder: (ctx) => CustomDialog.alert(
+                      title: 'Code Scanned', 
+                      body: await processQr(result!), 
+                      buttonText: 'OK'))
                   else
                     const Text('Scan a code'),
                   Row(
@@ -151,37 +175,11 @@ class _QrScreenState extends ConsumerState<QrScreen> {
     setState(() {
       this.controller = controller;
     });
+
     controller.scannedDataStream.listen((scanData) async {
       setState(() {
         result = scanData;
       });
-
-      final authProv = ref.watch(authProvider.notifier);
-      final qrProv = ref.watch(qrProvider);
-      assert(result != null && result!.code != null, 'Invalid QR Code');
-      if (result!.code!.substring(result!.code!.length - 3) == 'out') {
-        String eventId = result!.code!.substring(0, result!.code!.length - 3);
-        final data = <String, Object?>{
-          'qrCodeData_eventID': eventId,
-          'studentId': authProv.currentUserId,
-        };
-        final response = await qrProv.checkOut(data: data);
-        await showDialog(
-            context: context,
-            builder: (ctx) => CustomDialog.alert(
-                title: 'Checked Out', body: response, buttonText: 'OK'));
-      } else {
-        String eventId = result!.code!;
-        final data = <String, Object?>{
-          'qrCodeData_eventID': eventId,
-          'studentId': authProv.currentUserId,
-        };
-        final response = await qrProv.checkOut(data: data);
-        await showDialog(
-            context: context,
-            builder: (ctx) => CustomDialog.alert(
-                title: 'Checked In', body: response, buttonText: 'OK'));
-      }
     });
   }
 
