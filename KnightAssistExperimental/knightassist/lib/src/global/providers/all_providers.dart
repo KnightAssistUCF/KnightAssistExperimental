@@ -144,7 +144,7 @@ final organizationsProvider = Provider<OrganizationsProvider>((ref) {
 
 final qrProvider = Provider<QrProvider>((ref) {
   final qrRepository = ref.watch(_qrRepositoryProvider);
-  return QrProvider(qrRepository);
+  return QrProvider(qrRepository: qrRepository, ref: ref);
 });
 
 final volunteersProvider = Provider<VolunteersProvider>((ref) {

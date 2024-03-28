@@ -86,13 +86,19 @@ class CustomException implements Exception {
           case DioErrorType.badCertificate:
           case DioErrorType.connectionError:
           case DioErrorType.unknown:
-            print(error);
             if (error.message != null &&
                 error.message!.contains(_ExceptionType.SocketException.name)) {
               return CustomException(
                 exceptionType: _ExceptionType.FetchDataException,
                 statusCode: error.response?.statusCode,
                 message: 'No internet connectivity',
+              );
+            }
+            if (error.response?.data is String) {
+              return CustomException(
+                exceptionType: _ExceptionType.ApiException,
+                statusCode: error.response?.statusCode,
+                message: error.response!.data ?? 'Unknown',
               );
             }
             if (error.response?.data['headers']['code'] == null) {

@@ -15,7 +15,8 @@ class QrRepository {
     return _apiService.setData(
       endpoint: QrEndpoint.CHECK_IN.route(),
       data: data,
-      converter: (response) => response['body']['message'],
+      converter: (response) =>
+          (response['body'] != null) ? response['body']['message'] : response,
     );
   }
 
@@ -25,7 +26,8 @@ class QrRepository {
     return _apiService.setData(
       endpoint: QrEndpoint.CHECK_OUT.route(),
       data: data,
-      converter: (response) => response['body']['message'],
+      converter: (response) =>
+          (response['body'] != null) ? response['body']['message'] : response,
     );
   }
 }
