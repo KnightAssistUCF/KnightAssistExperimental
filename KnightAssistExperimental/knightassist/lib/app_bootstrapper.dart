@@ -4,10 +4,11 @@ import 'package:clock/clock.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:knightassist/my_app.dart';
+// import 'package:sentry_flutter/sentry_flutter.dart';
 
 // Config
-import 'src/config/config.dart';
+// import 'src/config/config.dart';
 
 // Services
 import 'src/core/local/key_value_storage_base.dart';
@@ -45,7 +46,8 @@ class AppBootstrapper {
 
     // For preparing the error monitoring SDK and loading
     // up the `runApp` method in a guarded zone
-    await _setupSentrySDK(runApp, mainAppWidget);
+    // await _setupSentrySDK(runApp, mainAppWidget);
+    runApp(MyApp());
 
     // For restricting the app to portrait mode only
     await SystemChrome.setPreferredOrientations([
@@ -54,6 +56,7 @@ class AppBootstrapper {
     ]);
   }
 
+  /*
   static Future<void> _setupSentrySDK(
     void Function(Widget) appRunner,
     Widget app,
@@ -72,6 +75,7 @@ class AppBootstrapper {
       ),
     );
   }
+  */
 
   static void _prettifyDebugPrint(String? message, {int? wrapWidth}) {
     final date = clock.now();
