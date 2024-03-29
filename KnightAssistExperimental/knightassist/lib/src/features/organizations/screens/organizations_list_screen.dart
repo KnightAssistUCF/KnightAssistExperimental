@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../config/routing/routing.dart';
-import '../../../global/widgets/custom_text.dart';
-import '../../../helpers/constants/app_styles.dart';
 import '../widgets/organizations_list.dart';
 import '../widgets/organizations_search_bar.dart';
 

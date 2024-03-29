@@ -1,58 +1,70 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:knightassist/src/global/providers/all_providers.dart';
+import 'package:knightassist/src/global/states/future_state.codegen.dart';
 
 // Models
 import '../../../core/networking/custom_exception.dart';
 import '../../../global/states/edit_state.codegen.dart';
-import '../../images/models/s3_bucket_image_model.codegen.dart';
-import '../models/event_model.codegen.dart';
+import '../models/event_model.dart';
 
 // Repositories
 import '../repositories/events_repository.dart';
 
 final allEventsProvider =
     FutureProvider.autoDispose<List<EventModel>>((ref) async {
-  final _eventsProvider = ref.watch(eventsProvider);
-
-  return await _eventsProvider.getAllEvents();
+  return await ref.watch(eventsProvider).getAllEvents();
 });
 
 // Only call this if user role is org
 final orgEventsProvider =
     FutureProvider.autoDispose<List<EventModel>>((ref) async {
-  final _userId = ref.watch(authProvider.notifier).currentUserId;
-  final _eventsProvider = ref.watch(eventsProvider);
-  return await _eventsProvider.getOrgEvents(orgId: _userId);
+  final userId = ref.watch(authProvider.notifier).currentUserId;
+  final eventsProv = ref.watch(eventsProvider);
+  return await eventsProv.getOrgEvents(orgId: userId);
 });
 
 // Only call these if user role is volunteer
 final suggestedEventsProvider =
     FutureProvider.autoDispose<List<EventModel>>((ref) async {
-  final _userId = ref.watch(authProvider.notifier).currentUserId;
-  final _eventsProvider = ref.watch(eventsProvider);
-  return await _eventsProvider.getSuggestedEvents(userId: _userId);
+  return await ref.watch(eventsProvider).getSuggestedEvents();
 });
 
 final favOrgEventsProvider =
     FutureProvider.autoDispose<List<EventModel>>((ref) async {
-  final _userId = ref.watch(authProvider.notifier).currentUserId;
-  final _eventsProvider = ref.watch(eventsProvider);
-  return await _eventsProvider.getFavoritedOrgEvents(userId: _userId);
+  return await ref.watch(eventsProvider).getFavoritedOrgEvents();
 });
 
 final rsvpedEventsProvider =
     FutureProvider.autoDispose<List<EventModel>>((ref) async {
-  final _userId = ref.watch(authProvider.notifier).currentUserId;
-  final _eventsProvider = ref.watch(eventsProvider);
-  return await _eventsProvider.getRsvpedEvents(userId: _userId);
+  return await ref.watch(eventsProvider).getRsvpedEvents();
 });
 
 final eventStateProvider = StateProvider<EditState>((ref) {
   return const EditState.unprocessed();
 });
 
+final rsvpStateProvider = StateProvider<FutureState<String>>((ref) {
+  return const FutureState<String>.idle();
+});
+
 final currentEventProvider = StateProvider<EventModel?>((ref) {
-  return EventModel.initial();
+  return EventModel(
+    id: '',
+    name: '',
+    description: '',
+    location: '',
+    sponsoringOrganizationId: '',
+    registeredVolunteerIds: [],
+    profilePicPath: '',
+    startTime: DateTime.now(),
+    endTime: DateTime.now(),
+    checkedInVolunteers: [],
+    feedback: [],
+    eventTags: [],
+    semester: '',
+    maxAttendees: 1,
+    s3ImageId: '',
+  );
 });
 
 class EventsProvider {
@@ -77,7 +89,7 @@ class EventsProvider {
     required String eventId,
   }) async {
     final queryParams = {
-      'eventId': eventId,
+      'eventID': eventId,
     };
     return await _eventsRepository.fetchEvent(queryParameters: queryParams);
   }
@@ -87,85 +99,87 @@ class EventsProvider {
     required String description,
     required String location,
     required String sponsoringOrganization,
+    required String profilePicPath,
     required DateTime startTime,
     required DateTime endTime,
-    required EventLinksModel eventLinks,
     required List<String> eventTags,
     required String semester,
     required int maxAttendees,
-    required S3BucketImageModel image,
   }) async {
-    final data = <String, Object>{
+    final data = <String, dynamic>{
       'name': name,
       'description': description,
       'location': location,
       'sponsoringOrganization': sponsoringOrganization,
-      'registeredVolunteers': [],
+      'profilePicPath': profilePicPath,
       'startTime': startTime,
       'endTime': endTime,
-      'eventLinks': eventLinks,
-      'checkedInVolunteers': [],
-      'feedback': [],
       'eventTags': eventTags,
       'semester': semester,
       'maxAttendees': maxAttendees,
-      'image': image,
     };
 
-    final _eventStateProv = _ref.read(eventStateProvider.notifier);
-    _eventStateProv.state = const EditState.unprocessed();
+    final eventStateProv = _ref.read(eventStateProvider.notifier);
+    eventStateProv.state = const EditState.unprocessed();
+
     await Future<void>.delayed(const Duration(seconds: 3)).then((_) {
-      _eventStateProv.state = const EditState.processing();
+      eventStateProv.state = const EditState.processing();
     });
+
     try {
       await _eventsRepository.addEvent(data: data);
-      _eventStateProv.state = const EditState.successful();
+      eventStateProv.state = const EditState.successful();
     } on CustomException catch (e) {
-      _eventStateProv.state = EditState.failed(reason: e.message);
+      eventStateProv.state = EditState.failed(reason: e.message);
     }
   }
 
   Future<void> editEvent({
-    required EventModel event,
+    required String eventId,
+    required String orgId,
     String? name,
     String? description,
     String? location,
     DateTime? startTime,
     DateTime? endTime,
-    EventLinksModel? eventLinks,
     List<String>? eventTags,
     String? semester,
     int? maxAttendees,
   }) async {
-    final data = event.toUpdateJson(
-      name: name,
-      description: description,
-      location: location,
-      startTime: startTime,
-      endTime: endTime,
-      eventTags: eventTags,
-      semester: semester,
-      maxAttendees: maxAttendees,
-    );
+    final data = <String, dynamic>{
+      'eventID': eventId,
+      'organizationID': orgId,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (location != null) 'location': location,
+      if (startTime != null) 'startTime': startTime,
+      if (endTime != null) 'endTime': endTime,
+      if (eventTags != null) 'eventTags': eventTags,
+      if (semester != null) 'semester': semester,
+      if (maxAttendees != null) 'maxAttendees': maxAttendees,
+    };
 
-    final _eventStateProv = _ref.read(eventStateProvider.notifier);
-    _eventStateProv.state = const EditState.unprocessed();
+    final eventStateProv = _ref.read(eventStateProvider.notifier);
+    eventStateProv.state = const EditState.unprocessed();
+
     await Future<void>.delayed(const Duration(seconds: 3)).then((_) {
-      _eventStateProv.state = const EditState.processing();
+      eventStateProv.state = const EditState.processing();
     });
     try {
       await _eventsRepository.editEvent(data: data);
-      _eventStateProv.state = const EditState.successful();
+      eventStateProv.state = const EditState.successful();
     } on CustomException catch (e) {
-      _eventStateProv.state = EditState.failed(reason: e.message);
+      eventStateProv.state = EditState.failed(reason: e.message);
     }
   }
 
   Future<String> deleteEvent({
     required String eventId,
+    required String orgId,
   }) async {
-    final data = {
-      'eventId': eventId,
+    final data = <String, dynamic>{
+      'eventID': eventId,
+      'organizationID': orgId,
     };
     return await _eventsRepository.deleteEvent(data: data);
   }
@@ -174,60 +188,88 @@ class EventsProvider {
     required String orgId,
   }) async {
     final queryParams = {
-      'orgId': orgId,
+      'organizationID': orgId,
     };
     return await _eventsRepository.fetchOrgEvents(queryParameters: queryParams);
   }
 
-  Future<List<EventModel>> getRsvpedEvents({
-    required String userId,
-  }) async {
+  Future<List<EventModel>> getRsvpedEvents() async {
+    final authProv = _ref.watch(authProvider.notifier);
     final queryParams = {
-      'userId': userId,
+      'studentID ': authProv.currentUserId,
     };
     return await _eventsRepository.fetchRsvpedEvents(
         queryParameters: queryParams);
   }
 
-  Future<List<EventModel>> getFavoritedOrgEvents({
-    required String userId,
-  }) async {
+  Future<List<EventModel>> getFavoritedOrgEvents() async {
+    final authProv = _ref.watch(authProvider.notifier);
     final queryParams = {
-      'userId': userId,
+      'userID ': authProv.currentUserId,
     };
     return await _eventsRepository.fetchFavoritedOrgsEvents(
         queryParameters: queryParams);
   }
 
-  Future<List<EventModel>> getSuggestedEvents({
-    required String userId,
-  }) async {
+  Future<List<EventModel>> getSuggestedEvents() async {
+    final authProv = _ref.watch(authProvider.notifier);
     final queryParams = {
-      'userId': userId,
+      'userID': authProv.currentUserId,
     };
     return await _eventsRepository.fetchSuggestedEvents(
         queryParameters: queryParams);
   }
 
-  Future<String> addRSVP({
+  // TODO: Ask backend what check var is in relation to RSVPs
+
+  Future<void> addRSVP({
     required String eventId,
-    required String userId,
+    required String eventName,
   }) async {
+    final authProv = _ref.watch(authProvider.notifier);
     final data = {
       'eventID': eventId,
-      'userID': userId,
+      'eventName': eventName,
+      'userID': authProv.currentUserId,
     };
-    return await _eventsRepository.addRsvp(data: data);
+
+    final rsvpStateProv = _ref.read(rsvpStateProvider.notifier);
+    rsvpStateProv.state = const FutureState.idle();
+
+    await Future<void>.delayed(const Duration(seconds: 3)).then((_) {
+      rsvpStateProv.state = const FutureState.loading();
+    });
+
+    try {
+      final response = await _eventsRepository.addRsvp(data: data);
+      rsvpStateProv.state = FutureState<String>.data(data: response);
+    } on CustomException catch (e) {
+      rsvpStateProv.state = FutureState.failed(reason: e.message);
+    }
   }
 
-  Future<String> cancelRSVP({
+  Future<void> cancelRSVP({
     required String eventId,
-    required String userId,
+    required String eventName,
   }) async {
+    final authProv = _ref.watch(authProvider.notifier);
     final data = {
       'eventID': eventId,
-      'userID': userId,
+      'eventName': eventName,
+      'userID': authProv.currentUserId,
     };
-    return await _eventsRepository.removeRsvp(data: data);
+    final rsvpStateProv = _ref.read(rsvpStateProvider.notifier);
+    rsvpStateProv.state = const FutureState.idle();
+
+    await Future<void>.delayed(const Duration(seconds: 3)).then((_) {
+      rsvpStateProv.state = const FutureState.loading();
+    });
+
+    try {
+      final response = await _eventsRepository.removeRsvp(data: data);
+      rsvpStateProv.state = FutureState<String>.data(data: response);
+    } on CustomException catch (e) {
+      rsvpStateProv.state = FutureState.failed(reason: e.message);
+    }
   }
 }

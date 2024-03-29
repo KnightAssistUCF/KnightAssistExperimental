@@ -1,25 +1,31 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../global/providers/all_providers.dart';
-import '../models/volunteer_model.codegen.dart';
+import '../models/volunteer_model.dart';
 import '../repositories/volunteers_repository.dart';
 
 final userVolunteerProvider = FutureProvider.autoDispose((ref) async {
-  final _userId = ref.watch(authProvider.notifier).currentUserId;
-  final _volunteersProvider = ref.watch(volunteersProvider);
-  return await _volunteersProvider.getVolunteer(volunteerId: _userId);
+  final userId = ref.watch(authProvider.notifier).currentUserId;
+  final volsProv = ref.watch(volunteersProvider);
+  return await volsProv.getVolunteer(volunteerId: userId);
 });
 
 class VolunteersProvider {
   final VolunteersRepository _volunteersRepository;
+  final Ref _ref;
 
-  VolunteersProvider(this._volunteersRepository);
+  VolunteersProvider({
+    required VolunteersRepository volunteersRepository,
+    required Ref ref,
+  })  : _volunteersRepository = volunteersRepository,
+        _ref = ref,
+        super();
 
   Future<VolunteerModel> getVolunteer({
     required String volunteerId,
   }) async {
     final queryParams = {
-      'volunteerId': volunteerId,
+      'userID': volunteerId,
     };
     return await _volunteersRepository.fetchVolunteer(
         queryParameters: queryParams);
@@ -47,7 +53,7 @@ class VolunteersProvider {
     required String volunteerId,
   }) async {
     final data = {
-      'volunteerId': volunteerId,
+      'id': volunteerId,
     };
     return await _volunteersRepository.delete(data: data);
   }
@@ -56,17 +62,17 @@ class VolunteersProvider {
     required String orgId,
   }) async {
     final queryParams = {
-      'orgId': orgId,
+      'organizationID': orgId,
     };
     return await _volunteersRepository.fetchVolunteersInOrg(
         queryParameters: queryParams);
   }
 
-  Future<List<VolunteerModel>> getEventAttendees({
+  Future<List<VolunteerModel>> getEventRegisteredVolunteers({
     required String eventId,
   }) async {
     final queryParams = {
-      'eventId': eventId,
+      'eventID': eventId,
     };
     return await _volunteersRepository.fetchEventAttendees(
         queryParameters: queryParams);
@@ -89,8 +95,10 @@ class VolunteersProvider {
   Future<String> addFavoriteOrg({
     required String orgId,
   }) async {
+    final authProv = _ref.watch(authProvider.notifier);
     final data = {
-      'orgId': orgId,
+      'organizationID': orgId,
+      'userID': authProv.currentUserId,
     };
     return await _volunteersRepository.addFavoriteOrg(data: data);
   }
@@ -98,8 +106,10 @@ class VolunteersProvider {
   Future<String> removeFavoriteOrg({
     required String orgId,
   }) async {
+    final authProv = _ref.watch(authProvider.notifier);
     final data = {
-      'orgId': orgId,
+      'organizationID': orgId,
+      'userID': authProv.currentUserId,
     };
     return await _volunteersRepository.removeFavoriteOrg(data: data);
   }

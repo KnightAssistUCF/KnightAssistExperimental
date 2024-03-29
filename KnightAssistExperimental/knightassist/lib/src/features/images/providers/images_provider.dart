@@ -1,14 +1,15 @@
-import 'package:knightassist/src/features/images/models/s3_bucket_image_model.codegen.dart';
-import 'package:knightassist/src/features/images/repositories/images_repository.dart';
+import 'dart:io';
+
+import '../repositories/images_repository.dart';
 
 class ImagesProvider {
   final ImagesRepository _imagesRepository;
 
   ImagesProvider(this._imagesRepository);
 
-  Future<S3BucketImageModel> getImage({
-    required String id,
+  Future<String> retrieveImage({
     required int type,
+    required String id,
   }) async {
     final queryParams = <String, Object>{
       'id': id,
@@ -17,14 +18,16 @@ class ImagesProvider {
     return await _imagesRepository.fetch(queryParameters: queryParams);
   }
 
-  // TODO: Add file handling to store image
   Future<String> storeImage({
+    required int type,
     required String id,
+    required File file,
   }) async {
     final data = <String, Object>{
+      'typeOfImage': type,
       'id': id,
     };
-    return await _imagesRepository.store(data: data);
+    return await _imagesRepository.store(data: data, file: file);
   }
 
   Future<String> deleteImage({

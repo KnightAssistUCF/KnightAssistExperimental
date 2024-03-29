@@ -4,7 +4,7 @@ import '../../../core/core.dart';
 import '../../../global/states/auth_state.codegen.dart';
 import '../../../global/states/future_state.codegen.dart';
 import '../enums/user_role_enum.dart';
-import '../models/user_model.codegen.dart';
+import '../models/user_model.dart';
 
 // Repositories
 import '../repositories/auth_repository.dart';
@@ -28,15 +28,15 @@ class AuthProvider extends StateNotifier<AuthState> {
     init();
   }
 
-  String get currentUserId => _currentUser!.userId!;
+  String get currentUserId => _currentUser!.id;
 
   String get currentUserEmail => _currentUser!.email;
 
-  String get currentUserName {
-    if (_currentUser!.role == UserRole.VOLUNTEER) {
-      return '${_currentUser!.firstName!} ${_currentUser!.lastName!}';
+  String? get currentUserOrgName {
+    if (_currentUser!.role == UserRole.ORGANIZATION) {
+      return _currentUser!.orgName!;
     } else {
-      return _currentUser!.name!;
+      return null;
     }
   }
 
@@ -84,7 +84,7 @@ class AuthProvider extends StateNotifier<AuthState> {
     required String email,
     required String password,
   }) async {
-    final data = {'email': email, 'password': password};
+    final data = <String, dynamic>{'email': email, 'password': password};
     state = const AuthState.authenticating();
     try {
       _currentUser = await _authRepository.login(
@@ -104,20 +104,16 @@ class AuthProvider extends StateNotifier<AuthState> {
     required String password,
     required String firstName,
     required String lastName,
-    UserRole role = UserRole.VOLUNTEER,
   }) async {
-    final volunteer = UserModel(
-      userId: null,
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      role: role,
-    );
+    final volunteer = <String, dynamic>{
+      'email': email,
+      'password': password,
+      'firstName': firstName,
+      'lastName': lastName,
+    };
     state = const AuthState.authenticating();
     try {
-      _currentUser = await _authRepository.registerVolunteer(
-        data: volunteer.toJson(),
-      );
+      _currentUser = await _authRepository.registerVolunteer(data: volunteer);
       state = AuthState.authenticated(email: _currentUser!.email);
       _updatePassword(password);
       _updateAuthProfile();
@@ -129,16 +125,16 @@ class AuthProvider extends StateNotifier<AuthState> {
   Future<void> registerOrganization({
     required String email,
     required String password,
-    required String name,
-    UserRole role = UserRole.ORGANIZATION,
+    required String orgName,
   }) async {
-    final organization =
-        UserModel(userId: null, name: name, email: email, role: role);
-    state = const AuthState.authenticating();
+    final organization = <String, dynamic>{
+      'email': email,
+      'password': password,
+      'name': orgName,
+    };
     try {
-      _currentUser = await _authRepository.registerOrganization(
-        data: organization.toJson(),
-      );
+      _currentUser =
+          await _authRepository.registerOrganization(data: organization);
       state = AuthState.authenticated(email: _currentUser!.email);
       _updatePassword(password);
       _updateAuthProfile();

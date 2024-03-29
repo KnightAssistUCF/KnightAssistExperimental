@@ -6,11 +6,8 @@ enum QrEndpoint {
 
   const QrEndpoint();
 
-  static const _baseRoute = '/qr';
-
   /// Returns the path for qr [endpoint].
   String route() {
-    const path = QrEndpoint._baseRoute;
     switch (this) {
       case QrEndpoint.CHECK_IN:
         return 'checkIn_Afterscan';

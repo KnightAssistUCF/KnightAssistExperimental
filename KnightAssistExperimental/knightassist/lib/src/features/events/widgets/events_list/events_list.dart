@@ -7,7 +7,7 @@ import '../../../../global/widgets/custom_refresh_indicator.dart';
 import '../../../../global/widgets/empty_state_widget.dart';
 import '../../../../global/widgets/error_response_handler.dart';
 import '../../../../helpers/constants/app_styles.dart';
-import '../../models/event_model.codegen.dart';
+import '../../models/event_model.dart';
 import '../../providers/search_providers.codegen.dart';
 import 'events_list_item.dart';
 

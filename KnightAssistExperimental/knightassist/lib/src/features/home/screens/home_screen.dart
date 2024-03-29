@@ -3,6 +3,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:knightassist/src/config/routing/app_router.dart';
 import 'package:knightassist/src/config/routing/routes.dart';
 import 'package:knightassist/src/features/auth/enums/user_role_enum.dart';
+import 'package:knightassist/src/features/events/providers/events_provider.dart';
+import 'package:knightassist/src/features/organizations/providers/organizations_provider.dart';
 import 'package:knightassist/src/global/providers/all_providers.dart';
 import 'package:knightassist/src/global/widgets/custom_text_button.dart';
 import 'package:knightassist/src/global/widgets/scrollable_column.dart';
@@ -17,6 +19,8 @@ class HomeScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authProv = ref.watch(authProvider.notifier);
+    final favOrgsProv = ref.watch(favOrgsProvider);
+    final rsvpedEventsProv = ref.watch(rsvpedEventsProvider);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       key: _scaffoldKey,
@@ -141,7 +145,9 @@ class HomeScreen extends HookConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          authProv.currentUserName,
+                          (authProv.currentUserRole == UserRole.ORGANIZATION)
+                              ? authProv.currentUserOrgName!
+                              : authProv.currentUserFirstName!,
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 26,

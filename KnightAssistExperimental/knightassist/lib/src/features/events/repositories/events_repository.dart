@@ -3,7 +3,7 @@ import '../../../core/core.dart';
 
 // Models
 import '../enums/events_endpoint_enum.dart';
-import '../models/event_model.codegen.dart';
+import '../models/event_model.dart';
 
 // Helpers
 import '../../../helpers/typedefs.dart';
@@ -109,7 +109,7 @@ class EventsRepository {
     return await _apiService.setData(
       endpoint: EventsEndpoint.ADD_RSVP.route(),
       data: data,
-      converter: (response) => response['headers']['message'],
+      converter: (response) => response['status'],
     );
   }
 
@@ -119,7 +119,7 @@ class EventsRepository {
     return await _apiService.deleteData(
       endpoint: EventsEndpoint.REMOVE_RSVP.route(),
       data: data,
-      converter: (response) => response['headers']['message'],
+      converter: (response) => response as String,
     );
   }
 }

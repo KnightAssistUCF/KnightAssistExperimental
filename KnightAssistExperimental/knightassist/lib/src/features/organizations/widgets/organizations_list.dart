@@ -7,7 +7,7 @@ import '../../../global/widgets/custom_refresh_indicator.dart';
 import '../../../global/widgets/empty_state_widget.dart';
 import '../../../global/widgets/error_response_handler.dart';
 import '../../../helpers/constants/app_styles.dart';
-import '../models/organization_model.codegen.dart';
+import '../models/organization_model.dart';
 import '../providers/search_providers.codegen.dart';
 import 'organizations_list_item.dart';
 

@@ -5,7 +5,7 @@ import '../../../config/routing/routing.dart';
 import '../../../global/widgets/custom_network_image.dart';
 import '../../../global/widgets/list_image_placeholder.dart';
 import '../../../helpers/constants/app_styles.dart';
-import '../models/organization_model.codegen.dart';
+import '../models/organization_model.dart';
 import '../providers/organizations_provider.dart';
 
 class OrganizationsListItem extends ConsumerWidget {

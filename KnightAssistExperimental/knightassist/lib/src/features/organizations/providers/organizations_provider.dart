@@ -3,37 +3,35 @@ import 'package:knightassist/src/features/events/providers/events_provider.dart'
 import 'package:knightassist/src/global/providers/all_providers.dart';
 
 import '../../../global/states/edit_state.codegen.dart';
-import '../models/organization_model.codegen.dart';
+import '../models/organization_model.dart';
 import '../repositories/organizations_repository.dart';
 
 final allOrgsProvider =
     FutureProvider.autoDispose<List<OrganizationModel>>((ref) async {
-  final _orgsProvider = ref.watch(organizationsProvider);
-  return await _orgsProvider.getAllOrgs();
+  final orgsProvider = ref.watch(organizationsProvider);
+  return await orgsProvider.getAllOrgs();
 });
 
 final eventOrgProvider =
     FutureProvider.autoDispose<OrganizationModel>((ref) async {
-  final _currentEvent = ref.watch(currentEventProvider);
-  final _orgsProvider = ref.watch(organizationsProvider);
+  final currentEvent = ref.watch(currentEventProvider);
+  final orgsProvider = ref.watch(organizationsProvider);
 
-  return await _orgsProvider.getOrgById(
-      orgId: _currentEvent!.sponsoringOrganization);
+  return await orgsProvider.getOrgById(
+      orgId: currentEvent!.sponsoringOrganizationId);
 });
 
 // Only call these if user role is volunteer
 final favOrgsProvider =
     FutureProvider.autoDispose<List<OrganizationModel>>((ref) async {
-  final _userId = ref.watch(authProvider.notifier).currentUserId;
-  final _orgsProvider = ref.watch(organizationsProvider);
-  return await _orgsProvider.getFavoritedOrgs(userId: _userId);
+  final orgsProvider = ref.watch(organizationsProvider);
+  return await orgsProvider.getFavoritedOrgs();
 });
 
 final suggestedOrgsProvider =
     FutureProvider.autoDispose<List<OrganizationModel>>((ref) async {
-  final _userId = ref.watch(authProvider.notifier).currentUserId;
-  final _orgsProvider = ref.watch(organizationsProvider);
-  return await _orgsProvider.getSuggestedOrgs(userId: _userId);
+  final orgsProvider = ref.watch(organizationsProvider);
+  return await orgsProvider.getSuggestedOrgs();
 });
 
 final organizationStateProvider = StateProvider<EditState>((ref) {
@@ -45,8 +43,14 @@ final currentOrganizationProvider =
 
 class OrganizationsProvider {
   final OrganizationsRepository _organizationsRepository;
+  final Ref _ref;
 
-  OrganizationsProvider(this._organizationsRepository);
+  OrganizationsProvider({
+    required OrganizationsRepository organizationsRepository,
+    required Ref ref,
+  })  : _organizationsRepository = organizationsRepository,
+        _ref = ref,
+        super();
 
   Future<List<OrganizationModel>> getAllOrgs([String? searchTerm]) async {
     final queryParams = <String, Object>{
@@ -58,7 +62,7 @@ class OrganizationsProvider {
 
   Future<OrganizationModel> getOrgById({required String orgId}) async {
     final queryParams = {
-      'orgId': orgId,
+      'organizationID': orgId,
     };
     return await _organizationsRepository.fetchOrganization(
         queryParameters: queryParams);
@@ -88,26 +92,24 @@ class OrganizationsProvider {
     required String orgId,
   }) async {
     final data = {
-      'orgId': orgId,
+      'id': orgId,
     };
     return await _organizationsRepository.deleteOrganization(data: data);
   }
 
-  Future<List<OrganizationModel>> getFavoritedOrgs({
-    required String userId,
-  }) async {
+  Future<List<OrganizationModel>> getFavoritedOrgs() async {
+    final authProv = _ref.watch(authProvider.notifier);
     final queryParams = {
-      'userId': userId,
+      'userID': authProv.currentUserId,
     };
     return await _organizationsRepository.fetchFavoritedOrganizations(
         queryParameters: queryParams);
   }
 
-  Future<List<OrganizationModel>> getSuggestedOrgs({
-    required String userId,
-  }) async {
+  Future<List<OrganizationModel>> getSuggestedOrgs() async {
+    final authProv = _ref.watch(authProvider.notifier);
     final queryParams = {
-      'userId': userId,
+      'userID': authProv.currentUserId,
     };
     return await _organizationsRepository.fetchSuggestedOrganizations(
         queryParameters: queryParams);

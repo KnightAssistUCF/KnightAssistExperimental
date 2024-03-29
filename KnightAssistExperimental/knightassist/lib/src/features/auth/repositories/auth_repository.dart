@@ -2,7 +2,7 @@ import '../../../core/core.dart';
 
 // Models
 import '../enums/auth_endpoint_enum.dart';
-import '../models/user_model.codegen.dart';
+import '../models/user_model.dart';
 
 // Helpers
 import '../../../helpers/typedefs.dart';

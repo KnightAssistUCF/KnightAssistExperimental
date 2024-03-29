@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:knightassist/src/features/events/models/event_model.codegen.dart';
+import 'package:knightassist/src/features/events/models/event_model.dart';
 
 class EventsCarousel extends StatefulHookConsumerWidget {
   final PageController imageController;

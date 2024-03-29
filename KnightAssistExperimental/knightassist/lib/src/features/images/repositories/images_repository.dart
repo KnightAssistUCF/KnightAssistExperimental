@@ -1,9 +1,10 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:knightassist/src/features/images/enums/images_endpoint_enum.dart';
 
 import '../../../core/core.dart';
 import '../../../helpers/typedefs.dart';
-import '../models/s3_bucket_image_model.codegen.dart';
 
 class ImagesRepository {
   final ApiService _apiService;
@@ -15,19 +16,21 @@ class ImagesRepository {
   })  : _apiService = apiService,
         _cancelToken = cancelToken;
 
-  Future<S3BucketImageModel> fetch({
+  Future<String> fetch({
     required JSON queryParameters,
   }) async {
     return await _apiService.getDocumentData(
       endpoint: ImagesEndpoint.FETCH_IMAGE.route(),
       queryParams: queryParameters,
       cancelToken: _cancelToken,
-      converter: (responseBody) => S3BucketImageModel.fromJson(responseBody),
+      converter: (response) => response['headers']['message'],
     );
   }
 
+  // TODO: Add file handling to store image
   Future<String> store({
     required JSON data,
+    required File file,
   }) async {
     return await _apiService.setData(
       endpoint: ImagesEndpoint.STORE_IMAGE.route(),

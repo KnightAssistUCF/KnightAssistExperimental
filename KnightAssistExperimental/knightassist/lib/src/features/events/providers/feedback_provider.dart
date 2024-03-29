@@ -1,9 +1,19 @@
-import '../models/event_model.codegen.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:knightassist/src/global/providers/all_providers.dart';
+
+import '../models/event_model.dart';
 import '../repositories/feedback_repository.dart';
 
 class FeedbackProvider {
   final FeedbackRepository _feedbackRepository;
-  FeedbackProvider(this._feedbackRepository);
+  final Ref _ref;
+
+  FeedbackProvider({
+    required FeedbackRepository feedbackRepository,
+    required Ref ref,
+  })  : _feedbackRepository = feedbackRepository,
+        _ref = ref,
+        super();
 
   Future<List<FeedbackModel>> getAllForOrg({
     required String orgId,
@@ -16,30 +26,21 @@ class FeedbackProvider {
   }
 
   Future<String> create({
-    required String userId,
     required String eventId,
     required double rating,
-    required String feedbackText,
+    required String content,
   }) async {
-    final feedback = FeedbackModel(
-      volunteerId: userId,
-      eventId: eventId,
-      timeFeedbackSubmitted: DateTime.now(),
-      volunteerName: '',
-      volunteerEmail: '',
-      eventName: '',
-      rating: rating,
-      feedbackText: feedbackText,
-      wasReadByUser: false,
-    );
-
-    final data = <String, Object?>{
-      ...feedback.toJson(),
+    final authProv = _ref.watch(authProvider.notifier);
+    final data = <String, dynamic>{
+      'eventID': eventId,
+      'studentID': authProv.currentUserId,
+      'rating': rating,
+      'feedbackText': content,
     };
     return await _feedbackRepository.create(data: data);
   }
 
-  Future<String> setRead({
+  Future<String> markAsRead({
     required String eventId,
     required String feedbackId,
   }) async {

@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import '../../../core/core.dart';
 import '../../../helpers/typedefs.dart';
 import '../enums/organizations_endpoint_enum.dart';
-import '../models/organization_model.codegen.dart';
+import '../models/organization_model.dart';
 
 class OrganizationsRepository {
   final ApiService _apiService;

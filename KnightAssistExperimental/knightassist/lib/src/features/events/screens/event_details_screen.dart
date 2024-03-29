@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:knightassist/src/config/routing/app_router.dart';
 import 'package:knightassist/src/features/auth/enums/user_role_enum.dart';
 import 'package:knightassist/src/features/events/providers/events_provider.dart';
-import 'package:knightassist/src/features/volunteers/models/volunteer_model.codegen.dart';
+import 'package:knightassist/src/features/volunteers/models/volunteer_model.dart';
 import 'package:knightassist/src/features/volunteers/providers/volunteers_provider.dart';
 import 'package:knightassist/src/global/providers/all_providers.dart';
+import 'package:knightassist/src/global/states/future_state.codegen.dart';
 import 'package:knightassist/src/global/widgets/async_value_widget.dart';
 import 'package:knightassist/src/global/widgets/custom_circular_loader.dart';
 import 'package:knightassist/src/global/widgets/custom_dialog.dart';
@@ -25,6 +27,35 @@ class EventDetailsScreen extends HookConsumerWidget {
     final authProv = ref.watch(authProvider.notifier);
     final event = ref.watch(currentEventProvider);
     final eventsProv = ref.watch(eventsProvider);
+
+    ref.listen<FutureState<String>>(
+      rsvpStateProvider,
+      (previous, rsvpState) async {
+        rsvpState.maybeWhen(
+          data: (message) async {
+            await showDialog(
+                context: context,
+                builder: (ctx) => CustomDialog.alert(
+                      title: 'Success',
+                      body: message,
+                      buttonText: 'OK',
+                      onButtonPressed: () => AppRouter.pop(),
+                    ));
+          },
+          failed: (reason) async {
+            await showDialog<bool>(
+              context: context,
+              builder: (ctx) => CustomDialog.alert(
+                title: 'Failed',
+                body: reason,
+                buttonText: 'Retry',
+              ),
+            );
+          },
+          orElse: () {},
+        );
+      },
+    );
 
     return Scaffold(
         resizeToAvoidBottomInset: false,
@@ -50,7 +81,7 @@ class EventDetailsScreen extends HookConsumerWidget {
                     // Title
                     Text(
                       event!.name,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
@@ -77,7 +108,7 @@ class EventDetailsScreen extends HookConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Text(event!.name,
+                          Text(event.name,
                               style: Theme.of(context).textTheme.titleLarge),
                           Text(event.description),
                           Text(event.maxAttendees.toString()),
@@ -93,82 +124,101 @@ class EventDetailsScreen extends HookConsumerWidget {
               // Edit Button if sponsoring org
               Visibility(
                 visible: authProv.currentUserRole == UserRole.ORGANIZATION &&
-                    authProv.currentUserId == event.sponsoringOrganization,
-                child: CustomTextButton(
-                  child: const Center(
-                    child: Text(
-                      'Edit Event',
+                    authProv.currentUserId == event.sponsoringOrganizationId,
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: CustomTextButton(
+                    child: const Center(
+                      child: Text(
+                        'Edit Event',
+                      ),
                     ),
+                    onPressed: () {
+                      AppRouter.pushNamed(Routes.EditEventScreenRoute);
+                    },
                   ),
-                  onPressed: () {
-                    AppRouter.pushNamed(Routes.EditEventScreenRoute);
-                  },
                 ),
               ),
 
               // RSVP and Feedback button if student
               Visibility(
                 visible: authProv.currentUserRole == UserRole.VOLUNTEER,
-                child: Consumer(
-                  builder: (context, ref, child) {
-                    return AsyncValueWidget<VolunteerModel>(
-                      value: ref.watch(userVolunteerProvider),
-                      loading: () => CustomCircularLoader(),
-                      error: (error, st) => ErrorResponseHandler(
-                        error: error,
-                        stackTrace: st,
-                        retryCallback: () => ref.refresh(userVolunteerProvider),
-                      ),
-                      data: (volunteer) {
-                        return CustomTextButton(
-                          width: double.infinity,
-                          color: volunteer.eventsRSVP.contains(event.eventId) ||
-                                  event.maxAttendees >=
-                                      event.registeredVolunteers.length
-                              ? AppColors.buttonGreyColor
-                              : AppColors.secondaryColor,
-                          child: const Center(
-                            child: Text(
-                              'RSVP',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                                letterSpacing: 0.7,
-                                fontWeight: FontWeight.w600,
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Consumer(
+                    builder: (context, ref, child) {
+                      return AsyncValueWidget<VolunteerModel>(
+                        value: ref.watch(userVolunteerProvider),
+                        loading: () => const CustomCircularLoader(),
+                        error: (error, st) => ErrorResponseHandler(
+                          error: error,
+                          stackTrace: st,
+                          retryCallback: () =>
+                              ref.refresh(userVolunteerProvider),
+                        ),
+                        data: (volunteer) {
+                          return CustomTextButton(
+                            width: double.infinity,
+                            color: volunteer.eventRsvpIds.contains(event.id) ||
+                                    event.maxAttendees <=
+                                        event.registeredVolunteerIds.length
+                                ? AppColors.buttonGreyColor
+                                : AppColors.secondaryColor,
+                            child: Consumer(
+                              builder: (context, ref, child) {
+                                final _rsvpState = ref.watch(rsvpStateProvider);
+                                return _rsvpState.maybeWhen(
+                                  loading: () => const Center(
+                                    child: SpinKitRing(
+                                      color: Colors.white,
+                                      size: 30,
+                                      lineWidth: 4,
+                                      duration: Duration(milliseconds: 1100),
+                                    ),
+                                  ),
+                                  orElse: () => child!,
+                                );
+                              },
+                              child: Center(
+                                child: Text(
+                                  volunteer.eventRsvpIds.contains(event.id)
+                                      ? 'Cancel RSVP'
+                                      : event.maxAttendees <=
+                                              event
+                                                  .registeredVolunteerIds.length
+                                          ? 'Event Full'
+                                          : 'RSVP',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                    letterSpacing: 0.7,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                          onPressed: () async {
-                            if (event.maxAttendees >=
-                                event.registeredVolunteers.length) {
-                              return;
-                            }
-                            if (volunteer.eventsRSVP.contains(event.eventId)) {
-                              final response = await eventsProv.addRSVP(
-                                  eventId: event.eventId,
-                                  userId: authProv.currentUserId);
-                              await showDialog(
-                                  context: context,
-                                  builder: (ctx) => CustomDialog.alert(
-                                      title: 'RSVP Cancelled',
-                                      body: response,
-                                      buttonText: 'OK'));
-                            } else {
-                              final response = await eventsProv.addRSVP(
-                                  eventId: event.eventId,
-                                  userId: authProv.currentUserId);
-                              await showDialog(
-                                  context: context,
-                                  builder: (ctx) => CustomDialog.alert(
-                                      title: 'RSVP Confirmed',
-                                      body: response,
-                                      buttonText: 'OK'));
-                            }
-                          },
-                        );
-                      },
-                    );
-                  },
+                            onPressed: () async {
+                              if (event.maxAttendees <=
+                                  event.registeredVolunteerIds.length) {
+                                return;
+                              }
+                              if (volunteer.eventRsvpIds.contains(event.id)) {
+                                eventsProv.cancelRSVP(
+                                  eventId: event.id,
+                                  eventName: event.name,
+                                );
+                              } else {
+                                await eventsProv.addRSVP(
+                                  eventId: event.id,
+                                  eventName: event.name,
+                                );
+                              }
+                            },
+                          );
+                        },
+                      );
+                    },
+                  ),
                 ),
               ),
             ],

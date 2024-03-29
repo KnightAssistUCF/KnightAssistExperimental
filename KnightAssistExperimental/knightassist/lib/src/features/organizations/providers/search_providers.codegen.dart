@@ -2,7 +2,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../global/providers/all_providers.dart';
-import '../models/organization_model.codegen.dart';
+import '../models/organization_model.dart';
 
 part 'search_providers.codegen.g.dart';
 

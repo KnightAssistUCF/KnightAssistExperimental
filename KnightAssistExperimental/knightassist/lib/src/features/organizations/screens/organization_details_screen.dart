@@ -26,7 +26,7 @@ class OrganizationDetailsScreen extends ConsumerWidget {
           // Edit Button if sponsoring org
           Visibility(
             visible: authProv.currentUserRole == UserRole.ORGANIZATION &&
-                authProv.currentUserId == org!.organizationId,
+                authProv.currentUserId == org!.id,
             child: CustomTextButton(
               child: const Center(
                 child: Text(
