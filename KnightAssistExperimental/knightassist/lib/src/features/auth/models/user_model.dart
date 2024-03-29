@@ -1,3 +1,5 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
 import '../../../helpers/typedefs.dart';
 import '../enums/user_role_enum.dart';
 
@@ -24,13 +26,19 @@ class UserModel {
   final String? orgName;
 
   static UserModel fromJson(JSON json) {
+    print(json);
     return UserModel(
-      id: json['_id'],
-      email: json['email'],
-      role: json['role'],
-      firstName: json['firstName'],
-      lastName: json['lastName'],
-      orgName: json['name'],
+      id: json['_id'] as String,
+      email: json['email'] as String,
+      role: $enumDecode(userRoleEnumMap, json['role']),
+      firstName: json['firstName'] as String? ?? '',
+      lastName: json['lastName'] as String? ?? '',
+      orgName: json['name'] as String? ?? '',
     );
   }
+
+  static final userRoleEnumMap = {
+    UserRole.VOLUNTEER: 'student',
+    UserRole.ORGANIZATION: 'organization',
+  };
 }

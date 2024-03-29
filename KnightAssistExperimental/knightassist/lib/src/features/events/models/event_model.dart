@@ -69,23 +69,27 @@ class CheckedInVolunteerModel {
   CheckedInVolunteerModel({
     required this.id,
     required this.studentId,
-    required this.checkInTime,
-    required this.checkOutTime,
+    this.checkInTime,
+    this.checkOutTime,
     required this.wereHoursAdjusted,
   });
 
   final String id;
   final String studentId;
-  final DateTime checkInTime;
-  final DateTime checkOutTime;
+  final DateTime? checkInTime;
+  final DateTime? checkOutTime;
   final bool wereHoursAdjusted;
 
   static CheckedInVolunteerModel fromJson(JSON json) {
     return CheckedInVolunteerModel(
         id: json['_id'] as String,
         studentId: json['studentId'] as String,
-        checkInTime: DateTime.parse(json['checkInTime'] as String),
-        checkOutTime: DateTime.parse(json['checkOutTime'] as String),
+        checkInTime: (json['checkInTime'] != null)
+            ? DateTime.parse(json['checkInTime'] as String)
+            : null,
+        checkOutTime: (json['checkOutTime'] != null)
+            ? DateTime.parse(json['checkOutTime'] as String)
+            : null,
         wereHoursAdjusted:
             json['wereHoursAdjusted_ForSudent_ForThisEvent'] as bool);
   }

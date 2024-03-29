@@ -14,7 +14,6 @@ class VolunteerModel {
     required this.categoryTags,
     required this.emailValidated,
     required this.firstTimeLogin,
-    required this.recieveEmails,
   });
 
   final String id;
@@ -29,7 +28,6 @@ class VolunteerModel {
   final List<String> categoryTags;
   final bool emailValidated;
   final bool firstTimeLogin;
-  final bool recieveEmails;
 
   static VolunteerModel fromJson(JSON json) {
     return VolunteerModel(
@@ -53,7 +51,6 @@ class VolunteerModel {
           .toList(),
       emailValidated: json['EmailValidated'] as bool,
       firstTimeLogin: json['firstTimeLogin'] as bool,
-      recieveEmails: json['receiveEmails'] as bool,
     );
   }
 }

@@ -139,7 +139,8 @@ final imagesProvider = Provider<ImagesProvider>((ref) {
 
 final organizationsProvider = Provider<OrganizationsProvider>((ref) {
   final organizationsRepository = ref.watch(_organizationsRepositoryProvider);
-  return OrganizationsProvider(organizationsRepository);
+  return OrganizationsProvider(
+      organizationsRepository: organizationsRepository, ref: ref);
 });
 
 final qrProvider = Provider<QrProvider>((ref) {
@@ -149,5 +150,6 @@ final qrProvider = Provider<QrProvider>((ref) {
 
 final volunteersProvider = Provider<VolunteersProvider>((ref) {
   final volunteersRepository = ref.watch(_volunteersRepositoryProvider);
-  return VolunteersProvider(volunteersRepository);
+  return VolunteersProvider(
+      volunteersRepository: volunteersRepository, ref: ref);
 });

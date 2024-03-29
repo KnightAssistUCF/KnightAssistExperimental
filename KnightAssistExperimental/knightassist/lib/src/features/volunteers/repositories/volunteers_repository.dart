@@ -22,7 +22,7 @@ class VolunteersRepository {
       endpoint: VolunteersEndpoint.FETCH_VOLUNTEER.route(),
       queryParams: queryParameters,
       cancelToken: _cancelToken,
-      converter: (responseBody) => VolunteerModel.fromJson(responseBody),
+      converter: VolunteerModel.fromJson,
     );
   }
 

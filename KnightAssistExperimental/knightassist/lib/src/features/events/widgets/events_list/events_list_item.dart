@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:knightassist/src/features/organizations/models/organization_model.dart';
 import 'package:knightassist/src/global/providers/all_providers.dart';
 import 'package:knightassist/src/global/widgets/custom_text_button.dart';
 import 'package:knightassist/src/helpers/constants/app_sizes.dart';
@@ -22,7 +21,6 @@ class EventsListItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authProv = ref.watch(authProvider.notifier);
-
     return InkResponse(
       onTap: () {
         ref.read(currentEventProvider.notifier).state = event;
@@ -54,13 +52,12 @@ class EventsListItem extends ConsumerWidget {
                   textAlign: TextAlign.start,
                 ),
 
-                // TODO: Figure out how to pull sponsoring org info here
+                // Feedback
 
-                /*
                 // Edit Button if sponsoring org
                 Visibility(
                   visible: authProv.currentUserRole == UserRole.ORGANIZATION &&
-                      authProv.currentUserId == event!.sponsoringOrganization,
+                      authProv.currentUserId == event.sponsoringOrganizationId,
                   child: CustomTextButton(
                     child: const Center(
                       child: Text(
@@ -90,7 +87,6 @@ class EventsListItem extends ConsumerWidget {
                     },
                   ),
                 ),
-                */
               ],
             )),
       ),

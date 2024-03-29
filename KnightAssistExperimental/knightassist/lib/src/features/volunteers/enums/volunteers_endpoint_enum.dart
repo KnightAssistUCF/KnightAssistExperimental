@@ -19,7 +19,7 @@ enum VolunteersEndpoint {
   String route() {
     switch (this) {
       case VolunteersEndpoint.FETCH_VOLUNTEER:
-        return 'searchUser';
+        return 'userSearch';
       case VolunteersEndpoint.EDIT_VOLUNTEER:
         return 'editUserProfile';
       case VolunteersEndpoint.DELETE_VOLUNTEER:

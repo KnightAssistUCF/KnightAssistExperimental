@@ -1,5 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:knightassist/src/global/providers/all_providers.dart';
+import 'package:knightassist/src/global/states/future_state.codegen.dart';
 
 // Models
 import '../../../core/networking/custom_exception.dart';
@@ -40,6 +41,10 @@ final rsvpedEventsProvider =
 
 final eventStateProvider = StateProvider<EditState>((ref) {
   return const EditState.unprocessed();
+});
+
+final rsvpStateProvider = StateProvider<FutureState<String>>((ref) {
+  return const FutureState<String>.idle();
 });
 
 final currentEventProvider = StateProvider<EventModel?>((ref) {
@@ -217,7 +222,7 @@ class EventsProvider {
 
   // TODO: Ask backend what check var is in relation to RSVPs
 
-  Future<String> addRSVP({
+  Future<void> addRSVP({
     required String eventId,
     required String eventName,
   }) async {
@@ -227,13 +232,25 @@ class EventsProvider {
       'eventName': eventName,
       'userID': authProv.currentUserId,
     };
-    return await _eventsRepository.addRsvp(data: data);
+
+    final rsvpStateProv = _ref.read(rsvpStateProvider.notifier);
+    rsvpStateProv.state = const FutureState.idle();
+
+    await Future<void>.delayed(const Duration(seconds: 3)).then((_) {
+      rsvpStateProv.state = const FutureState.loading();
+    });
+
+    try {
+      final response = await _eventsRepository.addRsvp(data: data);
+      rsvpStateProv.state = FutureState<String>.data(data: response);
+    } on CustomException catch (e) {
+      rsvpStateProv.state = FutureState.failed(reason: e.message);
+    }
   }
 
-  Future<String> cancelRSVP({
+  Future<void> cancelRSVP({
     required String eventId,
     required String eventName,
-    required String userId,
   }) async {
     final authProv = _ref.watch(authProvider.notifier);
     final data = {
@@ -241,6 +258,18 @@ class EventsProvider {
       'eventName': eventName,
       'userID': authProv.currentUserId,
     };
-    return await _eventsRepository.removeRsvp(data: data);
+    final rsvpStateProv = _ref.read(rsvpStateProvider.notifier);
+    rsvpStateProv.state = const FutureState.idle();
+
+    await Future<void>.delayed(const Duration(seconds: 3)).then((_) {
+      rsvpStateProv.state = const FutureState.loading();
+    });
+
+    try {
+      final response = await _eventsRepository.removeRsvp(data: data);
+      rsvpStateProv.state = FutureState<String>.data(data: response);
+    } on CustomException catch (e) {
+      rsvpStateProv.state = FutureState.failed(reason: e.message);
+    }
   }
 }

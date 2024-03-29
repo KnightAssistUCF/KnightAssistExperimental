@@ -90,9 +90,8 @@ class ApiService implements ApiInterface {
           headers: <String, Object?>{'requiresAuthToken': requiresAuthToken}),
       cancelToken: cancelToken,
     );
-
     //Returning the deserialized object
-    return converter(data['body'] as JSON);
+    return converter(data);
   }
 
   /// An implementation of the base method for inserting [data] at

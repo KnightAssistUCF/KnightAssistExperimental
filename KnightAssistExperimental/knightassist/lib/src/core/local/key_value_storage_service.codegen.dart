@@ -60,7 +60,7 @@ class KeyValueStorageService {
     JSON json = {
       '_id': user.id,
       'email': user.email,
-      'role': user.role,
+      'role': UserModel.userRoleEnumMap[user.role],
       'firstName': user.firstName,
       'lastName': user.lastName,
       'name': user.orgName

@@ -90,7 +90,7 @@ class ProfileScreen extends HookConsumerWidget {
                     Text(
                       (authProv.currentUserRole == UserRole.ORGANIZATION)
                           ? authProv.currentUserOrgName!
-                          : '{$authProv.currentUserFirstName} {$authProv.currentUserLastName}',
+                          : authProv.currentUserFirstName!,
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 18,
