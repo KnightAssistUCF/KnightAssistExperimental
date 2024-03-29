@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import '../../../core/core.dart';
 import '../../../helpers/typedefs.dart';
 import '../enums/volunteers_endpoint_enum.dart';
-import '../models/volunteer_model.codegen.dart';
+import '../models/volunteer_model.dart';
 
 class VolunteersRepository {
   final ApiService _apiService;

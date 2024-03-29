@@ -144,7 +144,7 @@ class RegisterOrganizationScreen extends HookConsumerWidget {
                                 .registerOrganization(
                                   email: emailController.text,
                                   password: passwordController.text,
-                                  name: nameController.text,
+                                  orgName: nameController.text,
                                 );
                           }
                         },

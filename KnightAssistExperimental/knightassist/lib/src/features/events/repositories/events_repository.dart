@@ -3,7 +3,7 @@ import '../../../core/core.dart';
 
 // Models
 import '../enums/events_endpoint_enum.dart';
-import '../models/event_model.codegen.dart';
+import '../models/event_model.dart';
 
 // Helpers
 import '../../../helpers/typedefs.dart';

@@ -3,7 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:knightassist/src/config/routing/app_router.dart';
 import 'package:knightassist/src/features/auth/enums/user_role_enum.dart';
 import 'package:knightassist/src/features/events/providers/events_provider.dart';
-import 'package:knightassist/src/features/volunteers/models/volunteer_model.codegen.dart';
+import 'package:knightassist/src/features/volunteers/models/volunteer_model.dart';
 import 'package:knightassist/src/features/volunteers/providers/volunteers_provider.dart';
 import 'package:knightassist/src/global/providers/all_providers.dart';
 import 'package:knightassist/src/global/widgets/async_value_widget.dart';
@@ -50,7 +50,7 @@ class EventDetailsScreen extends HookConsumerWidget {
                     // Title
                     Text(
                       event!.name,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
@@ -77,7 +77,7 @@ class EventDetailsScreen extends HookConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Text(event!.name,
+                          Text(event.name,
                               style: Theme.of(context).textTheme.titleLarge),
                           Text(event.description),
                           Text(event.maxAttendees.toString()),
@@ -93,7 +93,7 @@ class EventDetailsScreen extends HookConsumerWidget {
               // Edit Button if sponsoring org
               Visibility(
                 visible: authProv.currentUserRole == UserRole.ORGANIZATION &&
-                    authProv.currentUserId == event.sponsoringOrganization,
+                    authProv.currentUserId == event.sponsoringOrganizationId,
                 child: CustomTextButton(
                   child: const Center(
                     child: Text(
@@ -113,7 +113,7 @@ class EventDetailsScreen extends HookConsumerWidget {
                   builder: (context, ref, child) {
                     return AsyncValueWidget<VolunteerModel>(
                       value: ref.watch(userVolunteerProvider),
-                      loading: () => CustomCircularLoader(),
+                      loading: () => const CustomCircularLoader(),
                       error: (error, st) => ErrorResponseHandler(
                         error: error,
                         stackTrace: st,
@@ -122,9 +122,9 @@ class EventDetailsScreen extends HookConsumerWidget {
                       data: (volunteer) {
                         return CustomTextButton(
                           width: double.infinity,
-                          color: volunteer.eventsRSVP.contains(event.eventId) ||
+                          color: volunteer.eventRsvpIds.contains(event.id) ||
                                   event.maxAttendees >=
-                                      event.registeredVolunteers.length
+                                      event.registeredVolunteerIds.length
                               ? AppColors.buttonGreyColor
                               : AppColors.secondaryColor,
                           child: const Center(
@@ -140,13 +140,14 @@ class EventDetailsScreen extends HookConsumerWidget {
                           ),
                           onPressed: () async {
                             if (event.maxAttendees >=
-                                event.registeredVolunteers.length) {
+                                event.registeredVolunteerIds.length) {
                               return;
                             }
-                            if (volunteer.eventsRSVP.contains(event.eventId)) {
+                            if (volunteer.eventRsvpIds.contains(event.id)) {
                               final response = await eventsProv.addRSVP(
-                                  eventId: event.eventId,
-                                  userId: authProv.currentUserId);
+                                eventId: event.id,
+                                eventName: event.name,
+                              );
                               await showDialog(
                                   context: context,
                                   builder: (ctx) => CustomDialog.alert(
@@ -155,8 +156,9 @@ class EventDetailsScreen extends HookConsumerWidget {
                                       buttonText: 'OK'));
                             } else {
                               final response = await eventsProv.addRSVP(
-                                  eventId: event.eventId,
-                                  userId: authProv.currentUserId);
+                                eventId: event.id,
+                                eventName: event.name,
+                              );
                               await showDialog(
                                   context: context,
                                   builder: (ctx) => CustomDialog.alert(

@@ -5,7 +5,7 @@ import 'dart:convert';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../features/auth/models/user_model.codegen.dart';
+import '../../features/auth/models/user_model.dart';
 import '../../global/states/auth_state.codegen.dart';
 import '../../helpers/typedefs.dart';
 import 'key_value_storage_base.dart';
@@ -57,7 +57,15 @@ class KeyValueStorageService {
   }
 
   void setAuthUser(UserModel user) {
-    _keyValueStorage.setCommon(_authUserKey, jsonEncode(user.toJson()));
+    JSON json = {
+      '_id': user.id,
+      'email': user.email,
+      'role': user.role,
+      'firstName': user.firstName,
+      'lastName': user.lastName,
+      'name': user.orgName
+    };
+    _keyValueStorage.setCommon(_authUserKey, jsonEncode(json));
   }
 
   void setAuthToken(String token) {

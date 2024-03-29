@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:knightassist/src/features/organizations/models/organization_model.codegen.dart';
+import 'package:knightassist/src/features/organizations/models/organization_model.dart';
 import 'package:knightassist/src/global/providers/all_providers.dart';
 import 'package:knightassist/src/global/widgets/custom_text_button.dart';
 import 'package:knightassist/src/helpers/constants/app_sizes.dart';
@@ -8,7 +8,7 @@ import 'package:knightassist/src/helpers/constants/app_sizes.dart';
 import '../../../../config/routing/app_router.dart';
 import '../../../../config/routing/routes.dart';
 import '../../../auth/enums/user_role_enum.dart';
-import '../../models/event_model.codegen.dart';
+import '../../models/event_model.dart';
 import '../../providers/events_provider.dart';
 
 class EventsListItem extends ConsumerWidget {

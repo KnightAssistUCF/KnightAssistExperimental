@@ -57,7 +57,7 @@ class EditOrganizationScreen extends HookConsumerWidget {
                   if (formKey.currentState!.validate()) {
                     formKey.currentState!.save();
                     ref.read(organizationsProvider).editOrg(
-                        orgId: org.organizationId!,
+                        orgId: org.id,
                         name: nameController.text,
                         description: descriptionController.text);
                   }

@@ -3,7 +3,7 @@ import 'package:knightassist/src/features/events/providers/events_provider.dart'
 import 'package:knightassist/src/global/providers/all_providers.dart';
 
 import '../../../global/states/edit_state.codegen.dart';
-import '../models/organization_model.codegen.dart';
+import '../models/organization_model.dart';
 import '../repositories/organizations_repository.dart';
 
 final allOrgsProvider =
@@ -18,7 +18,7 @@ final eventOrgProvider =
   final _orgsProvider = ref.watch(organizationsProvider);
 
   return await _orgsProvider.getOrgById(
-      orgId: _currentEvent!.sponsoringOrganization);
+      orgId: _currentEvent!.sponsoringOrganizationId);
 });
 
 // Only call these if user role is volunteer

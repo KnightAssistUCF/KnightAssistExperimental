@@ -25,8 +25,8 @@ class EditProfileScreen extends HookConsumerWidget {
         useTextEditingController(text: authProv.currentUserFirstName);
     final lastNameController =
         useTextEditingController(text: authProv.currentUserLastName);
-    final nameController =
-        useTextEditingController(text: authProv.currentUserName);
+    final orgNameController =
+        useTextEditingController(text: authProv.currentUserOrgName);
     final emailController =
         useTextEditingController(text: authProv.currentUserEmail);
     final currentPasswordController = useTextEditingController();
@@ -122,8 +122,8 @@ class EditProfileScreen extends HookConsumerWidget {
                             ],
                           )
                         : CustomTextField(
-                            controller: nameController,
-                            floatingText: 'Name',
+                            controller: orgNameController,
+                            floatingText: 'Organization Name',
                             textInputAction: TextInputAction.next,
                           ),
                     const SizedBox(height: 20),
@@ -194,7 +194,7 @@ class EditProfileScreen extends HookConsumerWidget {
                       final _orgProv = ref.read(organizationsProvider);
                       _orgProv.editOrg(
                         orgId: authProv.currentUserId,
-                        name: nameController.text,
+                        name: orgNameController.text,
                         email: emailController.text,
                         password: newPasswordController.text,
                       );

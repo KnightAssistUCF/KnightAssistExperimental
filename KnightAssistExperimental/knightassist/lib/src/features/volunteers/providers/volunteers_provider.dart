@@ -1,7 +1,7 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../global/providers/all_providers.dart';
-import '../models/volunteer_model.codegen.dart';
+import '../models/volunteer_model.dart';
 import '../repositories/volunteers_repository.dart';
 
 final userVolunteerProvider = FutureProvider.autoDispose((ref) async {

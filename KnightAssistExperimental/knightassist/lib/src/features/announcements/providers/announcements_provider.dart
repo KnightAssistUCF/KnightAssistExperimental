@@ -1,4 +1,4 @@
-import '../models/announcement_model.codegen.dart';
+import '../models/announcement_model.dart';
 import '../repositories/announcements_repository.dart';
 
 class AnnouncementsProvider {

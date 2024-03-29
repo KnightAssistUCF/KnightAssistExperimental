@@ -129,7 +129,7 @@ final eventsProvider = Provider<EventsProvider>((ref) {
 
 final feedbackProvider = Provider<FeedbackProvider>((ref) {
   final feedbackRepository = ref.watch(_feedbackRepositoryProvider);
-  return FeedbackProvider(feedbackRepository);
+  return FeedbackProvider(feedbackRepository: feedbackRepository, ref: ref);
 });
 
 final imagesProvider = Provider<ImagesProvider>((ref) {

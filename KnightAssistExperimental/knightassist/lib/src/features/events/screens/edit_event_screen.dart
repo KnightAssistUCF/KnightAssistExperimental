@@ -84,9 +84,11 @@ class EditEventScreen extends HookConsumerWidget {
                   if (formKey.currentState!.validate()) {
                     formKey.currentState!.save();
                     ref.read(eventsProvider).editEvent(
-                        event: event,
-                        name: nameController.text,
-                        description: descriptionController.text);
+                          eventId: event.id,
+                          orgId: event.sponsoringOrganizationId,
+                          name: nameController.text,
+                          description: descriptionController.text,
+                        );
                   }
                 },
                 child: Consumer(

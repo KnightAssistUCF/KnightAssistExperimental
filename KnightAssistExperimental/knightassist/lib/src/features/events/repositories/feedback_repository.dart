@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import '../../../core/core.dart';
 import '../../../helpers/typedefs.dart';
 import '../enums/feedback_endpoint_enum.dart';
-import '../models/event_model.codegen.dart';
+import '../models/event_model.dart';
 
 class FeedbackRepository {
   final ApiService _apiService;

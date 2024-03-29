@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import '../../../core/core.dart';
 import '../../../helpers/typedefs.dart';
 import '../enums/announcements_endpoint_enum.dart';
-import '../models/announcement_model.codegen.dart';
+import '../models/announcement_model.dart';
 
 class AnnouncementsRepository {
   final ApiService _apiService;

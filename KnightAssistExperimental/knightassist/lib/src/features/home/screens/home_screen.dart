@@ -141,7 +141,9 @@ class HomeScreen extends HookConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          authProv.currentUserName,
+                          (authProv.currentUserRole == UserRole.ORGANIZATION)
+                              ? authProv.currentUserOrgName!
+                              : '{$authProv.currentUserFirstName} {$authProv.currentUserLastName}',
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 26,
