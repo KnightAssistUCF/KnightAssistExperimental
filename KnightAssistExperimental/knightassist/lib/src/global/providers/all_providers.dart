@@ -4,8 +4,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:knightassist/src/config/config.dart';
 import 'package:knightassist/src/core/core.dart';
 import 'package:knightassist/src/features/images/providers/images_provider.dart';
-import 'package:knightassist/src/features/qr/providers/qr_provider.codegen.dart';
-import 'package:knightassist/src/features/qr/repositories/qr_repository.codegen.dart';
+import 'package:knightassist/src/features/qr/providers/qr_provider.dart';
+import 'package:knightassist/src/features/qr/repositories/qr_repository.dart';
 import 'package:knightassist/src/global/states/auth_state.codegen.dart';
 
 import '../../core/networking/interceptors/refresh_token_interceptor.dart';

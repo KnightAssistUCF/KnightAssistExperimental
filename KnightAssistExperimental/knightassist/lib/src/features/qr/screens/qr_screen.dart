@@ -2,8 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:knightassist/src/core/core.dart';
-import 'package:knightassist/src/features/qr/providers/qr_provider.codegen.dart';
+import 'package:knightassist/src/features/qr/providers/qr_provider.dart';
 import 'package:knightassist/src/global/states/future_state.codegen.dart';
 import 'package:knightassist/src/global/widgets/custom_text_button.dart';
 import 'package:knightassist/src/helpers/constants/app_colors.dart';
@@ -45,12 +44,12 @@ class _QrScreenState extends ConsumerState<QrScreen> {
           await showDialog<bool>(
               context: context,
               builder: (ctx) => CustomDialog.alert(
-                  title: 'QR Code Scanned', body: message, buttonText: 'OK'));
+                  title: 'Success', body: message, buttonText: 'OK'));
         },
         failed: (reason) async => await showDialog<bool>(
           context: context,
           builder: (ctx) => CustomDialog.alert(
-            title: 'Check In/Out Failed',
+            title: 'Failed',
             body: reason,
             buttonText: 'Retry',
           ),
@@ -68,24 +67,10 @@ class _QrScreenState extends ConsumerState<QrScreen> {
         color: AppColors.primaryColor,
         onPressed: () async {
           final qrProv = ref.read(qrProvider);
-          try {
-            if (text == 'Check Out') {
-              await qrProv.checkOut(
-                  eventId:
-                      result!.code!.substring(0, result!.code!.length - 3));
-            } else {
-              await qrProv.checkIn(eventId: result!.code!);
-            }
-          } on CustomException catch (ex) {
-            showDialog(
-              context: context,
-              builder: (ctx) {
-                return CustomDialog.alert(
-                    title: 'QR Scan Failed',
-                    body: ex.message,
-                    buttonText: 'Retry');
-              },
-            );
+          if (text == 'Check Out') {
+            await qrProv.checkOut(eventId: result!.code!);
+          } else {
+            await qrProv.checkIn(eventId: result!.code!);
           }
         },
         child: Center(

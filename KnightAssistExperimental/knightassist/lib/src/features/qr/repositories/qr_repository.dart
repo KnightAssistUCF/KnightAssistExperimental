@@ -16,7 +16,7 @@ class QrRepository {
       endpoint: QrEndpoint.CHECK_IN.route(),
       data: data,
       converter: (response) =>
-          (response['body'] != null) ? response['body']['message'] : response,
+          (response['message'] != null) ? response['message'] : response,
     );
   }
 
@@ -27,7 +27,7 @@ class QrRepository {
       endpoint: QrEndpoint.CHECK_OUT.route(),
       data: data,
       converter: (response) =>
-          (response['body'] != null) ? response['body']['message'] : response,
+          (response['message'] != null) ? response['message'] : response,
     );
   }
 }
