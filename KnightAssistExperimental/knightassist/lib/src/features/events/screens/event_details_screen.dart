@@ -33,7 +33,7 @@ class EventDetailsScreen extends HookConsumerWidget {
       (previous, rsvpState) async {
         rsvpState.maybeWhen(
           data: (message) async {
-            await showDialog(
+            await showDialog<bool>(
                 context: context,
                 builder: (ctx) => CustomDialog.alert(
                       title: 'Success',
@@ -203,7 +203,7 @@ class EventDetailsScreen extends HookConsumerWidget {
                                 return;
                               }
                               if (volunteer.eventRsvpIds.contains(event.id)) {
-                                eventsProv.cancelRSVP(
+                                await eventsProv.cancelRSVP(
                                   eventId: event.id,
                                   eventName: event.name,
                                 );
