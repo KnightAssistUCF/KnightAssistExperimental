@@ -23,7 +23,7 @@ class ImagesRepository {
       endpoint: ImagesEndpoint.FETCH_IMAGE.route(),
       queryParams: queryParameters,
       cancelToken: _cancelToken,
-      converter: (response) => response['url'] as String,
+      converter: (response) => response['url'],
     );
   }
 

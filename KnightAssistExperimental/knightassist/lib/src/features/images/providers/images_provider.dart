@@ -12,8 +12,8 @@ class ImagesProvider {
     required String id,
   }) async {
     final queryParams = <String, Object>{
-      'id': id,
       'typeOfImage': type,
+      'id': id,
     };
     return await _imagesRepository.fetch(queryParameters: queryParams);
   }
@@ -31,12 +31,12 @@ class ImagesProvider {
   }
 
   Future<String> deleteImage({
-    required String id,
     required String type,
+    required String id,
   }) async {
     final data = <String, Object>{
-      'id': id,
       'typeOfImage': type,
+      'id': id,
     };
     return await _imagesRepository.delete(data: data);
   }

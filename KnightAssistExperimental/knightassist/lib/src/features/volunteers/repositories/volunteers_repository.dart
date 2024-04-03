@@ -100,7 +100,7 @@ class VolunteersRepository {
       endpoint: VolunteersEndpoint.ADD_FAVORITE_ORG.route(),
       data: data,
       cancelToken: _cancelToken,
-      converter: (response) => response['headers']['message'],
+      converter: (response) => response as String,
     );
   }
 
@@ -111,7 +111,7 @@ class VolunteersRepository {
       endpoint: VolunteersEndpoint.REMOVE_FAVORITE_ORG.route(),
       data: data,
       cancelToken: _cancelToken,
-      converter: (response) => response['headers']['message'],
+      converter: (response) => response as String,
     );
   }
 

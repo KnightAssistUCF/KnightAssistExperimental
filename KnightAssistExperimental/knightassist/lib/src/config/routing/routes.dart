@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:knightassist/src/features/announcements/screens/announcements_list_screen.dart';
 import 'package:knightassist/src/features/auth/screens/edit_profile_screen.dart';
+import 'package:knightassist/src/features/events/screens/leave_feedback_screen.dart';
 import 'package:knightassist/src/features/qr/screens/qr_screen.dart';
 
 import '../../features/auth/screens/forgot_password_screen.dart';

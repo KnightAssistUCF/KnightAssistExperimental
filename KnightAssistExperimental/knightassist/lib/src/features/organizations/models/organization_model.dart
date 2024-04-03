@@ -12,10 +12,10 @@ class OrganizationModel {
     required this.categoryTags,
     required this.favorites,
     required this.announcements,
-    required this.contacts,
+    this.contacts,
     required this.isActive,
     required this.eventHappeningNow,
-    required this.workingHours,
+    this.workingHours,
   });
 
   final String id;
@@ -152,8 +152,8 @@ class WorkdayModel {
 
   static WorkdayModel fromJson(JSON json) {
     return WorkdayModel(
-      start: json['start'] as String?,
-      end: json['end'] as String?,
+      start: json['start'],
+      end: json['end'],
     );
   }
 }
