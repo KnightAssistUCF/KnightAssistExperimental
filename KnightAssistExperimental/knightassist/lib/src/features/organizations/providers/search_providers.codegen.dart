@@ -11,5 +11,5 @@ final searchProvider = StateProvider.autoDispose<String>((ref) => '');
 @riverpod
 Future<List<OrganizationModel>> searchedOrgs(SearchedOrgsRef ref) {
   final queryParams = ref.watch(searchProvider);
-  return ref.watch(organizationsProvider).getAllOrgs(queryParams);
+  return ref.watch(organizationsProvider).getFavoritedOrgs();
 }

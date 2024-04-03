@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../../config/routing/routing.dart';
-import '../widgets/events_list/events_search_bar.dart';
-import '../widgets/events_list/events_list.dart';
+import '../widgets/feedback_list/feedback_list.dart';
 
-class EventsListScreen extends StatelessWidget {
-  const EventsListScreen({super.key});
+class FeedbackListScreen extends StatelessWidget {
+  const FeedbackListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +29,7 @@ class EventsListScreen extends StatelessWidget {
                   ),
                   // Title
                   const Text(
-                    'Events',
+                    'Feedback',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 26,
@@ -41,13 +40,9 @@ class EventsListScreen extends StatelessWidget {
                 ],
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 20, horizontal: 5),
-              child: EventsSearchBar(),
-            ),
             const Expanded(
-              child: EventsList(),
-            )
+              child: FeedbackList(),
+            ),
           ],
         ),
       ),

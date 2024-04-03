@@ -1,8 +1,21 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:knightassist/src/global/providers/all_providers.dart';
+import 'package:knightassist/src/global/states/future_state.codegen.dart';
 
 import '../models/event_model.dart';
 import '../repositories/feedback_repository.dart';
+
+// Only call this if user role is org
+final orgFeedbackProvider =
+    FutureProvider.autoDispose<List<FeedbackModel>>((ref) async {
+  final userId = ref.watch(authProvider.notifier).currentUserId;
+  final feedbackProv = ref.watch(feedbackProvider);
+  return await feedbackProv.getAllForOrg(orgId: userId);
+});
+
+final feedbackStateProvider = StateProvider<FutureState<String>>((ref) {
+  return const FutureState<String>.idle();
+});
 
 class FeedbackProvider {
   final FeedbackRepository _feedbackRepository;

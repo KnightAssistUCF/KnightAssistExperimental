@@ -82,19 +82,22 @@ class DioService {
   /// the **default** [cancelToken] inside [DioService] is used.
   ///
   /// [options] are special instructions that can be merged with the request.
-  Future<JSON> post({
+  Future<dynamic> post({
     required String endpoint,
     JSON? data,
     Options? options,
     CancelToken? cancelToken,
   }) async {
     try {
-      final response = await _dio.post<JSON>(
+      final response = await _dio.post(
         endpoint,
         data: data,
         options: options,
         cancelToken: cancelToken ?? _cancelToken,
       );
+      if (response.data is String) {
+        return response.data as String;
+      }
       return response.data as JSON;
     } on Exception catch (ex) {
       throw CustomException.fromDioException(ex);
@@ -144,19 +147,22 @@ class DioService {
   /// the **default** [cancelToken] inside [DioService] is used.
   ///
   /// [options] are special instructions that can be merged with the request.
-  Future<JSON> delete({
+  Future<dynamic> delete({
     required String endpoint,
     JSON? data,
     Options? options,
     CancelToken? cancelToken,
   }) async {
     try {
-      final response = await _dio.delete<JSON>(
+      final response = await _dio.delete(
         endpoint,
         data: data,
         options: options,
         cancelToken: cancelToken ?? _cancelToken,
       );
+      if (response.data is String) {
+        return response.data as String;
+      }
       return response.data as JSON;
     } on Exception catch (ex) {
       throw CustomException.fromDioException(ex);
