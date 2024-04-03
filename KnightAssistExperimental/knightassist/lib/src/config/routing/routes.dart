@@ -1,5 +1,6 @@
 // ignore_for_file: constant_identifier_names
 import 'package:flutter/material.dart';
+import 'package:knightassist/src/features/announcements/screens/announcements_list_screen.dart';
 import 'package:knightassist/src/features/auth/screens/edit_profile_screen.dart';
 import 'package:knightassist/src/features/qr/screens/qr_screen.dart';
 
@@ -11,6 +12,7 @@ import '../../features/auth/screens/register_volunteer_screen.dart';
 import '../../features/events/screens/edit_event_screen.dart';
 import '../../features/events/screens/event_details_screen.dart';
 import '../../features/events/screens/events_list_screen.dart';
+import '../../features/events/screens/leave_feedback_screen.dart';
 import '../../features/home/screens/app_startup_screen.dart';
 import '../../features/home/screens/home_screen.dart';
 import '../../features/organizations/screens/edit_organization_screen.dart';
@@ -43,7 +45,10 @@ class Routes {
   static const String EditProfileScreenRoute = '/edit-profile-screen';
   static const String EventHistoryScreenRoute = '/event-history-screen';
   static const String QrScreenRoute = '/qr-screen';
-  static const String FeedbackListScreenRoute = 'feedback-list-screen';
+  static const String FeedbackListScreenRoute = '/feedback-list-screen';
+  static const String LeaveFeedbackScreenRoute = '/leave-feedback-screen';
+  static const String AnnouncementsListScreenRoute =
+      '/announcements-list-screen';
 
   static final Map<String, RouteBuilder> _routesMap = {
     AppStartupScreenRoute: (_) => const AppStartupScreen(),
@@ -52,15 +57,17 @@ class Routes {
     RegisterOrgScreenRoute: (_) => const RegisterOrganizationScreen(),
     ForgotPasswordScreenRoute: (_) => const ForgotPassword(),
     HomeScreenRoute: (_) => HomeScreen(),
-    EventsListScreenRoute: (_) => const EventsListScreen(),
+    EventsListScreenRoute: (_) => EventsListScreen(),
     EventDetailsScreenRoute: (_) => const EventDetailsScreen(),
     EditEventScreenRoute: (_) => const EditEventScreen(),
-    OrganizationsListScreenRoute: (_) => const OrganizationsListScreen(),
+    OrganizationsListScreenRoute: (_) => OrganizationsListScreen(),
     OrganizationDetailsScreenRoute: (_) => const OrganizationDetailsScreen(),
     EditOrganizationScreenRoute: (_) => const EditOrganizationScreen(),
     ProfileScreenRoute: (_) => const ProfileScreen(),
     EditProfileScreenRoute: (_) => const EditProfileScreen(),
     QrScreenRoute: (_) => const QrScreen(),
+    LeaveFeedbackScreenRoute: (_) => const LeaveFeedbackScreen(),
+    AnnouncementsListScreenRoute: (_) => AnnouncementsListScreen(),
     NotFoundScreenRoute: (_) => const SizedBox.shrink(),
     // Event history screen
     // Feedback screen

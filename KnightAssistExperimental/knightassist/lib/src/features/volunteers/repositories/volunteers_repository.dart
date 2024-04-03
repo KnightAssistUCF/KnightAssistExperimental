@@ -34,7 +34,7 @@ class VolunteersRepository {
     return await _apiService.updateData<String>(
       endpoint: VolunteersEndpoint.EDIT_VOLUNTEER.route(),
       data: data,
-      converter: (response) => response['headers']['message'],
+      converter: (response) => response as String,
     );
   }
 
@@ -45,7 +45,7 @@ class VolunteersRepository {
       endpoint: VolunteersEndpoint.DELETE_VOLUNTEER.route(),
       data: data,
       cancelToken: _cancelToken,
-      converter: (response) => response['headers']['message'],
+      converter: (response) => response as String,
     );
   }
 

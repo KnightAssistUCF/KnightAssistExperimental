@@ -22,7 +22,7 @@ class AnnouncementsRepository {
       endpoint: AnnouncementsEndpoint.FETCH_ALL_ANNOUNCEMENTS.route(),
       queryParams: queryParameters,
       cancelToken: _cancelToken,
-      converter: (responseBody) => AnnouncementModel.fromJson(responseBody),
+      converter: AnnouncementModel.fromJson,
     );
   }
 
@@ -33,7 +33,7 @@ class AnnouncementsRepository {
       endpoint: AnnouncementsEndpoint.FETCH_ANNOUNCEMENT.route(),
       queryParams: queryParameters,
       cancelToken: _cancelToken,
-      converter: (responseBody) => AnnouncementModel.fromJson(responseBody),
+      converter: AnnouncementModel.fromJson,
     );
   }
 

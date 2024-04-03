@@ -6,8 +6,7 @@ import '../repositories/volunteers_repository.dart';
 
 final userVolunteerProvider = FutureProvider.autoDispose((ref) async {
   final userId = ref.watch(authProvider.notifier).currentUserId;
-  final volsProv = ref.watch(volunteersProvider);
-  return await volsProv.getVolunteer(volunteerId: userId);
+  return await ref.watch(volunteersProvider).getVolunteer(volunteerId: userId);
 });
 
 class VolunteersProvider {
@@ -24,11 +23,14 @@ class VolunteersProvider {
   Future<VolunteerModel> getVolunteer({
     required String volunteerId,
   }) async {
+    final imgProv = _ref.watch(imagesProvider);
     final queryParams = {
       'userID': volunteerId,
     };
-    return await _volunteersRepository.fetchVolunteer(
+    final temp = await _volunteersRepository.fetchVolunteer(
         queryParameters: queryParams);
+    temp.profilePicPath = await imgProv.retrieveImage(type: '3', id: temp.id);
+    return temp;
   }
 
   Future<String> editVolunteer({
@@ -61,35 +63,55 @@ class VolunteersProvider {
   Future<List<VolunteerModel>> getVolunteersInOrg({
     required String orgId,
   }) async {
+    final imgProv = _ref.watch(imagesProvider);
     final queryParams = {
       'organizationID': orgId,
     };
-    return await _volunteersRepository.fetchVolunteersInOrg(
+    final temp = await _volunteersRepository.fetchVolunteersInOrg(
         queryParameters: queryParams);
+    for (VolunteerModel v in temp) {
+      v.profilePicPath = await imgProv.retrieveImage(type: '3', id: v.id);
+    }
+    return temp;
   }
 
   Future<List<VolunteerModel>> getEventRegisteredVolunteers({
     required String eventId,
   }) async {
+    final imgProv = _ref.watch(imagesProvider);
     final queryParams = {
       'eventID': eventId,
     };
-    return await _volunteersRepository.fetchEventAttendees(
+    final temp = await _volunteersRepository.fetchEventAttendees(
         queryParameters: queryParams);
+    for (VolunteerModel v in temp) {
+      v.profilePicPath = await imgProv.retrieveImage(type: '3', id: v.id);
+    }
+    return temp;
   }
 
   Future<List<VolunteerModel>> getLeaderboard() async {
-    return await _volunteersRepository.fetchLeaderboard();
+    final imgProv = _ref.watch(imagesProvider);
+    final temp = await _volunteersRepository.fetchLeaderboard();
+    for (VolunteerModel v in temp) {
+      v.profilePicPath = await imgProv.retrieveImage(type: '3', id: v.id);
+    }
+    return temp;
   }
 
   Future<List<VolunteerModel>> getOrgLeaderboard({
     required String orgId,
   }) async {
+    final imgProv = _ref.watch(imagesProvider);
     final queryParams = {
       'orgId': orgId,
     };
-    return await _volunteersRepository.fetchOrgLeaderboard(
+    final temp = await _volunteersRepository.fetchOrgLeaderboard(
         queryParameters: queryParams);
+    for (VolunteerModel v in temp) {
+      v.profilePicPath = await imgProv.retrieveImage(type: '3', id: v.id);
+    }
+    return temp;
   }
 
   Future<String> addFavoriteOrg({

@@ -1,5 +1,21 @@
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:knightassist/src/global/providers/all_providers.dart';
+import 'package:knightassist/src/global/states/future_state.codegen.dart';
+
 import '../models/announcement_model.dart';
 import '../repositories/announcements_repository.dart';
+
+final favOrgAnnouncementsProvider =
+    FutureProvider.autoDispose<List<AnnouncementModel>>((ref) async {
+  final userId = ref.watch(authProvider.notifier).currentUserId;
+  return await ref
+      .watch(announcementsProvider)
+      .getFavoritedOrgAnnouncements(userId: userId);
+});
+
+final announcementStateProvider = StateProvider<FutureState<String>>((ref) {
+  return const FutureState<String>.idle();
+});
 
 class AnnouncementsProvider {
   final AnnouncementsRepository _announcementsRepository;

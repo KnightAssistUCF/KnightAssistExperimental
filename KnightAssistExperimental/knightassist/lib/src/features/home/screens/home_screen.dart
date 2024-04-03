@@ -3,10 +3,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:knightassist/src/config/routing/app_router.dart';
 import 'package:knightassist/src/config/routing/routes.dart';
 import 'package:knightassist/src/features/auth/enums/user_role_enum.dart';
-import 'package:knightassist/src/features/events/providers/events_provider.dart';
-import 'package:knightassist/src/features/organizations/providers/organizations_provider.dart';
 import 'package:knightassist/src/global/providers/all_providers.dart';
+import 'package:knightassist/src/global/widgets/custom_drawer.dart';
 import 'package:knightassist/src/global/widgets/custom_text_button.dart';
+import 'package:knightassist/src/global/widgets/custom_top_bar.dart';
 import 'package:knightassist/src/global/widgets/scrollable_column.dart';
 
 import '../../../helpers/constants/app_colors.dart';
@@ -19,108 +19,16 @@ class HomeScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authProv = ref.watch(authProvider.notifier);
-    final favOrgsProv = ref.watch(favOrgsProvider);
-    final rsvpedEventsProv = ref.watch(rsvpedEventsProvider);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       key: _scaffoldKey,
-      drawer: Drawer(
-        child: SafeArea(
-          child: ListView(
-            padding: const EdgeInsets.all(10),
-            children: [
-              ListTile(
-                title: const Text('Home'),
-                onTap: () {},
-              ),
-              ListTile(
-                title: const Text('Events'),
-                onTap: () => AppRouter.pushNamed(Routes.EventsListScreenRoute),
-              ),
-              // Volunteer only options
-              Visibility(
-                visible: authProv.currentUserRole == UserRole.VOLUNTEER,
-                child: Column(
-                  children: [
-                    ListTile(
-                      title: const Text('Organizations'),
-                      onTap: () => AppRouter.pushNamed(
-                          Routes.OrganizationsListScreenRoute),
-                    ),
-                    ListTile(
-                      title: const Text('QR Scanner'),
-                      onTap: () => AppRouter.pushNamed(Routes.QrScreenRoute),
-                    ),
-                  ],
-                ),
-              ),
-              // Organization only options
-              Visibility(
-                visible: authProv.currentUserRole == UserRole.ORGANIZATION,
-                child: Column(
-                  children: [
-                    ListTile(
-                      title: const Text('Feedback'),
-                      onTap: () =>
-                          AppRouter.pushNamed(Routes.FeedbackListScreenRoute),
-                    )
-                  ],
-                ),
-              ),
-              ListTile(
-                title: const Text('Profile'),
-                onTap: () => AppRouter.pushNamed(Routes.ProfileScreenRoute),
-              ),
-            ],
-          ),
-        ),
-      ),
+      drawer: CustomDrawer(),
       body: SafeArea(
         child: ScrollableColumn(
           children: [
-            Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                color: AppColors.primaryColor,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(25),
-                  bottomRight: Radius.circular(25),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // Drawer icon
-                  InkResponse(
-                    radius: 26,
-                    child: const Padding(
-                      padding: EdgeInsets.only(left: 20, top: 10, bottom: 15),
-                      child: Icon(
-                        Icons.menu,
-                        size: 32,
-                        color: Colors.white,
-                      ),
-                    ),
-                    onTap: () => _scaffoldKey.currentState!.openDrawer(),
-                  ),
-
-                  // Profile Icon
-                  InkResponse(
-                    radius: 26,
-                    child: const Padding(
-                      padding: EdgeInsets.only(right: 20, top: 10, bottom: 15),
-                      child: Icon(
-                        Icons.circle,
-                        color: Colors.white,
-                        size: 32,
-                      ),
-                    ),
-                    onTap: () {
-                      AppRouter.pushNamed(Routes.ProfileScreenRoute);
-                    },
-                  ),
-                ],
-              ),
+            CustomTopBar(
+              scaffoldKey: _scaffoldKey,
+              title: 'Home',
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -136,7 +44,7 @@ class HomeScreen extends HookConsumerWidget {
                     ),
                   ),
 
-                  const SizedBox(height: 50),
+                  const SizedBox(height: 10),
 
                   SizedBox(
                     width: double.infinity,
@@ -147,7 +55,7 @@ class HomeScreen extends HookConsumerWidget {
                         Text(
                           (authProv.currentUserRole == UserRole.ORGANIZATION)
                               ? authProv.currentUserOrgName!
-                              : authProv.currentUserFirstName!,
+                              : "${authProv.currentUserFirstName} ${authProv.currentUserLastName!}",
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 26,

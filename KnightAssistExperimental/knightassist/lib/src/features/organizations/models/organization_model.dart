@@ -2,19 +2,16 @@ import '../../../helpers/typedefs.dart';
 import '../../announcements/models/announcement_model.dart';
 
 class OrganizationModel {
-  const OrganizationModel({
+  OrganizationModel({
     required this.id,
     required this.name,
     required this.email,
     required this.description,
-    required this.location,
-    required this.logoPicPath,
     required this.profilePicPath,
     required this.backgroundPicPath,
     required this.categoryTags,
     required this.favorites,
     required this.announcements,
-    required this.calendarLink,
     required this.contacts,
     required this.isActive,
     required this.eventHappeningNow,
@@ -25,45 +22,42 @@ class OrganizationModel {
   final String name;
   final String email;
   final String description;
-  final String? location;
-  final String logoPicPath;
-  final String profilePicPath;
-  final String backgroundPicPath;
+  String? profilePicPath;
+  String? backgroundPicPath;
   final List<String> categoryTags;
   final List<String> favorites;
   final List<AnnouncementModel> announcements;
-  final String calendarLink;
-  final ContactModel contacts;
+  final ContactModel? contacts;
   final bool isActive;
   final bool eventHappeningNow;
-  final WorkingHoursModel workingHours;
+  final WorkingHoursModel? workingHours;
 
   static OrganizationModel fromJson(JSON json) {
     return OrganizationModel(
-        id: json['_id'] as String,
-        name: json['name'] as String,
-        email: json['email'] as String,
-        description: json['description'] as String,
-        location: json['location'] as String,
-        logoPicPath: json['logoUrl'] as String,
-        profilePicPath: json['profilePicPath'] as String,
-        backgroundPicPath: json['backgroundURL'] as String,
-        categoryTags: (json['categoryTags'] as List<dynamic>)
-            .map((e) => e as String)
-            .toList(),
-        favorites: (json['favorites'] as List<dynamic>)
-            .map((e) => e as String)
-            .toList(),
-        announcements: (json['updates'] as List<dynamic>)
-            .map((e) => AnnouncementModel.fromJson(e as Map<String, dynamic>))
-            .toList(),
-        calendarLink: json['calendarLink'] as String,
-        contacts:
-            ContactModel.fromJson(json['contactModel'] as Map<String, dynamic>),
-        isActive: json['isActive'] as bool,
-        eventHappeningNow: json['eventHappeningNow'] as bool,
-        workingHours: WorkingHoursModel.fromJson(
-            json['workingHoursPerWeek'] as Map<String, dynamic>));
+      id: json['_id'] as String,
+      name: json['name'] as String,
+      email: json['email'] as String,
+      description: json['description'] as String,
+      profilePicPath: json['profilePicPath'] as String?,
+      backgroundPicPath: json['backgroundURL'] as String?,
+      categoryTags: (json['categoryTags'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
+      favorites:
+          (json['favorites'] as List<dynamic>).map((e) => e as String).toList(),
+      announcements: (json['updates'] as List<dynamic>)
+          .map((e) => AnnouncementModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      contacts: (json['contacts'] != null)
+          ? ContactModel.fromJson(json['contactModel'] as Map<String, dynamic>)
+          : null,
+      isActive: json['isActive'] as bool,
+      eventHappeningNow: json['eventHappeningNow'] as bool,
+      workingHours: (json['workingHoursPerWeek'] != null)
+          ? WorkingHoursModel.fromJson(
+              json['workingHoursPerWeek'] as Map<String, dynamic>)
+          : null,
+    );
   }
 }
 
@@ -149,17 +143,17 @@ class WorkingHoursModel {
 
 class WorkdayModel {
   const WorkdayModel({
-    required this.start,
-    required this.end,
+    this.start,
+    this.end,
   });
 
-  final String start;
-  final String end;
+  final String? start;
+  final String? end;
 
   static WorkdayModel fromJson(JSON json) {
     return WorkdayModel(
-      start: json['start'] as String,
-      end: json['end'] as String,
+      start: json['start'] as String?,
+      end: json['end'] as String?,
     );
   }
 }

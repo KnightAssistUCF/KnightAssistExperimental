@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:knightassist/src/features/qr/providers/qr_provider.dart';
 import 'package:knightassist/src/global/states/future_state.codegen.dart';
+import 'package:knightassist/src/global/widgets/custom_drawer.dart';
 import 'package:knightassist/src/global/widgets/custom_text_button.dart';
+import 'package:knightassist/src/global/widgets/custom_top_bar.dart';
 import 'package:knightassist/src/helpers/constants/app_colors.dart';
 
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -24,6 +26,7 @@ class _QrScreenState extends ConsumerState<QrScreen> {
   bool checkIn = true;
   QRViewController? controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   // In order to get hot reload to work we need to pause the camera if the platform
   // is android, or resume the camera if the platform is iOS.
@@ -44,7 +47,10 @@ class _QrScreenState extends ConsumerState<QrScreen> {
           await showDialog<bool>(
               context: context,
               builder: (ctx) => CustomDialog.alert(
-                  title: 'Success', body: message, buttonText: 'OK'));
+                    title: 'Success',
+                    body: message,
+                    buttonText: 'OK',
+                  ));
         },
         failed: (reason) async => await showDialog<bool>(
           context: context,
@@ -88,17 +94,26 @@ class _QrScreenState extends ConsumerState<QrScreen> {
     }
 
     return Scaffold(
-      body: Column(
-        children: <Widget>[
-          Expanded(flex: 4, child: _buildQrView(context)),
-          Expanded(
-              flex: 1,
-              child: Center(
-                child: (result != null)
-                    ? _buildCheckInOutButton()
-                    : const Text('Scan a code'),
-              ))
-        ],
+      resizeToAvoidBottomInset: false,
+      key: _scaffoldKey,
+      drawer: CustomDrawer(),
+      body: SafeArea(
+        child: Column(
+          children: <Widget>[
+            CustomTopBar(scaffoldKey: _scaffoldKey, title: 'QR Scan'),
+            Expanded(flex: 4, child: _buildQrView(context)),
+            Expanded(
+                flex: 1,
+                child: Center(
+                  child: (result != null)
+                      ? _buildCheckInOutButton()
+                      : const Text(
+                          'Scan a code',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                ))
+          ],
+        ),
       ),
     );
   }

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -92,34 +93,37 @@ class EventDetailsScreen extends HookConsumerWidget {
                 ),
               ),
               // Event Details
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Card(
-                    child: Padding(
-                      padding: EdgeInsets.all(Sizes.p16),
-                      child: Text('Image Placeholder'),
-                    ),
-                  ),
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(Sizes.p16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text(event.name,
-                              style: Theme.of(context).textTheme.titleLarge),
-                          Text(event.description),
-                          Text(event.maxAttendees.toString()),
-                        ],
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(Sizes.p16),
+                        child: CachedNetworkImage(
+                          imageUrl: event.profilePicPath,
+                        ),
                       ),
                     ),
-                  )
-                ],
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(Sizes.p16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(event.name,
+                                style: Theme.of(context).textTheme.titleLarge),
+                            Text(event.description),
+                            Text(event.maxAttendees.toString()),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ),
-
-              // Feedback card
 
               // Edit Button if sponsoring org
               Visibility(

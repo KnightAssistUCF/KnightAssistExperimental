@@ -18,12 +18,20 @@ class OrganizationsRepository {
   Future<List<OrganizationModel>> fetchAllOrganizations({
     JSON? queryParameters,
   }) async {
-    return await _apiService.getCollectionData<OrganizationModel>(
+    final temp = await _apiService.getCollectionData(
       endpoint: OrganizationsEndpoint.FETCH_ALL_ORGANIZATIONS.route(),
       queryParams: queryParameters,
       cancelToken: _cancelToken,
-      converter: OrganizationModel.fromJson,
+      converter: (response) => <String, dynamic>{
+        'id': response['_id'],
+      },
     );
+    List<OrganizationModel> orgList = [];
+    for (Map<String, dynamic> m in temp) {
+      orgList.add(await fetchOrganization(
+          queryParameters: {'organizationID': m['id']}));
+    }
+    return orgList;
   }
 
   Future<OrganizationModel> fetchOrganization({

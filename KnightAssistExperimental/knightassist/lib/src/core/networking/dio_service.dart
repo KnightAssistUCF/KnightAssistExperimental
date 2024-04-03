@@ -58,12 +58,15 @@ class DioService {
     CancelToken? cancelToken,
   }) async {
     try {
-      final response = await _dio.get<T>(
+      final response = await _dio.get(
         endpoint,
         queryParameters: queryParams,
         options: options,
         cancelToken: cancelToken ?? _cancelToken,
       );
+      if (response.data is Map && response.data['announcements'] != null) {
+        return response.data['announcements'];
+      }
       return response.data as T;
     } on Exception catch (ex) {
       throw CustomException.fromDioException(ex);

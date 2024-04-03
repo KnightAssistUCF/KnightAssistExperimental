@@ -1,7 +1,7 @@
 import '../../../helpers/typedefs.dart';
 
 class VolunteerModel {
-  const VolunteerModel({
+  VolunteerModel({
     required this.id,
     required this.firstName,
     required this.lastName,
@@ -14,6 +14,7 @@ class VolunteerModel {
     required this.categoryTags,
     required this.emailValidated,
     required this.firstTimeLogin,
+    this.profilePicPath,
   });
 
   final String id;
@@ -28,6 +29,7 @@ class VolunteerModel {
   final List<String> categoryTags;
   final bool emailValidated;
   final bool firstTimeLogin;
+  String? profilePicPath;
 
   static VolunteerModel fromJson(JSON json) {
     return VolunteerModel(

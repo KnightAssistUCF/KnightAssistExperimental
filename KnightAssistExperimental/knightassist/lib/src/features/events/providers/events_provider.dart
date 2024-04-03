@@ -19,8 +19,7 @@ final allEventsProvider =
 final orgEventsProvider =
     FutureProvider.autoDispose<List<EventModel>>((ref) async {
   final userId = ref.watch(authProvider.notifier).currentUserId;
-  final eventsProv = ref.watch(eventsProvider);
-  return await eventsProv.getOrgEvents(orgId: userId);
+  return await ref.watch(eventsProvider).getOrgEvents(orgId: userId);
 });
 
 // Only call these if user role is volunteer
@@ -82,7 +81,13 @@ class EventsProvider {
     final queryParams = <String, Object>{
       if (searchTerm != null) 'searchTerm': searchTerm,
     };
-    return _eventsRepository.fetchAllEvents(queryParameters: queryParams);
+    final imgProv = _ref.watch(imagesProvider);
+    final temp =
+        await _eventsRepository.fetchAllEvents(queryParameters: queryParams);
+    for (EventModel e in temp) {
+      e.profilePicPath = await imgProv.retrieveImage(type: '1', id: e.id);
+    }
+    return temp;
   }
 
   Future<EventModel> getEventById({
@@ -91,7 +96,11 @@ class EventsProvider {
     final queryParams = {
       'eventID': eventId,
     };
-    return await _eventsRepository.fetchEvent(queryParameters: queryParams);
+    final imgProv = _ref.watch(imagesProvider);
+    final temp =
+        await _eventsRepository.fetchEvent(queryParameters: queryParams);
+    temp.profilePicPath = await imgProv.retrieveImage(type: '1', id: temp.id);
+    return temp;
   }
 
   Future<void> createEvent({
@@ -190,7 +199,14 @@ class EventsProvider {
     final queryParams = {
       'organizationID': orgId,
     };
-    return await _eventsRepository.fetchOrgEvents(queryParameters: queryParams);
+
+    final imgProv = _ref.watch(imagesProvider);
+    final temp =
+        await _eventsRepository.fetchOrgEvents(queryParameters: queryParams);
+    for (EventModel e in temp) {
+      e.profilePicPath = await imgProv.retrieveImage(type: '1', id: e.id);
+    }
+    return temp;
   }
 
   Future<List<EventModel>> getRsvpedEvents() async {
@@ -198,8 +214,13 @@ class EventsProvider {
     final queryParams = {
       'studentID ': authProv.currentUserId,
     };
-    return await _eventsRepository.fetchRsvpedEvents(
-        queryParameters: queryParams);
+    final imgProv = _ref.watch(imagesProvider);
+    final temp =
+        await _eventsRepository.fetchRsvpedEvents(queryParameters: queryParams);
+    for (EventModel e in temp) {
+      e.profilePicPath = await imgProv.retrieveImage(type: '1', id: e.id);
+    }
+    return temp;
   }
 
   Future<List<EventModel>> getFavoritedOrgEvents() async {
@@ -207,8 +228,13 @@ class EventsProvider {
     final queryParams = {
       'userID ': authProv.currentUserId,
     };
-    return await _eventsRepository.fetchFavoritedOrgsEvents(
+    final imgProv = _ref.watch(imagesProvider);
+    final temp = await _eventsRepository.fetchFavoritedOrgsEvents(
         queryParameters: queryParams);
+    for (EventModel e in temp) {
+      e.profilePicPath = await imgProv.retrieveImage(type: '1', id: e.id);
+    }
+    return temp;
   }
 
   Future<List<EventModel>> getSuggestedEvents() async {
@@ -216,8 +242,13 @@ class EventsProvider {
     final queryParams = {
       'userID': authProv.currentUserId,
     };
-    return await _eventsRepository.fetchSuggestedEvents(
+    final imgProv = _ref.watch(imagesProvider);
+    final temp = await _eventsRepository.fetchSuggestedEvents(
         queryParameters: queryParams);
+    for (EventModel e in temp) {
+      e.profilePicPath = await imgProv.retrieveImage(type: '1', id: e.id);
+    }
+    return temp;
   }
 
   // TODO: Ask backend what check var is in relation to RSVPs

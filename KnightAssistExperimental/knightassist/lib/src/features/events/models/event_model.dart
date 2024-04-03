@@ -26,7 +26,7 @@ class EventModel {
   final String location;
   final String sponsoringOrganizationId;
   final List<String> registeredVolunteerIds;
-  final String profilePicPath;
+  String profilePicPath;
   final DateTime startTime;
   final DateTime endTime;
   final List<CheckedInVolunteerModel> checkedInVolunteers;

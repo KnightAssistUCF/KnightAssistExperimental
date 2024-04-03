@@ -8,7 +8,7 @@ class ImagesProvider {
   ImagesProvider(this._imagesRepository);
 
   Future<String> retrieveImage({
-    required int type,
+    required String type,
     required String id,
   }) async {
     final queryParams = <String, Object>{
@@ -19,7 +19,7 @@ class ImagesProvider {
   }
 
   Future<String> storeImage({
-    required int type,
+    required String type,
     required String id,
     required File file,
   }) async {
@@ -32,7 +32,7 @@ class ImagesProvider {
 
   Future<String> deleteImage({
     required String id,
-    required int type,
+    required String type,
   }) async {
     final data = <String, Object>{
       'id': id,

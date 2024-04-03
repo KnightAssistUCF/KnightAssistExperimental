@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:knightassist/src/global/providers/all_providers.dart';
@@ -6,6 +7,7 @@ import 'package:knightassist/src/helpers/constants/app_sizes.dart';
 
 import '../../../../config/routing/app_router.dart';
 import '../../../../config/routing/routes.dart';
+import '../../../../helpers/constants/app_colors.dart';
 import '../../../auth/enums/user_role_enum.dart';
 import '../../models/event_model.dart';
 import '../../providers/events_provider.dart';
@@ -33,7 +35,18 @@ class EventsListItem extends ConsumerWidget {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(20),
-                  child: Container(),
+                  child: CachedNetworkImage(
+                    imageUrl: event.profilePicPath,
+                    imageBuilder: (context, imageProvider) => Container(
+                      width: 120,
+                      height: 120,
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                        image: imageProvider,
+                        fit: BoxFit.cover,
+                      )),
+                    ),
+                  ),
                 ),
                 const SizedBox(width: 10),
                 Text(
@@ -41,19 +54,22 @@ class EventsListItem extends ConsumerWidget {
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                   style: const TextStyle(
-                      fontWeight: FontWeight.w600, fontSize: 18),
+                      fontWeight: FontWeight.w600,
+                      fontSize: 18,
+                      color: AppColors.textWhite80Color),
                   textAlign: TextAlign.start,
                 ),
                 Text(
                   event.location,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
-                  style: const TextStyle(fontWeight: FontWeight.w400),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w400,
+                      color: AppColors.textWhite80Color),
                   textAlign: TextAlign.start,
                 ),
 
-                // Feedback
-
+                /*
                 // Edit Button if sponsoring org
                 Visibility(
                   visible: authProv.currentUserRole == UserRole.ORGANIZATION &&
@@ -87,6 +103,7 @@ class EventsListItem extends ConsumerWidget {
                     },
                   ),
                 ),
+                */
               ],
             )),
       ),
