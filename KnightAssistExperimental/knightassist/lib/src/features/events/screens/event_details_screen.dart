@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -27,6 +28,33 @@ class EventDetailsScreen extends HookConsumerWidget {
     final authProv = ref.watch(authProvider.notifier);
     final event = ref.watch(currentEventProvider);
     final eventsProv = ref.watch(eventsProvider);
+    final imageProv = ref.watch(imagesProvider);
+
+    getEventImage() {
+      return FutureBuilder(
+        future: imageProv.retrieveImage(type: '1', id: event!.id),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasError) {
+              return Center(
+                child: Text(
+                  '${snapshot.error} occurred',
+                  style: const TextStyle(fontSize: 18),
+                ),
+              );
+            } else if (snapshot.hasData) {
+              final data = snapshot.data as String;
+              return CachedNetworkImage(
+                imageUrl: data,
+              );
+            }
+          }
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+      );
+    }
 
     ref.listen<FutureState<String>>(
       rsvpStateProvider,
@@ -64,7 +92,8 @@ class EventDetailsScreen extends HookConsumerWidget {
             children: [
               // Top bar
               Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
+                padding: const EdgeInsets.only(
+                    left: 20, right: 20, top: 10, bottom: 20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -87,36 +116,39 @@ class EventDetailsScreen extends HookConsumerWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox.shrink(),
+                    const SizedBox(width: 32),
                   ],
                 ),
               ),
               // Event Details
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Card(
-                    child: Padding(
-                      padding: EdgeInsets.all(Sizes.p16),
-                      child: Text('Image Placeholder'),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Card(
+                      child: Padding(
+                          padding: const EdgeInsets.all(Sizes.p16),
+                          child: getEventImage()),
                     ),
-                  ),
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(Sizes.p16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text(event.name,
-                              style: Theme.of(context).textTheme.titleLarge),
-                          Text(event.description),
-                          Text(event.maxAttendees.toString()),
-                        ],
+                    const SizedBox(height: Sizes.p16),
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(Sizes.p16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(event.name,
+                                style: Theme.of(context).textTheme.titleLarge),
+                            Text(event.description),
+                            Text(event.maxAttendees.toString()),
+                          ],
+                        ),
                       ),
-                    ),
-                  )
-                ],
+                    )
+                  ],
+                ),
               ),
 
               // Feedback card
@@ -140,7 +172,8 @@ class EventDetailsScreen extends HookConsumerWidget {
                 ),
               ),
 
-              // RSVP and Feedback button if student
+              // RSVP button if student and not in event history
+              // Leave Feedback button if student and in event history
               Visibility(
                 visible: authProv.currentUserRole == UserRole.VOLUNTEER,
                 child: Padding(
@@ -157,38 +190,16 @@ class EventDetailsScreen extends HookConsumerWidget {
                               ref.refresh(userVolunteerProvider),
                         ),
                         data: (volunteer) {
-                          return CustomTextButton(
-                            width: double.infinity,
-                            color: volunteer.eventRsvpIds.contains(event.id) ||
-                                    event.maxAttendees <=
-                                        event.registeredVolunteerIds.length
-                                ? AppColors.buttonGreyColor
-                                : AppColors.secondaryColor,
-                            child: Consumer(
-                              builder: (context, ref, child) {
-                                final _rsvpState = ref.watch(rsvpStateProvider);
-                                return _rsvpState.maybeWhen(
-                                  loading: () => const Center(
-                                    child: SpinKitRing(
-                                      color: Colors.white,
-                                      size: 30,
-                                      lineWidth: 4,
-                                      duration: Duration(milliseconds: 1100),
-                                    ),
-                                  ),
-                                  orElse: () => child!,
-                                );
-                              },
-                              child: Center(
+                          if (volunteer.eventHistoryIds.contains(event.id)) {
+                            return CustomTextButton(
+                              width: double.infinity,
+                              color: AppColors.secondaryColor,
+                              onPressed: () => AppRouter.pushNamed(
+                                  Routes.LeaveFeedbackScreenRoute),
+                              child: const Center(
                                 child: Text(
-                                  volunteer.eventRsvpIds.contains(event.id)
-                                      ? 'Cancel RSVP'
-                                      : event.maxAttendees <=
-                                              event
-                                                  .registeredVolunteerIds.length
-                                          ? 'Event Full'
-                                          : 'RSVP',
-                                  style: const TextStyle(
+                                  'Leave Feedback',
+                                  style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 15,
                                     letterSpacing: 0.7,
@@ -196,25 +207,69 @@ class EventDetailsScreen extends HookConsumerWidget {
                                   ),
                                 ),
                               ),
-                            ),
-                            onPressed: () async {
-                              if (event.maxAttendees <=
-                                  event.registeredVolunteerIds.length) {
-                                return;
-                              }
-                              if (volunteer.eventRsvpIds.contains(event.id)) {
-                                await eventsProv.cancelRSVP(
-                                  eventId: event.id,
-                                  eventName: event.name,
-                                );
-                              } else {
-                                await eventsProv.addRSVP(
-                                  eventId: event.id,
-                                  eventName: event.name,
-                                );
-                              }
-                            },
-                          );
+                            );
+                          } else {
+                            return CustomTextButton(
+                              width: double.infinity,
+                              color: volunteer.eventRsvpIds
+                                          .contains(event.id) ||
+                                      event.maxAttendees <=
+                                          event.registeredVolunteerIds.length
+                                  ? AppColors.buttonGreyColor
+                                  : AppColors.secondaryColor,
+                              child: Consumer(
+                                builder: (context, ref, child) {
+                                  final _rsvpState =
+                                      ref.watch(rsvpStateProvider);
+                                  return _rsvpState.maybeWhen(
+                                    loading: () => const Center(
+                                      child: SpinKitRing(
+                                        color: Colors.white,
+                                        size: 30,
+                                        lineWidth: 4,
+                                        duration: Duration(milliseconds: 1100),
+                                      ),
+                                    ),
+                                    orElse: () => child!,
+                                  );
+                                },
+                                child: Center(
+                                  child: Text(
+                                    volunteer.eventRsvpIds.contains(event.id)
+                                        ? 'Cancel RSVP'
+                                        : event.maxAttendees <=
+                                                event.registeredVolunteerIds
+                                                    .length
+                                            ? 'Event Full'
+                                            : 'RSVP',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                      letterSpacing: 0.7,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              onPressed: () async {
+                                if (event.maxAttendees <=
+                                    event.registeredVolunteerIds.length) {
+                                  return;
+                                }
+                                if (volunteer.eventRsvpIds.contains(event.id)) {
+                                  await eventsProv.cancelRSVP(
+                                    eventId: event.id,
+                                    eventName: event.name,
+                                  );
+                                } else {
+                                  await eventsProv.addRSVP(
+                                    eventId: event.id,
+                                    eventName: event.name,
+                                  );
+                                }
+                              },
+                            );
+                          }
                         },
                       );
                     },

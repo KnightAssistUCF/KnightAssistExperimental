@@ -58,7 +58,7 @@ class CustomTextField extends StatefulWidget {
     this.inputFormatters,
     this.hintText,
     this.validator,
-    this.height = 47,
+    this.height = 50,
     this.readOnly = false,
     this.showFocusedBorder = true,
     this.multiline = false,

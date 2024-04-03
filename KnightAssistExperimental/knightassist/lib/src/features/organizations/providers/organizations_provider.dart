@@ -6,6 +6,12 @@ import '../../../global/states/edit_state.codegen.dart';
 import '../models/organization_model.dart';
 import '../repositories/organizations_repository.dart';
 
+final userOrgProvider = FutureProvider.autoDispose((ref) async {
+  final userId = ref.watch(authProvider.notifier).currentUserId;
+  final orgProv = ref.watch(organizationsProvider);
+  return await orgProv.getOrgById(orgId: userId);
+});
+
 final allOrgsProvider =
     FutureProvider.autoDispose<List<OrganizationModel>>((ref) async {
   final orgsProvider = ref.watch(organizationsProvider);

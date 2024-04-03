@@ -16,7 +16,7 @@ class OrganizationsListScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   // Back Icon
                   InkResponse(
@@ -28,7 +28,6 @@ class OrganizationsListScreen extends StatelessWidget {
                     ),
                     onTap: () => AppRouter.pop(),
                   ),
-                  const SizedBox(width: 70),
                   // Title
                   const Text(
                     'Organizations',
@@ -38,6 +37,9 @@ class OrganizationsListScreen extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                  const SizedBox(
+                    width: 32,
+                  )
                 ],
               ),
             ),

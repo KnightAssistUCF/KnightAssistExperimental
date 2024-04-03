@@ -52,8 +52,6 @@ class EventsListItem extends ConsumerWidget {
                   textAlign: TextAlign.start,
                 ),
 
-                // Feedback
-
                 // Edit Button if sponsoring org
                 Visibility(
                   visible: authProv.currentUserRole == UserRole.ORGANIZATION &&
