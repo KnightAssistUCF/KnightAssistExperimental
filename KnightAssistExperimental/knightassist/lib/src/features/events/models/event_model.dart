@@ -134,3 +134,42 @@ class FeedbackModel {
     );
   }
 }
+
+class EventHistoryModel {
+  EventHistoryModel({
+    required this.id,
+    required this.eventName,
+    required this.orgName,
+    required this.checkIn,
+    required this.checkOut,
+    required this.hours,
+    required this.wasAdjusted,
+    this.whoAdjusted,
+    this.adjustedTotal,
+  });
+
+  final String id;
+  final String eventName;
+  final String orgName;
+  final DateTime checkIn;
+  final DateTime checkOut;
+  final num hours;
+  final bool wasAdjusted;
+  final String? whoAdjusted;
+  final num? adjustedTotal;
+
+  // TODO: Why are these datetimes stored in a different format than everywhere else?
+  static EventHistoryModel fromJson(JSON json) {
+    return EventHistoryModel(
+      id: json['ID'] as String,
+      eventName: json['name'] as String,
+      orgName: json['org'] as String,
+      checkIn: DateTime.parse(json['checkIn'][0] as String),
+      checkOut: DateTime.parse(json['checkOut'] as String),
+      hours: json['hours'] as num,
+      wasAdjusted: json['wasAdjusted'] as bool,
+      whoAdjusted: json['whoAdjusted'] as String?,
+      adjustedTotal: json['adjustedTotal'] as num?,
+    );
+  }
+}

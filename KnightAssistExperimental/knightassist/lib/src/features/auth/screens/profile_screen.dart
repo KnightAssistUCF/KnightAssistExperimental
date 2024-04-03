@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:knightassist/src/features/auth/enums/user_role_enum.dart';
@@ -90,7 +91,7 @@ class ProfileScreen extends HookConsumerWidget {
                     Text(
                       (authProv.currentUserRole == UserRole.ORGANIZATION)
                           ? authProv.currentUserOrgName!
-                          : authProv.currentUserFirstName!,
+                          : "${authProv.currentUserFirstName} ${authProv.currentUserLastName!}",
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 18,
@@ -128,7 +129,8 @@ class ProfileScreen extends HookConsumerWidget {
                     width: double.infinity,
                     color: AppColors.secondaryColor,
                     onPressed: () {
-                      AppRouter.pushNamed(Routes.EventHistoryScreenRoute);
+                      AppRouter.popAndPushNamed(
+                          Routes.EventHistoryListScreenRoute);
                     },
                     child: const Center(
                       child: Text(

@@ -28,33 +28,6 @@ class EventDetailsScreen extends HookConsumerWidget {
     final authProv = ref.watch(authProvider.notifier);
     final event = ref.watch(currentEventProvider);
     final eventsProv = ref.watch(eventsProvider);
-    final imageProv = ref.watch(imagesProvider);
-
-    getEventImage() {
-      return FutureBuilder(
-        future: imageProv.retrieveImage(type: '1', id: event!.id),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasError) {
-              return Center(
-                child: Text(
-                  '${snapshot.error} occurred',
-                  style: const TextStyle(fontSize: 18),
-                ),
-              );
-            } else if (snapshot.hasData) {
-              final data = snapshot.data as String;
-              return CachedNetworkImage(
-                imageUrl: data,
-              );
-            }
-          }
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        },
-      );
-    }
 
     ref.listen<FutureState<String>>(
       rsvpStateProvider,

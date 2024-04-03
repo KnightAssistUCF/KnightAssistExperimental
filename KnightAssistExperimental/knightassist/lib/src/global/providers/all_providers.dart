@@ -3,6 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:knightassist/src/config/config.dart';
 import 'package:knightassist/src/core/core.dart';
+import 'package:knightassist/src/features/events/providers/event_history_provider.dart';
+import 'package:knightassist/src/features/events/repositories/event_history_repository.dart';
 import 'package:knightassist/src/features/images/providers/images_provider.dart';
 import 'package:knightassist/src/features/qr/providers/qr_provider.dart';
 import 'package:knightassist/src/features/qr/repositories/qr_repository.dart';
@@ -71,6 +73,11 @@ final _eventsRepositoryProvider = Provider<EventsRepository>((ref) {
   return EventsRepository(apiService: apiService);
 });
 
+final _eventHistoryRepositoryProvider = Provider<EventHistoryRepository>((ref) {
+  final apiService = ref.watch(_apiServiceProvider);
+  return EventHistoryRepository(apiService: apiService);
+});
+
 final _feedbackRepositoryProvider = Provider<FeedbackRepository>((ref) {
   final apiService = ref.watch(_apiServiceProvider);
   return FeedbackRepository(apiService: apiService);
@@ -125,6 +132,12 @@ final announcementsProvider = Provider<AnnouncementsProvider>((ref) {
 final eventsProvider = Provider<EventsProvider>((ref) {
   final eventsRepository = ref.watch(_eventsRepositoryProvider);
   return EventsProvider(eventsRepository: eventsRepository, ref: ref);
+});
+
+final eventHistoryProvider = Provider<EventHistoryProvider>((ref) {
+  final eventHistoryRepository = ref.watch(_eventHistoryRepositoryProvider);
+  return EventHistoryProvider(
+      eventsRepository: eventHistoryRepository, ref: ref);
 });
 
 final feedbackProvider = Provider<FeedbackProvider>((ref) {

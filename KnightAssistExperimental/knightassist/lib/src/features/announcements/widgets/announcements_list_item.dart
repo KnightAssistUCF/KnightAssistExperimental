@@ -26,7 +26,8 @@ class AnnouncementsListItem extends ConsumerWidget {
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
               style: const TextStyle(
-                fontWeight: FontWeight.w400,
+                fontWeight: FontWeight.w600,
+                fontSize: 18,
                 color: AppColors.textWhite80Color,
               ),
               textAlign: TextAlign.start,

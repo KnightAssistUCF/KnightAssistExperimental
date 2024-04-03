@@ -1,14 +1,21 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:knightassist/src/config/routing/app_router.dart';
 import 'package:knightassist/src/config/routing/routes.dart';
 import 'package:knightassist/src/features/auth/enums/user_role_enum.dart';
+import 'package:knightassist/src/features/events/providers/events_provider.dart';
 import 'package:knightassist/src/global/providers/all_providers.dart';
+import 'package:knightassist/src/global/widgets/async_value_widget.dart';
 import 'package:knightassist/src/global/widgets/custom_drawer.dart';
 import 'package:knightassist/src/global/widgets/custom_text_button.dart';
 import 'package:knightassist/src/global/widgets/custom_top_bar.dart';
 import 'package:knightassist/src/global/widgets/scrollable_column.dart';
+import 'package:knightassist/src/helpers/extensions/datetime_extension.dart';
 
+import '../../../global/widgets/custom_circular_loader.dart';
+import '../../../global/widgets/empty_state_widget.dart';
+import '../../../global/widgets/error_response_handler.dart';
 import '../../../helpers/constants/app_colors.dart';
 
 class HomeScreen extends HookConsumerWidget {
@@ -67,43 +74,112 @@ class HomeScreen extends HookConsumerWidget {
 
                   const SizedBox(height: 60),
 
-                  // Volunteer Only Buttons
+                  // Volunteer Only
                   Visibility(
                     visible: authProv.currentUserRole == UserRole.VOLUNTEER,
                     child: Column(
                       children: [
-                        CustomTextButton(
-                          width: double.infinity,
-                          onPressed: () =>
-                              AppRouter.pushNamed(Routes.EventsListScreenRoute),
-                          color: AppColors.primaryColor,
-                          child: const Center(
-                            child: Text(
-                              'Explore Events',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                                letterSpacing: 0.7,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
+                        AsyncValueWidget(
+                          value: ref.watch(suggestedEventsProvider),
+                          loading: () => const CustomCircularLoader(),
+                          error: (error, st) => ErrorResponseHandler(
+                            error: error,
+                            stackTrace: st,
+                            retryCallback: () =>
+                                ref.refresh(suggestedEventsProvider),
                           ),
-                        ),
-                        const SizedBox(height: 20),
-                        CustomTextButton(
-                          width: double.infinity,
-                          onPressed: () => AppRouter.pushNamed(
-                              Routes.OrganizationsListScreenRoute),
-                          color: AppColors.primaryColor,
-                          child: const Center(
-                            child: Text(
-                              'Explore Organizations',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                                letterSpacing: 0.7,
-                                fontWeight: FontWeight.w600,
-                              ),
+                          emptyOrNull: () => const EmptyStateWidget(
+                            height: 395,
+                            width: double.infinity,
+                            margin: EdgeInsets.only(top: 20),
+                            title: 'No suggested events',
+                          ),
+                          data: (events) => SizedBox(
+                            height: 175,
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: [
+                                for (var event in events)
+                                  Card(
+                                    child: InkWell(
+                                      onTap: () {
+                                        ref
+                                            .read(currentEventProvider.notifier)
+                                            .state = event;
+                                        AppRouter.pushNamed(
+                                            Routes.EventDetailsScreenRoute);
+                                      },
+                                      child: SizedBox(
+                                        height: 150,
+                                        width: 320,
+                                        child: Column(
+                                          children: [
+                                            const Text("Suggested Events"),
+                                            const Divider(height: 15),
+                                            Wrap(
+                                              children: [
+                                                CachedNetworkImage(
+                                                  imageUrl:
+                                                      event.profilePicPath,
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        event.name,
+                                                        style: const TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            fontSize: 18),
+                                                        textAlign:
+                                                            TextAlign.start,
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                      ),
+                                                      Text(
+                                                        event.startTime
+                                                            .toDateString(),
+                                                        style: const TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w400),
+                                                        textAlign:
+                                                            TextAlign.start,
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                      ),
+                                                      Text(
+                                                        event.location,
+                                                        style: const TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w400),
+                                                        textAlign:
+                                                            TextAlign.start,
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                              ],
                             ),
                           ),
                         ),

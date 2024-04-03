@@ -12,6 +12,7 @@ import '../../features/auth/screens/register_organization_screen.dart';
 import '../../features/auth/screens/register_volunteer_screen.dart';
 import '../../features/events/screens/edit_event_screen.dart';
 import '../../features/events/screens/event_details_screen.dart';
+import '../../features/events/screens/event_history_list_screen.dart';
 import '../../features/events/screens/events_list_screen.dart';
 import '../../features/events/screens/leave_feedback_screen.dart';
 import '../../features/home/screens/app_startup_screen.dart';
@@ -44,7 +45,7 @@ class Routes {
   static const String EditOrganizationScreenRoute = '/edit-org-screen';
   static const String ProfileScreenRoute = '/profile-screen';
   static const String EditProfileScreenRoute = '/edit-profile-screen';
-  static const String EventHistoryScreenRoute = '/event-history-screen';
+  static const String EventHistoryListScreenRoute = '/event-history-screen';
   static const String QrScreenRoute = '/qr-screen';
   static const String FeedbackListScreenRoute = '/feedback-list-screen';
   static const String LeaveFeedbackScreenRoute = '/leave-feedback-screen';
@@ -69,6 +70,7 @@ class Routes {
     QrScreenRoute: (_) => const QrScreen(),
     LeaveFeedbackScreenRoute: (_) => const LeaveFeedbackScreen(),
     AnnouncementsListScreenRoute: (_) => AnnouncementsListScreen(),
+    EventHistoryListScreenRoute: (_) => EventHistoryListScreen(),
     NotFoundScreenRoute: (_) => const SizedBox.shrink(),
     // Event history screen
     // Feedback screen

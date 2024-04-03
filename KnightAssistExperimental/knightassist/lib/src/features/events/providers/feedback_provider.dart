@@ -1,7 +1,5 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:knightassist/src/global/providers/all_providers.dart';
-import 'package:knightassist/src/global/states/future_state.codegen.dart';
-
 import '../../../global/states/future_state.codegen.dart';
 import '../models/event_model.dart';
 import '../repositories/feedback_repository.dart';

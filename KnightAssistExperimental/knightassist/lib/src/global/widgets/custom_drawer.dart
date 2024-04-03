@@ -41,6 +41,11 @@ class CustomDrawer extends HookConsumerWidget {
                         Routes.AnnouncementsListScreenRoute),
                   ),
                   ListTile(
+                    title: const Text('Event History'),
+                    onTap: () => AppRouter.popAndPushNamed(
+                        Routes.EventHistoryListScreenRoute),
+                  ),
+                  ListTile(
                     title: const Text('QR Scanner'),
                     onTap: () =>
                         AppRouter.popAndPushNamed(Routes.QrScreenRoute),
