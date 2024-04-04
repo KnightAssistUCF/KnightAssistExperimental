@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:knightassist/src/config/routing/app_router.dart';
 import 'package:knightassist/src/config/routing/routes.dart';
@@ -56,7 +57,9 @@ class _QrScreenState extends ConsumerState<QrScreen> {
                       title: 'Error',
                       body: response,
                       buttonText: 'OK',
-                      onButtonPressed: () {},
+                      onButtonPressed: () {
+                        AppRouter.pop();
+                      },
                     ));
           } else {
             if (checkIn) {
@@ -67,7 +70,7 @@ class _QrScreenState extends ConsumerState<QrScreen> {
                         body: 'Checked in to ${(response as EventModel).name}',
                         buttonText: 'OK',
                         onButtonPressed: () {
-                          AppRouter.popAndPushNamed(Routes.HomeScreenRoute);
+                          AppRouter.pop();
                         },
                       ));
             } else {
@@ -76,12 +79,11 @@ class _QrScreenState extends ConsumerState<QrScreen> {
                   builder: (ctx) => CustomDialog.alert(
                         title: 'Check Out Successful',
                         body: 'Checked out of ${(response as EventModel).name}',
-                        buttonText: 'Leave Feedback',
+                        buttonText: 'OK',
                         onButtonPressed: () {
                           ref.read(currentEventProvider.notifier).state =
                               response;
-                          AppRouter.popAndPushNamed(
-                              Routes.LeaveFeedbackScreenRoute);
+                          AppRouter.pop();
                         },
                       ));
             }
@@ -101,32 +103,48 @@ class _QrScreenState extends ConsumerState<QrScreen> {
 
     Widget _buildCheckInOutButton() {
       String text = 'Check In';
+      checkIn = true;
       if (result!.code!.substring(result!.code!.length - 3) == 'out') {
         checkIn = false;
         text = 'Check Out';
       }
       return CustomTextButton(
-        color: AppColors.primaryColor,
-        onPressed: () async {
-          final qrProv = ref.read(qrProvider);
-          if (text == 'Check Out') {
-            await qrProv.checkOut(eventId: result!.code!);
-          } else {
-            await qrProv.checkIn(eventId: result!.code!);
-          }
-        },
-        child: Center(
-          child: Text(
-            text,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 15,
-              letterSpacing: 0.7,
-              fontWeight: FontWeight.w600,
+          color: AppColors.primaryColor,
+          onPressed: () async {
+            final qrProv = ref.read(qrProvider);
+            if (text == 'Check Out') {
+              await qrProv.checkOut(eventId: result!.code!);
+            } else {
+              await qrProv.checkIn(eventId: result!.code!);
+            }
+          },
+          child: Consumer(
+            builder: (context, ref, child) {
+              final qrState = ref.watch(qrStateProvider);
+              return qrState.maybeWhen(
+                loading: () => const Center(
+                  child: SpinKitRing(
+                    color: Colors.white,
+                    size: 30,
+                    lineWidth: 4,
+                    duration: Duration(milliseconds: 1100),
+                  ),
+                ),
+                orElse: () => child!,
+              );
+            },
+            child: Center(
+              child: Text(
+                text,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 15,
+                  letterSpacing: 0.7,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
-          ),
-        ),
-      );
+          ));
     }
 
     return Scaffold(
