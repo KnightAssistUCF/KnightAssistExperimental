@@ -197,7 +197,10 @@ class _TabBarOrgState extends State<TabBarOrg> with TickerProviderStateMixin {
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
                           organization.description,
-                          style: const TextStyle(fontSize: 20),
+                          style: const TextStyle(
+                            fontSize: 20,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ],
@@ -284,7 +287,10 @@ class _TabBarOrgState extends State<TabBarOrg> with TickerProviderStateMixin {
                               const Icon(Icons.email_outlined),
                               Text(
                                 organization.contacts?.email ?? '',
-                                style: const TextStyle(fontSize: 20),
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                ),
                               ),
                             ]),
                           ),
@@ -306,7 +312,10 @@ class _TabBarOrgState extends State<TabBarOrg> with TickerProviderStateMixin {
                               const Icon(Icons.phone_rounded),
                               Text(
                                 organization.contacts?.phone ?? '',
-                                style: const TextStyle(fontSize: 20),
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                ),
                               ),
                             ]),
                           ),
@@ -330,69 +339,94 @@ class _TabBarOrgState extends State<TabBarOrg> with TickerProviderStateMixin {
                                     const Icon(Icons.computer),
                                     Text(
                                       organization.contacts?.website ?? '',
-                                      style: const TextStyle(fontSize: 20),
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ]),
                                 ),
                               ),
                             ),
-                      const Text("Working Hours per Week"),
-                      const Text("Monday:"),
+                      const Text("Working Hours per Week",
+                          style: TextStyle(color: Colors.white)),
+                      const Text("Monday:",
+                          style: TextStyle(color: Colors.white)),
                       organization.workingHours?.monday?.start == null
                           ? const SizedBox(height: 0)
-                          : Text(organization.workingHours!.monday!.start!),
-                      const Text("-"),
+                          : Text(organization.workingHours!.monday!.start!,
+                              style: TextStyle(color: Colors.white)),
+                      const Text("-", style: TextStyle(color: Colors.white)),
                       organization.workingHours?.monday?.end == null
                           ? const SizedBox(height: 0)
-                          : Text(organization.workingHours!.monday!.end!),
-                      const Text("Tuesday:"),
+                          : Text(organization.workingHours!.monday!.end!,
+                              style: TextStyle(color: Colors.white)),
+                      const Text("Tuesday:",
+                          style: TextStyle(color: Colors.white)),
                       organization.workingHours?.tuesday?.start == null
                           ? const SizedBox(height: 0)
-                          : Text(organization.workingHours!.tuesday!.start!),
-                      const Text("-"),
+                          : Text(organization.workingHours!.tuesday!.start!,
+                              style: TextStyle(color: Colors.white)),
+                      const Text("-", style: TextStyle(color: Colors.white)),
                       organization.workingHours?.tuesday?.end == null
                           ? const SizedBox(height: 0)
-                          : Text(organization.workingHours!.tuesday!.end!),
-                      const Text("Wednesday:"),
+                          : Text(organization.workingHours!.tuesday!.end!,
+                              style: TextStyle(color: Colors.white)),
+                      const Text("Wednesday:",
+                          style: TextStyle(color: Colors.white)),
                       organization.workingHours?.wednesday?.start == null
                           ? const SizedBox(height: 0)
-                          : Text(organization.workingHours!.wednesday!.start!),
-                      const Text("-"),
+                          : Text(organization.workingHours!.wednesday!.start!,
+                              style: TextStyle(color: Colors.white)),
+                      const Text("-", style: TextStyle(color: Colors.white)),
                       organization.workingHours?.wednesday?.end == null
                           ? const SizedBox(height: 0)
-                          : Text(organization.workingHours!.wednesday!.end!),
-                      const Text("Thursday:"),
+                          : Text(organization.workingHours!.wednesday!.end!,
+                              style: TextStyle(color: Colors.white)),
+                      const Text("Thursday:",
+                          style: TextStyle(color: Colors.white)),
                       organization.workingHours?.thursday?.start == null
                           ? const SizedBox(height: 0)
-                          : Text(organization.workingHours!.thursday!.start!),
-                      const Text("-"),
+                          : Text(organization.workingHours!.thursday!.start!,
+                              style: TextStyle(color: Colors.white)),
+                      const Text("-", style: TextStyle(color: Colors.white)),
                       organization.workingHours?.thursday?.end == null
                           ? const SizedBox(height: 0)
-                          : Text(organization.workingHours!.thursday!.end!),
-                      const Text("Friday:"),
+                          : Text(organization.workingHours!.thursday!.end!,
+                              style: TextStyle(color: Colors.white)),
+                      const Text("Friday:",
+                          style: TextStyle(color: Colors.white)),
                       organization.workingHours?.friday?.start == null
                           ? const SizedBox(height: 0)
-                          : Text(organization.workingHours!.friday!.start!),
-                      const Text("-"),
+                          : Text(organization.workingHours!.friday!.start!,
+                              style: TextStyle(color: Colors.white)),
+                      const Text("-", style: TextStyle(color: Colors.white)),
                       organization.workingHours?.friday?.end == null
                           ? const SizedBox(height: 0)
-                          : Text(organization.workingHours!.friday!.end!),
-                      const Text("Saturday:"),
+                          : Text(organization.workingHours!.friday!.end!,
+                              style: TextStyle(color: Colors.white)),
+                      const Text("Saturday:",
+                          style: TextStyle(color: Colors.white)),
                       organization.workingHours?.saturday?.start == null
                           ? const SizedBox(height: 0)
-                          : Text(organization.workingHours!.saturday!.start!),
-                      const Text("-"),
+                          : Text(organization.workingHours!.saturday!.start!,
+                              style: TextStyle(color: Colors.white)),
+                      const Text("-", style: TextStyle(color: Colors.white)),
                       organization.workingHours?.saturday?.end == null
                           ? const SizedBox(height: 0)
-                          : Text(organization.workingHours!.saturday!.end!),
-                      const Text("Sunday:"),
+                          : Text(organization.workingHours!.saturday!.end!,
+                              style: TextStyle(color: Colors.white)),
+                      const Text("Sunday:",
+                          style: TextStyle(color: Colors.white)),
                       organization.workingHours?.sunday?.start == null
                           ? const SizedBox(height: 0)
-                          : Text(organization.workingHours!.sunday!.start!),
-                      const Text("-"),
+                          : Text(organization.workingHours!.sunday!.start!,
+                              style: TextStyle(color: Colors.white)),
+                      const Text("-", style: TextStyle(color: Colors.white)),
                       organization.workingHours?.sunday?.end == null
                           ? const SizedBox(height: 0)
-                          : Text(organization.workingHours!.sunday!.end!),
+                          : Text(organization.workingHours!.sunday!.end!,
+                              style: TextStyle(color: Colors.white)),
                     ],
                   ),
                   ListView(
@@ -404,7 +438,9 @@ class _TabBarOrgState extends State<TabBarOrg> with TickerProviderStateMixin {
                                   padding: EdgeInsets.all(8.0),
                                   child: Text(
                                     "This organization has no tags.",
-                                    style: TextStyle(fontSize: Sizes.p20),
+                                    style: TextStyle(
+                                        fontSize: Sizes.p20,
+                                        color: Colors.white),
                                   ),
                                 )
                               : Wrap(children: [
