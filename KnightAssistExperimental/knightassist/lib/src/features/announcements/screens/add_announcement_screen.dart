@@ -3,7 +3,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:knightassist/src/global/providers/all_providers.dart';
-import 'package:knightassist/src/global/widgets/scrollable_column.dart';
 
 import '../../../config/routing/routing.dart';
 import '../../../global/states/future_state.codegen.dart';
@@ -112,7 +111,7 @@ class AddAnnouncementScreen extends HookConsumerWidget {
 
               // Save Button
               Padding(
-                padding: const EdgeInsets.fromLTRB(20, 10, 20, 2),
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 2),
                 child: CustomTextButton(
                   color: AppColors.primaryColor,
                   width: double.infinity,

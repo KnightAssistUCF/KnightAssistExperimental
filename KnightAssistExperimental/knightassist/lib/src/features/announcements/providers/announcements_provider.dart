@@ -2,6 +2,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:knightassist/src/global/providers/all_providers.dart';
 import 'package:knightassist/src/global/states/future_state.codegen.dart';
 
+import '../../../core/core.dart';
 import '../models/announcement_model.dart';
 import '../repositories/announcements_repository.dart';
 
@@ -19,8 +20,14 @@ final announcementStateProvider = StateProvider<FutureState<String>>((ref) {
 
 class AnnouncementsProvider {
   final AnnouncementsRepository _announcementsRepository;
+  final Ref _ref;
 
-  AnnouncementsProvider(this._announcementsRepository);
+  AnnouncementsProvider({
+    required AnnouncementsRepository announcementsRepository,
+    required Ref ref,
+  })  : _announcementsRepository = announcementsRepository,
+        _ref = ref,
+        super();
 
   Future<List<AnnouncementModel>> getAllAnnouncements() async {
     return _announcementsRepository.fetchAllAnnouncements();
@@ -36,7 +43,7 @@ class AnnouncementsProvider {
         queryParameters: queryParams);
   }
 
-  Future<String> createAnnouncement({
+  Future<void> createAnnouncement({
     required String orgId,
     required String title,
     required String content,
@@ -46,10 +53,23 @@ class AnnouncementsProvider {
       'title': title,
       'content': content,
     };
-    return _announcementsRepository.addAnnouncement(data: data);
+
+    final announcementStateProv = _ref.read(announcementStateProvider.notifier);
+    announcementStateProv.state = const FutureState<String>.idle();
+
+    await Future<void>.delayed(const Duration(seconds: 3)).then((_) {
+      announcementStateProv.state = const FutureState<String>.loading();
+    });
+
+    try {
+      final temp = await _announcementsRepository.addAnnouncement(data: data);
+      announcementStateProv.state = FutureState<String>.data(data: temp);
+    } on CustomException catch (e) {
+      announcementStateProv.state = FutureState.failed(reason: e.message);
+    }
   }
 
-  Future<String> editAnnouncement({
+  Future<void> editAnnouncement({
     required String orgId,
     required String oldTitle,
     String? newTitle,
@@ -61,7 +81,20 @@ class AnnouncementsProvider {
       if (newTitle != null) 'newTitle': newTitle,
       if (newContent != null) 'newContent': newContent,
     };
-    return _announcementsRepository.editAnnouncement(data: data);
+
+    final announcementStateProv = _ref.read(announcementStateProvider.notifier);
+    announcementStateProv.state = const FutureState<String>.idle();
+
+    await Future<void>.delayed(const Duration(seconds: 3)).then((_) {
+      announcementStateProv.state = const FutureState<String>.loading();
+    });
+
+    try {
+      final temp = await _announcementsRepository.editAnnouncement(data: data);
+      announcementStateProv.state = FutureState<String>.data(data: temp);
+    } on CustomException catch (e) {
+      announcementStateProv.state = FutureState.failed(reason: e.message);
+    }
   }
 
   Future<String> deleteAnnouncement({

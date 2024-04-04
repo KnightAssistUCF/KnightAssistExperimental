@@ -114,7 +114,13 @@ class HomeScreen extends HookConsumerWidget {
                                         width: 320,
                                         child: Column(
                                           children: [
-                                            const Text("Suggested Events"),
+                                            const Text(
+                                              "Suggested Events",
+                                              style: TextStyle(
+                                                color:
+                                                    AppColors.textWhite80Color,
+                                              ),
+                                            ),
                                             const Divider(height: 15),
                                             Wrap(
                                               children: [
@@ -144,9 +150,12 @@ class HomeScreen extends HookConsumerWidget {
                                                       Text(
                                                         event.name,
                                                         style: const TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            fontSize: 18),
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          fontSize: 18,
+                                                          color: AppColors
+                                                              .textWhite80Color,
+                                                        ),
                                                         textAlign:
                                                             TextAlign.start,
                                                         maxLines: 1,
@@ -157,9 +166,11 @@ class HomeScreen extends HookConsumerWidget {
                                                         event.startTime
                                                             .toDateString(),
                                                         style: const TextStyle(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w400),
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: AppColors
+                                                              .textWhite80Color,
+                                                        ),
                                                         textAlign:
                                                             TextAlign.start,
                                                         maxLines: 1,
@@ -169,9 +180,11 @@ class HomeScreen extends HookConsumerWidget {
                                                       Text(
                                                         event.location,
                                                         style: const TextStyle(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w400),
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: AppColors
+                                                              .textWhite80Color,
+                                                        ),
                                                         textAlign:
                                                             TextAlign.start,
                                                         maxLines: 1,

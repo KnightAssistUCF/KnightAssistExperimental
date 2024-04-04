@@ -33,11 +33,12 @@ class AddEventScreen extends HookConsumerWidget {
     _selectStartTime() async {
       final DateTime? picked = await showDatePicker(
           context: context,
-          initialDate: DateTime.parse(startTimeController.text),
+          initialDate: (startTimeController.text != '')
+              ? DateTime.parse(startTimeController.text)
+              : null,
           firstDate: DateTime(2000),
           lastDate: DateTime(2100));
-      if (picked != null &&
-          picked != DateTime.parse(startTimeController.text)) {
+      if (picked != null) {
         startTimeController.text = picked.toIso8601String();
       }
     }
@@ -45,10 +46,12 @@ class AddEventScreen extends HookConsumerWidget {
     _selectEndTime() async {
       final DateTime? picked = await showDatePicker(
           context: context,
-          initialDate: DateTime.parse(endTimeController.text),
+          initialDate: (endTimeController.text != '')
+              ? DateTime.parse(endTimeController.text)
+              : null,
           firstDate: DateTime(2000),
           lastDate: DateTime(2100));
-      if (picked != null && picked != DateTime.parse(endTimeController.text)) {
+      if (picked != null) {
         endTimeController.text = picked.toIso8601String();
       }
     }

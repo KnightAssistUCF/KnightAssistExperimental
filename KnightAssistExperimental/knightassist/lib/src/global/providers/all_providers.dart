@@ -126,7 +126,8 @@ final forgotPasswordProvider = StateNotifierProvider.autoDispose<
 // data providers
 final announcementsProvider = Provider<AnnouncementsProvider>((ref) {
   final announcementsRepository = ref.watch(_announcementsRepositoryProvider);
-  return AnnouncementsProvider(announcementsRepository);
+  return AnnouncementsProvider(
+      announcementsRepository: announcementsRepository, ref: ref);
 });
 
 final eventsProvider = Provider<EventsProvider>((ref) {

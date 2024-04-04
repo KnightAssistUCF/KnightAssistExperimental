@@ -33,7 +33,7 @@ class FeedbackRepository {
       endpoint: FeedbackEndpoint.ADD_FEEDBACK.route(),
       data: data,
       cancelToken: _cancelToken,
-      converter: (response) => response as String,
+      converter: (response) => response['message'] as String,
     );
   }
 
@@ -44,7 +44,7 @@ class FeedbackRepository {
       endpoint: FeedbackEndpoint.SET_READ.route(),
       data: data,
       cancelToken: _cancelToken,
-      converter: (response) => response as String,
+      converter: (response) => response['message'] as String,
     );
   }
 

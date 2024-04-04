@@ -5,7 +5,7 @@ import 'package:knightassist/src/global/states/future_state.codegen.dart';
 
 import '../repositories/qr_repository.dart';
 
-final qrStateProvider = StateProvider<FutureState<String>>((ref) {
+final qrStateProvider = StateProvider<FutureState<dynamic>>((ref) {
   return const FutureState.idle();
 });
 
@@ -36,7 +36,7 @@ class QrProvider {
 
     try {
       final response = await _qrRepository.checkIn(data: data);
-      qrStateProv.state = FutureState<String>.data(data: response);
+      qrStateProv.state = FutureState<dynamic>.data(data: response);
     } on CustomException catch (e) {
       qrStateProv.state = FutureState.failed(reason: e.message);
     }
@@ -58,7 +58,7 @@ class QrProvider {
 
     try {
       final response = await _qrRepository.checkOut(data: data);
-      qrStateProv.state = FutureState<String>.data(data: response);
+      qrStateProv.state = FutureState<dynamic>.data(data: response);
     } on CustomException catch (e) {
       qrStateProv.state = FutureState.failed(reason: e.message);
     }

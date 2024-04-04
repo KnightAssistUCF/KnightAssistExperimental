@@ -49,7 +49,7 @@ class EventsRepository {
     return await _apiService.setData(
       endpoint: EventsEndpoint.EDIT_EVENT.route(),
       data: data,
-      converter: (response) => response['headers']['message'],
+      converter: (response) => response['message'] as String,
     );
   }
 
@@ -59,7 +59,7 @@ class EventsRepository {
     return await _apiService.deleteData(
       endpoint: EventsEndpoint.DELETE_EVENT.route(),
       data: data,
-      converter: (response) => response['headers']['message'],
+      converter: (response) => response['message'] as String,
     );
   }
 

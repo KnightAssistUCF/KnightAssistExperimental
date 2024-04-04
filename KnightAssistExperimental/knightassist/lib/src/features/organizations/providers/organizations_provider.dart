@@ -58,11 +58,15 @@ class OrganizationsProvider {
     final queryParams = <String, Object>{
       if (searchTerm != null) 'searchTerm': searchTerm,
     };
-    final temp = await _organizationsRepository.fetchAllOrganizations(
-        queryParameters: queryParams);
+    List<OrganizationModel> temp = await _organizationsRepository
+        .fetchAllOrganizations(queryParameters: queryParams);
     for (OrganizationModel o in temp) {
       o.profilePicPath = await imgProv.retrieveImage(type: '2', id: o.id);
       o.backgroundPicPath = await imgProv.retrieveImage(type: '4', id: o.id);
+    }
+    if (searchTerm != null) {
+      temp =
+          temp.where((element) => element.name.contains(searchTerm)).toList();
     }
     return temp;
   }

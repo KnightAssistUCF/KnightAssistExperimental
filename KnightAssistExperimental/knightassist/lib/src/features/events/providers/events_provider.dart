@@ -195,18 +195,21 @@ class EventsProvider {
     return await _eventsRepository.deleteEvent(data: data);
   }
 
-  Future<List<EventModel>> getOrgEvents({
-    required String orgId,
-  }) async {
+  Future<List<EventModel>> getOrgEvents(
+      {required String orgId, String? searchTerm}) async {
     final queryParams = {
       'organizationID': orgId,
     };
 
     final imgProv = _ref.watch(imagesProvider);
-    final temp =
+    List<EventModel> temp =
         await _eventsRepository.fetchOrgEvents(queryParameters: queryParams);
     for (EventModel e in temp) {
       e.profilePicPath = await imgProv.retrieveImage(type: '1', id: e.id);
+    }
+    if (searchTerm != null) {
+      temp =
+          temp.where((element) => element.name.contains(searchTerm)).toList();
     }
     return temp;
   }

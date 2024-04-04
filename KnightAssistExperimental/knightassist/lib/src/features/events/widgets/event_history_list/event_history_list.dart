@@ -46,7 +46,7 @@ class EventHistoryList extends ConsumerWidget {
             physics: const BouncingScrollPhysics(
               parent: AlwaysScrollableScrollPhysics(),
             ),
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+            padding: const EdgeInsets.fromLTRB(16, 20, 16, 20),
             separatorBuilder: (_, __) => Insets.gapH20,
             itemBuilder: (_, i) => EventHistoryListItem(
               eventHistory: events[i],

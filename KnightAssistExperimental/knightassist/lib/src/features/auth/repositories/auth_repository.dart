@@ -66,7 +66,7 @@ class AuthRepository {
       endpoint: AuthEndpoint.FORGOT_PASSWORD.route(),
       data: data,
       requiresAuthToken: false,
-      converter: (response) => response['headers']['message'],
+      converter: (response) => response['message'] as String,
     );
   }
 }

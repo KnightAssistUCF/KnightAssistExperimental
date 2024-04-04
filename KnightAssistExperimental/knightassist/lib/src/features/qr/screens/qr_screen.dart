@@ -2,6 +2,10 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:knightassist/src/config/routing/app_router.dart';
+import 'package:knightassist/src/config/routing/routes.dart';
+import 'package:knightassist/src/features/events/models/event_model.dart';
+import 'package:knightassist/src/features/events/providers/events_provider.dart';
 import 'package:knightassist/src/features/qr/providers/qr_provider.dart';
 import 'package:knightassist/src/global/states/future_state.codegen.dart';
 import 'package:knightassist/src/global/widgets/custom_drawer.dart';
@@ -41,16 +45,47 @@ class _QrScreenState extends ConsumerState<QrScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen<FutureState<String>>(qrStateProvider, (previous, qrState) async {
+    ref.listen<FutureState<dynamic>>(qrStateProvider,
+        (previous, qrState) async {
       qrState.maybeWhen(
-        data: (message) async {
-          await showDialog<bool>(
-              context: context,
-              builder: (ctx) => CustomDialog.alert(
-                    title: 'Success',
-                    body: message,
-                    buttonText: 'OK',
-                  ));
+        data: (response) async {
+          if (response is String) {
+            await showDialog<bool>(
+                context: context,
+                builder: (ctx) => CustomDialog.alert(
+                      title: 'Error',
+                      body: response,
+                      buttonText: 'OK',
+                      onButtonPressed: () {},
+                    ));
+          } else {
+            if (checkIn) {
+              await showDialog<bool>(
+                  context: context,
+                  builder: (ctx) => CustomDialog.alert(
+                        title: 'Check In Successful',
+                        body: 'Checked in to ${(response as EventModel).name}',
+                        buttonText: 'OK',
+                        onButtonPressed: () {
+                          AppRouter.popAndPushNamed(Routes.HomeScreenRoute);
+                        },
+                      ));
+            } else {
+              await showDialog<bool>(
+                  context: context,
+                  builder: (ctx) => CustomDialog.alert(
+                        title: 'Check Out Successful',
+                        body: 'Checked out of ${(response as EventModel).name}',
+                        buttonText: 'Leave Feedback',
+                        onButtonPressed: () {
+                          ref.read(currentEventProvider.notifier).state =
+                              response;
+                          AppRouter.popAndPushNamed(
+                              Routes.LeaveFeedbackScreenRoute);
+                        },
+                      ));
+            }
+          }
         },
         failed: (reason) async => await showDialog<bool>(
           context: context,
