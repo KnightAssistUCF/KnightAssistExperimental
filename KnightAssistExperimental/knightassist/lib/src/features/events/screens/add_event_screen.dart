@@ -1,6 +1,5 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -28,35 +27,10 @@ class AddEventScreen extends HookConsumerWidget {
     final nameController = useTextEditingController();
     final descriptionController = useTextEditingController();
     final locationController = useTextEditingController();
-    final startTimeController = useTextEditingController();
-    final endTimeController = useTextEditingController();
     final maxVolunteersController = useTextEditingController();
 
-    _selectStartTime() async {
-      final DateTime? picked = await showDatePicker(
-          context: context,
-          initialDate: (startTimeController.text != '')
-              ? DateTime.parse(startTimeController.text)
-              : null,
-          firstDate: DateTime(2000),
-          lastDate: DateTime(2100));
-      if (picked != null) {
-        startTimeController.text = picked.toIso8601String();
-      }
-    }
-
-    _selectEndTime() async {
-      final DateTime? picked = await showDatePicker(
-          context: context,
-          initialDate: (endTimeController.text != '')
-              ? DateTime.parse(endTimeController.text)
-              : null,
-          firstDate: DateTime(2000),
-          lastDate: DateTime(2100));
-      if (picked != null) {
-        endTimeController.text = picked.toIso8601String();
-      }
-    }
+    DateTime startTime = DateTime.now();
+    DateTime endTime = DateTime.now();
 
     ref.listen<EditState>(
       eventStateProvider,
@@ -146,38 +120,60 @@ class AddEventScreen extends HookConsumerWidget {
                         ),
                         const SizedBox(height: 20),
                         CustomTextField(
-                          controller: startTimeController,
-                          floatingText: 'Start Time',
-                          textInputAction: TextInputAction.next,
-                          suffix: IconButton(
-                            color: Colors.black,
-                            icon: const Icon(Icons.calendar_today),
-                            onPressed: () => _selectStartTime(),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        CustomTextField(
-                          controller: endTimeController,
-                          floatingText: 'End Time',
-                          textInputAction: TextInputAction.next,
-                          suffix: IconButton(
-                            color: Colors.black,
-                            icon: const Icon(Icons.calendar_today),
-                            onPressed: () => _selectEndTime(),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        CustomTextField(
                           controller: maxVolunteersController,
                           floatingText: 'Max Volunteers',
                           keyboardType: TextInputType.number,
                           textInputAction: TextInputAction.next,
-                        )
+                        ),
+                        const SizedBox(height: 20),
+                        CustomTextButton(
+                          color: AppColors.primaryColor,
+                          child: const Center(
+                            child: Text(
+                              'Pick Start Time',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 15,
+                                letterSpacing: 0.7,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          onPressed: () {
+                            DatePicker.showDateTimePicker(
+                              context,
+                              onConfirm: (time) {
+                                startTime = time;
+                              },
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 20),
+                        CustomTextButton(
+                          color: AppColors.primaryColor,
+                          child: const Center(
+                            child: Text(
+                              'Pick End Time',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 15,
+                                letterSpacing: 0.7,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          onPressed: () {
+                            DatePicker.showDateTimePicker(
+                              context,
+                              onConfirm: (time) {
+                                endTime = time;
+                              },
+                            );
+                          },
+                        ),
                       ],
                     ),
                   )),
-
-              const Spacer(),
 
               // Confirm button
               Padding(
@@ -194,8 +190,8 @@ class AddEventScreen extends HookConsumerWidget {
                           location: locationController.text,
                           sponsoringOrganization: authProv.currentUserId,
                           profilePicPath: '',
-                          startTime: DateTime.parse(startTimeController.text),
-                          endTime: DateTime.parse(endTimeController.text),
+                          startTime: startTime,
+                          endTime: endTime,
                           eventTags: [],
                           maxAttendees:
                               int.parse(maxVolunteersController.text));
