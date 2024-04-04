@@ -88,8 +88,10 @@ class EventsProvider {
       e.profilePicPath = await imgProv.retrieveImage(type: '1', id: e.id);
     }
     if (searchTerm != null) {
-      temp =
-          temp.where((element) => element.name.contains(searchTerm)).toList();
+      temp = temp
+          .where((element) =>
+              element.name.toLowerCase().contains(searchTerm.toLowerCase()))
+          .toList();
     }
     return temp;
   }
@@ -208,8 +210,10 @@ class EventsProvider {
       e.profilePicPath = await imgProv.retrieveImage(type: '1', id: e.id);
     }
     if (searchTerm != null) {
-      temp =
-          temp.where((element) => element.name.contains(searchTerm)).toList();
+      temp = temp
+          .where((element) =>
+              element.name.toLowerCase().contains(searchTerm.toLowerCase()))
+          .toList();
     }
     return temp;
   }

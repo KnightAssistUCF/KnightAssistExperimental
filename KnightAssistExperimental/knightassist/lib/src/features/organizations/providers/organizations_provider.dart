@@ -65,8 +65,10 @@ class OrganizationsProvider {
       o.backgroundPicPath = await imgProv.retrieveImage(type: '4', id: o.id);
     }
     if (searchTerm != null) {
-      temp =
-          temp.where((element) => element.name.contains(searchTerm)).toList();
+      temp = temp
+          .where((element) =>
+              element.name.toLowerCase().contains(searchTerm.toLowerCase()))
+          .toList();
     }
     return temp;
   }
