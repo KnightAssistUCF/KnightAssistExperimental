@@ -1,5 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:knightassist/src/global/providers/all_providers.dart';
+import '../../../core/core.dart';
 import '../../../global/states/future_state.codegen.dart';
 import '../models/event_model.dart';
 import '../repositories/feedback_repository.dart';
@@ -37,7 +38,7 @@ class FeedbackProvider {
         queryParameters: queryParams);
   }
 
-  Future<String> create({
+  Future<void> create({
     required String eventId,
     required double rating,
     required String content,
@@ -49,7 +50,18 @@ class FeedbackProvider {
       'rating': rating,
       'feedbackText': content,
     };
-    return await _feedbackRepository.create(data: data);
+    final feedbackStateProv = _ref.read(feedbackStateProvider.notifier);
+
+    await Future<void>.delayed(const Duration(seconds: 3)).then((_) {
+      feedbackStateProv.state = const FutureState.loading();
+    });
+
+    try {
+      final temp = await _feedbackRepository.create(data: data);
+      feedbackStateProv.state = FutureState<String>.data(data: temp);
+    } on CustomException catch (e) {
+      feedbackStateProv.state = FutureState.failed(reason: e.message);
+    }
   }
 
   Future<String> markAsRead({

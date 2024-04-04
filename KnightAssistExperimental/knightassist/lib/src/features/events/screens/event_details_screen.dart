@@ -15,6 +15,7 @@ import 'package:knightassist/src/global/widgets/custom_dialog.dart';
 import 'package:knightassist/src/global/widgets/error_response_handler.dart';
 import 'package:knightassist/src/global/widgets/scrollable_column.dart';
 import 'package:knightassist/src/helpers/constants/app_sizes.dart';
+import 'package:knightassist/src/helpers/extensions/datetime_extension.dart';
 
 import '../../../config/routing/routes.dart';
 import '../../../global/widgets/custom_text_button.dart';
@@ -115,9 +116,35 @@ class EventDetailsScreen extends HookConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             Text(event.name,
-                                style: Theme.of(context).textTheme.titleLarge),
-                            Text(event.description),
-                            Text(event.maxAttendees.toString()),
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 18)),
+                            const SizedBox(height: 5),
+                            Text(
+                              event.description,
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              event.location,
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              "Start Time: ${event.startTime.toDateString()}",
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              "End Time: ${event.endTime.toDateString()}",
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              "Max attendees: ${event.maxAttendees.toString()}",
+                              style: const TextStyle(color: Colors.white),
+                            ),
                           ],
                         ),
                       ),
