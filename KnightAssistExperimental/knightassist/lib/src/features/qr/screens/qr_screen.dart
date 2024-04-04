@@ -102,6 +102,7 @@ class _QrScreenState extends ConsumerState<QrScreen> {
     Widget _buildCheckInOutButton() {
       String text = 'Check In';
       if (result!.code!.substring(result!.code!.length - 3) == 'out') {
+        checkIn = false;
         text = 'Check Out';
       }
       return CustomTextButton(
