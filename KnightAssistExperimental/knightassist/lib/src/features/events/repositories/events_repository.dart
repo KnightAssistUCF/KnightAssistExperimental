@@ -39,7 +39,7 @@ class EventsRepository {
     return await _apiService.setData(
       endpoint: EventsEndpoint.ADD_EVENT.route(),
       data: data,
-      converter: (response) => response['body']['event_id'],
+      converter: (response) => response['ID'],
     );
   }
 

@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -59,16 +61,23 @@ class AddEventScreen extends HookConsumerWidget {
     ref.listen<EditState>(
       eventStateProvider,
       (_, editState) => editState.maybeWhen(
-        successful: () {
+        successful: () async {
           nameController.clear();
           descriptionController.clear();
-          AppRouter.pop();
+          await showDialog<bool>(
+              context: context,
+              builder: (ctx) => CustomDialog.alert(
+                    title: 'Add Event Success',
+                    body: 'Event Added',
+                    buttonText: 'OK',
+                    onButtonPressed: () => AppRouter.pop(),
+                  ));
         },
         failed: (reason) async {
           await showDialog<bool>(
             context: context,
             builder: (ctx) => CustomDialog.alert(
-              title: 'Edit Event Failed',
+              title: 'Add Event Failed',
               body: reason,
               buttonText: 'Retry',
             ),
