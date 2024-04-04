@@ -61,7 +61,7 @@ class EventModel {
           .toList(),
       eventTags:
           (json['eventTags'] as List<dynamic>).map((e) => e as String).toList(),
-      semester: json['semester'] as String,
+      semester: json['semester'] as String? ?? '',
       maxAttendees: json['maxAttendees'] as int,
       s3ImageId: json['S3BucketImageDetails'] as String,
     );
