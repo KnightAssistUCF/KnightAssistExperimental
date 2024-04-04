@@ -160,9 +160,16 @@ class EventDetailsScreen extends HookConsumerWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(20),
                   child: CustomTextButton(
+                    color: AppColors.primaryColor,
                     child: const Center(
                       child: Text(
                         'Edit Event',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          letterSpacing: 0.7,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                     onPressed: () {
