@@ -198,7 +198,6 @@ class ApiService implements ApiInterface {
           headers: <String, Object?>{'requiresAuthToken': requiresAuthToken}),
       cancelToken: cancelToken,
     );
-
     return converter(dataMap);
   }
 

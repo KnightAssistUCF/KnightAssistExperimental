@@ -95,7 +95,7 @@ class HomeScreen extends HookConsumerWidget {
                             title: 'No suggested events',
                           ),
                           data: (events) => SizedBox(
-                            height: 175,
+                            height: 300,
                             child: ListView(
                               scrollDirection: Axis.horizontal,
                               children: [
@@ -121,6 +121,15 @@ class HomeScreen extends HookConsumerWidget {
                                                 CachedNetworkImage(
                                                   imageUrl:
                                                       event.profilePicPath,
+                                                  imageBuilder: (context,
+                                                          imageProvider) =>
+                                                      Container(
+                                                    height: 175,
+                                                    decoration: BoxDecoration(
+                                                        image: DecorationImage(
+                                                      image: imageProvider,
+                                                    )),
+                                                  ),
                                                 ),
                                                 Padding(
                                                   padding:
@@ -195,11 +204,11 @@ class HomeScreen extends HookConsumerWidget {
                         CustomTextButton(
                           width: double.infinity,
                           onPressed: () =>
-                              AppRouter.pushNamed(Routes.EventsListScreenRoute),
+                              AppRouter.pushNamed(Routes.AddEventScreenRoute),
                           color: AppColors.primaryColor,
                           child: const Center(
                             child: Text(
-                              'View Events',
+                              'Add Event',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 15,
@@ -213,11 +222,11 @@ class HomeScreen extends HookConsumerWidget {
                         CustomTextButton(
                           width: double.infinity,
                           onPressed: () => AppRouter.pushNamed(
-                              Routes.FeedbackListScreenRoute),
+                              Routes.AddAnnouncementScreenRoute),
                           color: AppColors.primaryColor,
                           child: const Center(
                             child: Text(
-                              'View Feedback',
+                              'Add Announcement',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 15,

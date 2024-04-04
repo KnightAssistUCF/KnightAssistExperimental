@@ -1,13 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:knightassist/src/features/auth/enums/user_role_enum.dart';
-import 'package:knightassist/src/features/volunteers/providers/volunteers_provider.dart';
+import 'package:knightassist/src/features/organizations/widgets/favorite_button.dart';
 import 'package:knightassist/src/global/providers/all_providers.dart';
-import 'package:knightassist/src/global/widgets/async_value_widget.dart';
-import 'package:knightassist/src/global/widgets/custom_circular_loader.dart';
-import 'package:knightassist/src/global/widgets/error_response_handler.dart';
 import 'package:knightassist/src/helpers/constants/constants.dart';
 
 import '../../../config/routing/routing.dart';
@@ -25,7 +21,6 @@ class OrganizationsListItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authProv = ref.watch(authProvider.notifier);
-    final volProv = ref.watch(volunteersProvider);
 
     return Padding(
       padding: const EdgeInsets.all(5),
@@ -110,45 +105,7 @@ class OrganizationsListItem extends ConsumerWidget {
                       ),
                       Visibility(
                         visible: authProv.currentUserRole == UserRole.VOLUNTEER,
-                        child: Consumer(
-                          builder: (context, ref, child) {
-                            return AsyncValueWidget(
-                              value: ref.watch(userVolunteerProvider),
-                              loading: () => const CustomCircularLoader(),
-                              error: (error, st) => ErrorResponseHandler(
-                                error: error,
-                                stackTrace: st,
-                                retryCallback: () =>
-                                    ref.refresh(userVolunteerProvider),
-                              ),
-                              data: (volunteer) {
-                                return IconButton(
-                                  iconSize: 30,
-                                  padding:
-                                      const EdgeInsets.only(left: 4, right: 4),
-                                  icon: volunteer.favOrgIds.contains(org.id)
-                                      ? const Icon(
-                                          Icons.favorite,
-                                          color: AppColors.secondaryColor,
-                                        )
-                                      : const Icon(
-                                          Icons.favorite_outline,
-                                          color: AppColors.secondaryColor,
-                                        ),
-                                  onPressed: () async {
-                                    if (volunteer.favOrgIds.contains(org.id)) {
-                                      await volProv.removeFavoriteOrg(
-                                          orgId: org.id);
-                                    } else {
-                                      await volProv.addFavoriteOrg(
-                                          orgId: org.id);
-                                    }
-                                  },
-                                );
-                              },
-                            );
-                          },
-                        ),
+                        child: FavoriteButton(org: org),
                       ),
                     ],
                   ),

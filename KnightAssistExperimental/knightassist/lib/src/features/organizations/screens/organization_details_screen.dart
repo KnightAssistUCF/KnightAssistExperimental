@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -10,15 +9,10 @@ import 'package:knightassist/src/global/providers/all_providers.dart';
 import 'package:knightassist/src/global/widgets/scrollable_column.dart';
 
 import '../../../config/routing/routing.dart';
-import '../../../global/widgets/async_value_widget.dart';
-import '../../../global/widgets/custom_circular_loader.dart';
-import '../../../global/widgets/custom_text_button.dart';
-import '../../../global/widgets/error_response_handler.dart';
 import '../../../global/widgets/tag.dart';
-import '../../../helpers/constants/app_colors.dart';
 import '../../../helpers/constants/app_sizes.dart';
 import '../../auth/enums/user_role_enum.dart';
-import '../../volunteers/providers/volunteers_provider.dart';
+import '../widgets/favorite_button.dart';
 
 class OrganizationDetailsScreen extends ConsumerWidget {
   const OrganizationDetailsScreen({Key? key}) : super(key: key);
@@ -26,7 +20,6 @@ class OrganizationDetailsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authProv = ref.watch(authProvider.notifier);
-    final volProv = ref.watch(volunteersProvider);
     final org = ref.watch(currentOrganizationProvider);
 
     return Scaffold(
@@ -106,53 +99,7 @@ class OrganizationDetailsScreen extends ConsumerWidget {
                                   Visibility(
                                     visible: authProv.currentUserRole ==
                                         UserRole.VOLUNTEER,
-                                    child: Consumer(
-                                      builder: (context, ref, child) {
-                                        return AsyncValueWidget(
-                                          value:
-                                              ref.watch(userVolunteerProvider),
-                                          loading: () =>
-                                              const CustomCircularLoader(),
-                                          error: (error, st) =>
-                                              ErrorResponseHandler(
-                                            error: error,
-                                            stackTrace: st,
-                                            retryCallback: () => ref
-                                                .refresh(userVolunteerProvider),
-                                          ),
-                                          data: (volunteer) {
-                                            return IconButton(
-                                              iconSize: 30,
-                                              padding: const EdgeInsets.only(
-                                                  left: 4, right: 4),
-                                              icon: volunteer.favOrgIds
-                                                      .contains(org.id)
-                                                  ? const Icon(
-                                                      Icons.favorite,
-                                                      color: AppColors
-                                                          .secondaryColor,
-                                                    )
-                                                  : const Icon(
-                                                      Icons.favorite_outline,
-                                                      color: AppColors
-                                                          .secondaryColor,
-                                                    ),
-                                              onPressed: () async {
-                                                if (volunteer.favOrgIds
-                                                    .contains(org.id)) {
-                                                  await volProv
-                                                      .removeFavoriteOrg(
-                                                          orgId: org.id);
-                                                } else {
-                                                  await volProv.addFavoriteOrg(
-                                                      orgId: org.id);
-                                                }
-                                              },
-                                            );
-                                          },
-                                        );
-                                      },
-                                    ),
+                                    child: FavoriteButton(org: org),
                                   ),
                                 ],
                               ),
@@ -249,7 +196,7 @@ class _TabBarOrgState extends State<TabBarOrg> with TickerProviderStateMixin {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          organization.description ?? '',
+                          organization.description,
                           style: const TextStyle(fontSize: 20),
                         ),
                       ),

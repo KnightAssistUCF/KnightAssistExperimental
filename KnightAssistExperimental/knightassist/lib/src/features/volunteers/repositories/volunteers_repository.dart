@@ -34,7 +34,7 @@ class VolunteersRepository {
     return await _apiService.updateData<String>(
       endpoint: VolunteersEndpoint.EDIT_VOLUNTEER.route(),
       data: data,
-      converter: (response) => response as String,
+      converter: (response) => response['message'] as String,
     );
   }
 
@@ -45,7 +45,7 @@ class VolunteersRepository {
       endpoint: VolunteersEndpoint.DELETE_VOLUNTEER.route(),
       data: data,
       cancelToken: _cancelToken,
-      converter: (response) => response as String,
+      converter: (response) => response['message'] as String,
     );
   }
 
@@ -100,7 +100,7 @@ class VolunteersRepository {
       endpoint: VolunteersEndpoint.ADD_FAVORITE_ORG.route(),
       data: data,
       cancelToken: _cancelToken,
-      converter: (response) => response as String,
+      converter: (response) => response['message'] as String,
     );
   }
 
@@ -111,7 +111,7 @@ class VolunteersRepository {
       endpoint: VolunteersEndpoint.REMOVE_FAVORITE_ORG.route(),
       data: data,
       cancelToken: _cancelToken,
-      converter: (response) => response as String,
+      converter: (response) => response['message'] as String,
     );
   }
 

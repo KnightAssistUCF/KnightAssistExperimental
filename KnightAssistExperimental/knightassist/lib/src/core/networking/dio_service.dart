@@ -99,7 +99,7 @@ class DioService {
         cancelToken: cancelToken ?? _cancelToken,
       );
       if (response.data is String) {
-        return response.data as String;
+        return <String, dynamic>{'message': response.data};
       }
       return response.data as JSON;
     } on Exception catch (ex) {
@@ -164,7 +164,7 @@ class DioService {
         cancelToken: cancelToken ?? _cancelToken,
       );
       if (response.data is String) {
-        return response.data as String;
+        return <String, dynamic>{'message': response.data};
       }
       return response.data as JSON;
     } on Exception catch (ex) {

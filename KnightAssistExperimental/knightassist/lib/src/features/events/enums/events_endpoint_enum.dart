@@ -29,7 +29,7 @@ enum EventsEndpoint {
       case EventsEndpoint.DELETE_EVENT:
         return 'deleteSingleEvent';
       case EventsEndpoint.FETCH_ORG_EVENTS:
-        return 'searchAllEventsOfAnOrg';
+        return 'searchEvent';
       case EventsEndpoint.FETCH_RSVPED_EVENTS:
         return 'searchUserRSVPedEvents';
       case EventsEndpoint.ADD_RSVP:

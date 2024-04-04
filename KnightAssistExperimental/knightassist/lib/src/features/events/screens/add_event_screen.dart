@@ -14,25 +14,21 @@ import '../../../global/widgets/scrollable_column.dart';
 import '../providers/events_provider.dart';
 
 // TODO: Add tags
-class EditEventScreen extends HookConsumerWidget {
-  const EditEventScreen({Key? key}) : super(key: key);
+class AddEventScreen extends HookConsumerWidget {
+  const AddEventScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formKey = useMemoized(() => GlobalKey<FormState>());
-    final event = ref.watch(currentEventProvider);
+    final authProv = ref.watch(authProvider.notifier);
 
     // Controllers
-    final nameController = useTextEditingController(text: event!.name);
-    final descriptionController =
-        useTextEditingController(text: event.description);
-    final locationController = useTextEditingController(text: event.location);
-    final startTimeController =
-        useTextEditingController(text: event.startTime.toIso8601String());
-    final endTimeController =
-        useTextEditingController(text: event.endTime.toIso8601String());
-    final maxVolunteersController =
-        useTextEditingController(text: event.maxAttendees.toString());
+    final nameController = useTextEditingController();
+    final descriptionController = useTextEditingController();
+    final locationController = useTextEditingController();
+    final startTimeController = useTextEditingController();
+    final endTimeController = useTextEditingController();
+    final maxVolunteersController = useTextEditingController();
 
     _selectStartTime() async {
       final DateTime? picked = await showDatePicker(
@@ -100,7 +96,7 @@ class EditEventScreen extends HookConsumerWidget {
                       onTap: () => AppRouter.pop(),
                     ),
                     const Text(
-                      'Edit Event',
+                      'Add Event',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 26,
@@ -180,12 +176,17 @@ class EditEventScreen extends HookConsumerWidget {
                   onPressed: () async {
                     if (formKey.currentState!.validate()) {
                       formKey.currentState!.save();
-                      ref.read(eventsProvider).editEvent(
-                            eventId: event.id,
-                            orgId: event.sponsoringOrganizationId,
-                            name: nameController.text,
-                            description: descriptionController.text,
-                          );
+                      ref.read(eventsProvider).createEvent(
+                          name: nameController.text,
+                          description: descriptionController.text,
+                          location: locationController.text,
+                          sponsoringOrganization: authProv.currentUserId,
+                          profilePicPath: '',
+                          startTime: DateTime.parse(startTimeController.text),
+                          endTime: DateTime.parse(endTimeController.text),
+                          eventTags: [],
+                          maxAttendees:
+                              int.parse(maxVolunteersController.text));
                     }
                   },
                   child: Consumer(

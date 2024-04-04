@@ -15,6 +15,7 @@ import '../../../global/widgets/custom_text_field.dart';
 import '../../../helpers/constants/app_colors.dart';
 import '../providers/auth_provider.dart';
 
+// TODO: Edit validators to allow optional fields
 class EditProfileScreen extends HookConsumerWidget {
   const EditProfileScreen();
 

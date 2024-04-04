@@ -82,10 +82,14 @@ class EventsProvider {
       if (searchTerm != null) 'searchTerm': searchTerm,
     };
     final imgProv = _ref.watch(imagesProvider);
-    final temp =
+    List<EventModel> temp =
         await _eventsRepository.fetchAllEvents(queryParameters: queryParams);
     for (EventModel e in temp) {
       e.profilePicPath = await imgProv.retrieveImage(type: '1', id: e.id);
+    }
+    if (searchTerm != null) {
+      temp =
+          temp.where((element) => element.name.contains(searchTerm)).toList();
     }
     return temp;
   }
@@ -112,7 +116,6 @@ class EventsProvider {
     required DateTime startTime,
     required DateTime endTime,
     required List<String> eventTags,
-    required String semester,
     required int maxAttendees,
   }) async {
     final data = <String, dynamic>{
@@ -124,7 +127,6 @@ class EventsProvider {
       'startTime': startTime,
       'endTime': endTime,
       'eventTags': eventTags,
-      'semester': semester,
       'maxAttendees': maxAttendees,
     };
 
