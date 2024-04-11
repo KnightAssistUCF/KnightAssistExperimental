@@ -17,11 +17,11 @@ class AppTypography {
 
   /// Base TextTheme for the Poppins Font.
   static final _poppinsTextTheme =
-      GoogleFonts.poppinsTextTheme(_typography.black);
+      GoogleFonts.poppinsTextTheme(_typography.white);
 
   /// Base TextTheme for the Outfit Font.
   static final _outfitTextTheme =
-      GoogleFonts.outfitTextTheme(_typography.black);
+      GoogleFonts.outfitTextTheme(_typography.white);
 
   /// The main [TextTheme] used for most of typography in the app.
   static final primary = _outfitTextTheme;

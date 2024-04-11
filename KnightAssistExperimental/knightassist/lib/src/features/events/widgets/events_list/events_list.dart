@@ -8,7 +8,7 @@ import '../../../../global/widgets/empty_state_widget.dart';
 import '../../../../global/widgets/error_response_handler.dart';
 import '../../../../helpers/constants/app_styles.dart';
 import '../../models/event_model.dart';
-import '../../providers/search_providers.codegen.dart';
+import '../../providers/filter_providers.codegen.dart';
 import 'events_list_item.dart';
 
 class EventsList extends ConsumerWidget {
@@ -17,9 +17,9 @@ class EventsList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return CustomRefreshIndicator(
-      onRefresh: () async => ref.refresh(searchProvider),
+      onRefresh: () async => ref.refresh(filtersProvider),
       child: AsyncValueWidget<List<EventModel>>(
-        value: ref.watch(searchedEventsProvider),
+        value: ref.watch(filteredEventsProvider),
         loading: () => const Padding(
           padding: EdgeInsets.only(top: 70),
           child: CustomCircularLoader(),
@@ -28,7 +28,7 @@ class EventsList extends ConsumerWidget {
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
           child: ErrorResponseHandler(
             error: error,
-            retryCallback: () => ref.refresh(searchProvider),
+            retryCallback: () => ref.refresh(filtersProvider),
             stackTrace: st,
           ),
         ),
@@ -39,8 +39,8 @@ class EventsList extends ConsumerWidget {
           title: 'No events found',
           subtitle: 'Try changing the search term',
         ),
-        data: (searchedEvents) {
-          final events = searchedEvents;
+        data: (filteredEvents) {
+          final events = ref.watch(searchedEventsProvider(filteredEvents));
           return ListView.separated(
             itemCount: events.length,
             physics: const BouncingScrollPhysics(

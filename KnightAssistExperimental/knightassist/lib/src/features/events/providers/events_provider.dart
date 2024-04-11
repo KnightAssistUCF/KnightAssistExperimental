@@ -5,6 +5,7 @@ import 'package:knightassist/src/global/states/future_state.codegen.dart';
 // Models
 import '../../../core/networking/custom_exception.dart';
 import '../../../global/states/edit_state.codegen.dart';
+import '../../../helpers/typedefs.dart';
 import '../models/event_model.dart';
 
 // Repositories
@@ -77,21 +78,12 @@ class EventsProvider {
         _ref = ref,
         super();
 
-  Future<List<EventModel>> getAllEvents([String? searchTerm]) async {
-    final queryParams = <String, Object>{
-      if (searchTerm != null) 'searchTerm': searchTerm,
-    };
+  Future<List<EventModel>> getAllEvents([JSON? queryParams]) async {
     final imgProv = _ref.watch(imagesProvider);
     List<EventModel> temp =
         await _eventsRepository.fetchAllEvents(queryParameters: queryParams);
     for (EventModel e in temp) {
       e.profilePicPath = await imgProv.retrieveImage(type: '1', id: e.id);
-    }
-    if (searchTerm != null) {
-      temp = temp
-          .where((element) =>
-              element.name.toLowerCase().contains(searchTerm.toLowerCase()))
-          .toList();
     }
     return temp;
   }
