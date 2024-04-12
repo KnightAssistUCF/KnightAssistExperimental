@@ -28,6 +28,35 @@ class EventDetailsScreen extends HookConsumerWidget {
     final event = ref.watch(currentEventProvider);
     final authProv = ref.watch(authProvider.notifier);
     final eventsProv = ref.watch(eventsProvider);
+    final organization = ref.watch(organizationsProvider);
+
+     Widget getOrgName() {
+          return FutureBuilder(
+              future: organization.getOrgById(orgId: event!.sponsoringOrganizationId),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text(
+                        '${snapshot.error} occurred',
+                        style: const TextStyle(fontSize: 18),
+                      ),
+                    );
+                  } else if (snapshot.hasData) {
+                    final org = snapshot.data!;
+                    return CustomText(
+                      org.name,
+                      maxLines: 10,
+                      textAlign: TextAlign.start,
+                      fontSize: 18,
+                    );
+                  }
+                }
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              });
+        }
 
     ref.listen<FutureState<String>>(
       rsvpStateProvider,
@@ -115,6 +144,7 @@ class EventDetailsScreen extends HookConsumerWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                   getOrgName(),
                     CustomText(
                       event.description,
                       maxLines: 10,
