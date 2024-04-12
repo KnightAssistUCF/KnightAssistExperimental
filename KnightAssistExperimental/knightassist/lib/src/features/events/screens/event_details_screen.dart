@@ -80,21 +80,21 @@ class EventDetailsScreen extends HookConsumerWidget {
                     onTap: () => AppRouter.pop(),
                   ),
                   // Title
-                  Text(
+                  /*Text(
                     event!.name,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 26,
                       fontWeight: FontWeight.bold,
                     ),
-                  ),
+                  ),*/
                   const SizedBox(width: 32),
                 ],
               ),
             ),
 
             CachedNetworkImage(
-              imageUrl: event.profilePicPath,
+              imageUrl: event!.profilePicPath,
             ),
 
             // Event Details
@@ -107,6 +107,14 @@ class EventDetailsScreen extends HookConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
+                    Text(
+                    event!.name,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                     CustomText(
                       event.description,
                       maxLines: 10,

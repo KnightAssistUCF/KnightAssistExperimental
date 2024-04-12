@@ -45,14 +45,14 @@ class OrganizationDetailsScreen extends ConsumerWidget {
                       onTap: () => AppRouter.pop(),
                     ),
                     // Title
-                    Text(
+                    /*Text(
                       org!.name,
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
                       ),
-                    ),
+                    ),*/
                     const SizedBox(width: 32),
                   ],
                 ),
@@ -71,7 +71,7 @@ class OrganizationDetailsScreen extends ConsumerWidget {
                         Column(
                           children: [
                             CachedNetworkImage(
-                              imageUrl: org.backgroundPicPath!,
+                              imageUrl: org!.backgroundPicPath!,
                               imageBuilder: (context, imageProvider) =>
                                   Container(
                                 height: 200,
