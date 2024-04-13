@@ -95,7 +95,7 @@ class HomeScreen extends HookConsumerWidget {
                             title: 'No suggested events',
                           ),
                           data: (events) => SizedBox(
-                            height: 300,
+                            height: 330,
                             child: ListView(
                               scrollDirection: Axis.horizontal,
                               children: [

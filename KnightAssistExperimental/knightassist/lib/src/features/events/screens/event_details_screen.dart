@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:knightassist/src/features/events/providers/events_provider.dart';
+import 'package:knightassist/src/features/organizations/providers/organizations_provider.dart';
 import 'package:knightassist/src/global/providers/all_providers.dart';
 import 'package:knightassist/src/global/states/future_state.codegen.dart';
 import 'package:knightassist/src/global/widgets/custom_dialog.dart';
@@ -28,11 +29,11 @@ class EventDetailsScreen extends HookConsumerWidget {
     final event = ref.watch(currentEventProvider);
     final authProv = ref.watch(authProvider.notifier);
     final eventsProv = ref.watch(eventsProvider);
-    final organization = ref.watch(organizationsProvider);
+    final orgProvider = ref.watch(organizationsProvider);
 
      Widget getOrgName() {
           return FutureBuilder(
-              future: organization.getOrgById(orgId: event!.sponsoringOrganizationId),
+              future: orgProvider.getOrgById(orgId: event!.sponsoringOrganizationId),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   if (snapshot.hasError) {
@@ -44,11 +45,17 @@ class EventDetailsScreen extends HookConsumerWidget {
                     );
                   } else if (snapshot.hasData) {
                     final org = snapshot.data!;
-                    return CustomText(
-                      org.name,
-                      maxLines: 10,
-                      textAlign: TextAlign.start,
-                      fontSize: 18,
+                    return TextButton(
+                      onPressed: () { 
+                        ref.read(currentOrganizationProvider.notifier).state = org;
+            AppRouter.pushNamed(Routes.OrganizationDetailsScreenRoute);
+                       },
+                      child: CustomText(
+                        org.name,
+                        maxLines: 10,
+                        textAlign: TextAlign.start,
+                        fontSize: 18,
+                      ),
                     );
                   }
                 }
