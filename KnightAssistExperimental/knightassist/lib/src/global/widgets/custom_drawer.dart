@@ -18,12 +18,16 @@ class CustomDrawer extends HookConsumerWidget {
           children: [
             ListTile(
               title: const Text('Home'),
-              onTap: () => AppRouter.popAndPushNamed(Routes.HomeScreenRoute),
+              onTap: () {
+                AppRouter.popUntil(Routes.HomeScreenRoute);
+              },
             ),
             ListTile(
               title: const Text('Events'),
-              onTap: () =>
-                  AppRouter.popAndPushNamed(Routes.EventsListScreenRoute),
+              onTap: () {
+                AppRouter.popUntil(Routes.HomeScreenRoute);
+                AppRouter.pushNamed(Routes.EventsListScreenRoute);
+              },
             ),
             // Volunteer only options
             Visibility(
@@ -32,23 +36,31 @@ class CustomDrawer extends HookConsumerWidget {
                 children: [
                   ListTile(
                     title: const Text('Organizations'),
-                    onTap: () => AppRouter.popAndPushNamed(
-                        Routes.OrganizationsListScreenRoute),
+                    onTap: () {
+                      AppRouter.popUntil(Routes.HomeScreenRoute);
+                      AppRouter.pushNamed(Routes.OrganizationsListScreenRoute);
+                    },
                   ),
                   ListTile(
                     title: const Text('Announcements'),
-                    onTap: () => AppRouter.popAndPushNamed(
-                        Routes.AnnouncementsListScreenRoute),
+                    onTap: () {
+                      AppRouter.popUntil(Routes.HomeScreenRoute);
+                      AppRouter.pushNamed(Routes.AnnouncementsListScreenRoute);
+                    },
                   ),
                   ListTile(
                     title: const Text('Event History'),
-                    onTap: () => AppRouter.popAndPushNamed(
-                        Routes.EventHistoryListScreenRoute),
+                    onTap: () {
+                      AppRouter.popUntil(Routes.HomeScreenRoute);
+                      AppRouter.pushNamed(Routes.EventHistoryListScreenRoute);
+                    },
                   ),
                   ListTile(
                     title: const Text('QR Scanner'),
-                    onTap: () =>
-                        AppRouter.popAndPushNamed(Routes.QrScreenRoute),
+                    onTap: () {
+                      AppRouter.popUntil(Routes.HomeScreenRoute);
+                      AppRouter.pushNamed(Routes.QrScreenRoute);
+                    },
                   ),
                 ],
               ),
@@ -60,15 +72,20 @@ class CustomDrawer extends HookConsumerWidget {
                 children: [
                   ListTile(
                     title: const Text('Feedback'),
-                    onTap: () => AppRouter.popAndPushNamed(
-                        Routes.FeedbackListScreenRoute),
+                    onTap: () {
+                      AppRouter.popUntil(Routes.HomeScreenRoute);
+                      AppRouter.pushNamed(Routes.FeedbackListScreenRoute);
+                    },
                   )
                 ],
               ),
             ),
             ListTile(
               title: const Text('Profile'),
-              onTap: () => AppRouter.popAndPushNamed(Routes.ProfileScreenRoute),
+              onTap: () {
+                AppRouter.popUntil(Routes.HomeScreenRoute);
+                AppRouter.pushNamed(Routes.ProfileScreenRoute);
+              },
             ),
           ],
         ),

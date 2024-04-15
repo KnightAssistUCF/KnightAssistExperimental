@@ -118,9 +118,9 @@ class LoginScreen extends HookConsumerWidget {
                   onTap: () {
                     AppRouter.pushNamed(Routes.ForgotPasswordScreenRoute);
                   },
-                  child: Text(
+                  child: const Text(
                     'Forgot your password?',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.white,
                     ),
                   ),

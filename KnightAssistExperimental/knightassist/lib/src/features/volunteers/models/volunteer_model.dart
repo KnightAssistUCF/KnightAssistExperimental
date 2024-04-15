@@ -33,26 +33,34 @@ class VolunteerModel {
 
   static VolunteerModel fromJson(JSON json) {
     return VolunteerModel(
-      id: json['_id'] as String,
-      firstName: json['firstName'] as String,
-      lastName: json['lastName'] as String,
-      email: json['email'] as String,
-      favOrgIds: (json['favoritedOrganizations'] as List<dynamic>)
-          .map((e) => e as String)
-          .toList(),
-      eventRsvpIds: (json['eventsRSVP'] as List<dynamic>)
-          .map((e) => e as String)
-          .toList(),
-      eventHistoryIds: (json['eventsHistory'] as List<dynamic>)
-          .map((e) => e as String)
-          .toList(),
-      totalHours: json['totalVolunteerHours'] as num,
-      semesterHourGoal: json['semesterVolunteerHourGoal'] as num,
-      categoryTags: (json['categoryTags'] as List<dynamic>)
-          .map((e) => e as String)
-          .toList(),
-      emailValidated: json['EmailValidated'] as bool,
-      firstTimeLogin: json['firstTimeLogin'] as bool,
+      id: json['_id'] as String? ?? '',
+      firstName: json['firstName'] as String? ?? '',
+      lastName: json['lastName'] as String? ?? '',
+      email: json['email'] as String? ?? '',
+      favOrgIds: (json['favoritedOrganizations'] != null)
+          ? (json['favoritedOrganizations'] as List<dynamic>)
+              .map((e) => e as String)
+              .toList()
+          : [],
+      eventRsvpIds: (json['eventsRsvp'] != null)
+          ? (json['eventsRSVP'] as List<dynamic>)
+              .map((e) => e as String)
+              .toList()
+          : [],
+      eventHistoryIds: (json['eventsHistory'] != null)
+          ? (json['eventsHistory'] as List<dynamic>)
+              .map((e) => e as String)
+              .toList()
+          : [],
+      totalHours: json['totalVolunteerHours'] as num? ?? 0,
+      semesterHourGoal: json['semesterVolunteerHourGoal'] as num? ?? 0,
+      categoryTags: (json['categoryTags'] != null)
+          ? (json['categoryTags'] as List<dynamic>)
+              .map((e) => e as String)
+              .toList()
+          : [],
+      emailValidated: json['EmailValidated'] as bool? ?? false,
+      firstTimeLogin: json['firstTimeLogin'] as bool? ?? false,
     );
   }
 }
@@ -65,8 +73,8 @@ class NotificationModel {
     required this.orgName,
     required this.type,
     required this.message,
-    this.content,
     required this.read,
+    required this.content,
   });
 
   final String id;
@@ -75,48 +83,59 @@ class NotificationModel {
   final String orgName;
   final String type;
   final String message;
-  final NotificationContentModel? content;
   final bool read;
+  final NotificationContentModel? content;
 
   static NotificationModel fromJson(JSON json) {
     return NotificationModel(
-        id: json['_id'] as String,
-        eventId: json['eventId'] as String,
-        orgId: json['orgId'] as String,
-        orgName: json['orgName'] as String,
-        type: json['type_is'] as String,
-        message: json['message'] as String,
-        content: NotificationContentModel.fromJson(
-            json['updateContent'] as Map<String, dynamic>),
-        read: json['read'] as bool);
+      id: json['_id'] as String,
+      eventId: json['eventId'] as String? ?? '',
+      orgId: json['orgId'] as String? ?? '',
+      orgName: json['orgName'] as String? ?? '',
+      type: json['type_is'] as String? ?? '',
+      message: json['message'] as String? ?? '',
+      read: json['read'] as bool? ?? false,
+      content: (json['updateContent'] != null)
+          ? NotificationContentModel.fromJson(
+              json['updateContent'] as Map<String, dynamic>)
+          : NotificationContentModel(
+              notifId: '',
+              orgId: '',
+              title: '',
+              content: '',
+              name: '',
+              date: DateTime.now()),
+    );
   }
 }
 
 class NotificationContentModel {
   const NotificationContentModel({
-    this.notifId,
-    this.orgId,
-    this.title,
-    this.content,
-    this.name,
-    this.date,
+    required this.notifId,
+    required this.orgId,
+    required this.title,
+    required this.content,
+    required this.name,
+    required this.date,
   });
 
-  final String? notifId;
-  final String? orgId;
-  final String? title;
-  final String? content;
-  final String? name;
-  final DateTime? date;
+  final String notifId;
+  final String orgId;
+  final String title;
+  final String content;
+  final String name;
+  final DateTime date;
 
   static NotificationContentModel fromJson(JSON json) {
     return NotificationContentModel(
-      notifId: json['updateID'] as String,
-      orgId: json['organizationID'] as String,
-      title: json['title'] as String,
-      content: json['content'] as String,
-      name: json['name'] as String,
-      date: DateTime.parse(json['date'] as String),
+      notifId: json['updateID'] as String? ?? '',
+      orgId: json['organizationID'] as String? ?? '',
+      title: json['title'] as String? ?? '',
+      content: json['content'] as String? ?? '',
+      name: json['name'] as String? ?? '',
+      date: (json['date'] != null)
+          ? DateTime.parse(json['date'] as String)
+          : DateTime.now(),
     );
   }
 }

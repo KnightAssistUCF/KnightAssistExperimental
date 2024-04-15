@@ -3,12 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:knightassist/src/config/routing/app_router.dart';
-import 'package:knightassist/src/config/routing/routes.dart';
-import 'package:knightassist/src/features/events/models/event_model.dart';
-import 'package:knightassist/src/features/events/providers/events_provider.dart';
 import 'package:knightassist/src/features/qr/providers/qr_provider.dart';
-import 'package:knightassist/src/global/states/future_state.codegen.dart';
+import 'package:knightassist/src/features/qr/screens/qr_confirmation_screen.dart';
 import 'package:knightassist/src/global/widgets/custom_drawer.dart';
 import 'package:knightassist/src/global/widgets/custom_text_button.dart';
 import 'package:knightassist/src/global/widgets/custom_top_bar.dart';
@@ -16,6 +12,7 @@ import 'package:knightassist/src/helpers/constants/app_colors.dart';
 
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
+import '../../../config/routing/routing.dart';
 import '../../../global/providers/all_providers.dart';
 import '../../../global/widgets/custom_dialog.dart';
 
@@ -46,61 +43,6 @@ class _QrScreenState extends ConsumerState<QrScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen<FutureState<dynamic>>(qrStateProvider,
-        (previous, qrState) async {
-      qrState.maybeWhen(
-        data: (response) async {
-          if (response is String) {
-            await showDialog<bool>(
-                context: context,
-                builder: (ctx) => CustomDialog.alert(
-                      title: 'Error',
-                      body: response,
-                      buttonText: 'OK',
-                      onButtonPressed: () {
-                        AppRouter.pop();
-                      },
-                    ));
-          } else {
-            if (checkIn) {
-              await showDialog<bool>(
-                  context: context,
-                  builder: (ctx) => CustomDialog.alert(
-                        title: 'Check In Successful',
-                        body: 'Checked in to ${(response as EventModel).name}',
-                        buttonText: 'OK',
-                        onButtonPressed: () {
-                          AppRouter.pop();
-                        },
-                      ));
-            } else {
-              await showDialog<bool>(
-                  context: context,
-                  builder: (ctx) => CustomDialog.alert(
-                        title: 'Check Out Successful',
-                        body: 'Checked out of ${(response as EventModel).name}',
-                        buttonText: 'OK',
-                        onButtonPressed: () {
-                          ref.read(currentEventProvider.notifier).state =
-                              response;
-                          AppRouter.pop();
-                        },
-                      ));
-            }
-          }
-        },
-        failed: (reason) async => await showDialog<bool>(
-          context: context,
-          builder: (ctx) => CustomDialog.alert(
-            title: 'Failed',
-            body: reason,
-            buttonText: 'Retry',
-          ),
-        ),
-        orElse: () {},
-      );
-    });
-
     Widget _buildCheckInOutButton() {
       String text = 'Check In';
       checkIn = true;
@@ -110,12 +52,14 @@ class _QrScreenState extends ConsumerState<QrScreen> {
       }
       return CustomTextButton(
           color: AppColors.primaryColor,
-          onPressed: () async {
+          onPressed: () {
             final qrProv = ref.read(qrProvider);
-            if (text == 'Check Out') {
-              await qrProv.checkOut(eventId: result!.code!);
+            AppRouter.push(
+                QrConfirmationScreen(checkIn: checkIn, eventId: result!.code!));
+            if (checkIn) {
+              qrProv.checkIn(eventId: result!.code!);
             } else {
-              await qrProv.checkIn(eventId: result!.code!);
+              qrProv.checkOut(eventId: result!.code!);
             }
           },
           child: Consumer(
@@ -157,15 +101,16 @@ class _QrScreenState extends ConsumerState<QrScreen> {
             CustomTopBar(scaffoldKey: _scaffoldKey, title: 'QR Scan'),
             Expanded(flex: 4, child: _buildQrView(context)),
             Expanded(
-                flex: 1,
-                child: Center(
-                  child: (result != null)
-                      ? _buildCheckInOutButton()
-                      : const Text(
-                          'Scan a code',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                ))
+              flex: 1,
+              child: Center(
+                child: (result != null)
+                    ? _buildCheckInOutButton()
+                    : const Text(
+                        'Scan a code',
+                        style: TextStyle(color: Colors.white),
+                      ),
+              ),
+            ),
           ],
         ),
       ),

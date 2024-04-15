@@ -30,7 +30,7 @@ class QrProvider {
     final qrStateProv = _ref.read(qrStateProvider.notifier);
     qrStateProv.state = const FutureState.idle();
 
-    await Future<void>.delayed(const Duration(seconds: 3)).then((_) {
+    await Future<void>.delayed(const Duration(milliseconds: 100)).then((_) {
       qrStateProv.state = const FutureState.loading();
     });
 
@@ -52,7 +52,7 @@ class QrProvider {
     final qrStateProv = _ref.read(qrStateProvider.notifier);
     qrStateProv.state = const FutureState.idle();
 
-    await Future<void>.delayed(const Duration(seconds: 3)).then((_) {
+    await Future<void>.delayed(const Duration(milliseconds: 100)).then((_) {
       qrStateProv.state = const FutureState.loading();
     });
 

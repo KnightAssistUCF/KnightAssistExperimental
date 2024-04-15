@@ -19,7 +19,7 @@ import '../../../global/widgets/error_response_handler.dart';
 import '../../../helpers/constants/app_colors.dart';
 
 class HomeScreen extends HookConsumerWidget {
-  HomeScreen();
+  HomeScreen({super.key});
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 

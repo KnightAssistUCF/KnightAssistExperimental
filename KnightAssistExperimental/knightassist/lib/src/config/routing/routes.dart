@@ -6,6 +6,7 @@ import 'package:knightassist/src/features/auth/screens/edit_profile_screen.dart'
 import 'package:knightassist/src/features/events/screens/add_event_screen.dart';
 import 'package:knightassist/src/features/events/screens/feedback_list_screen.dart';
 import 'package:knightassist/src/features/events/screens/leave_feedback_screen.dart';
+import 'package:knightassist/src/features/qr/screens/qr_confirmation_screen.dart';
 import 'package:knightassist/src/features/qr/screens/qr_screen.dart';
 
 import '../../features/auth/screens/forgot_password_screen.dart';
@@ -55,6 +56,7 @@ class Routes {
   static const String AnnouncementsListScreenRoute =
       '/announcements-list-screen';
   static const String AddAnnouncementScreenRoute = '/add-announcement-screen';
+  static const String QrConfirmationScreenRoute = '/qr-confirmation-screen';
 
   static final Map<String, RouteBuilder> _routesMap = {
     AppStartupScreenRoute: (_) => const AppStartupScreen(),
@@ -78,10 +80,13 @@ class Routes {
     EventHistoryListScreenRoute: (_) => EventHistoryListScreen(),
     FeedbackListScreenRoute: (_) => FeedbackListScreen(),
     AddAnnouncementScreenRoute: (_) => const AddAnnouncementScreen(),
+    QrConfirmationScreenRoute: (_) =>
+        const QrConfirmationScreen(checkIn: false, eventId: ''),
     NotFoundScreenRoute: (_) => const SizedBox.shrink(),
   };
 
   static RouteBuilder getRoute(String? routeName) {
+    print("Attempting to get route ${routeName}");
     return routeExists(routeName)
         ? _routesMap[routeName]!
         : _routesMap[Routes.NotFoundScreenRoute]!;
