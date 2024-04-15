@@ -61,8 +61,8 @@ class ProfileScreen extends HookConsumerWidget {
                     size: 32,
                   ),
                   onTap: () {
-                    ref.read(authProvider.notifier).logout();
                     AppRouter.popUntilRoot();
+                    ref.read(authProvider.notifier).logout();
                   },
                 ),
               ],

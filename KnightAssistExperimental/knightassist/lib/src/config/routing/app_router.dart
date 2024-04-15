@@ -20,13 +20,24 @@ class AppRouter {
   ///
   /// In case of unknown route name, it returns a route indicating error.
   static Route<dynamic>? generateRoute(RouteSettings settings) {
+    if (!Routes.routeExists(settings.name)) {
+      return _errorRoute();
+    }
     return MaterialPageRoute<dynamic>(
       builder: Routes.getRoute(settings.name),
       settings: RouteSettings(
-        name: Routes.routeExists(settings.name)
-            ? settings.name
-            : Routes.fallbackRoute,
+        name: settings.name,
         arguments: settings.arguments,
+      ),
+    );
+  }
+
+  static Route<dynamic> _errorRoute() {
+    return MaterialPageRoute<dynamic>(
+      builder: (_) => const Scaffold(
+        body: Center(
+          child: Text('Unknown Route'),
+        ),
       ),
     );
   }

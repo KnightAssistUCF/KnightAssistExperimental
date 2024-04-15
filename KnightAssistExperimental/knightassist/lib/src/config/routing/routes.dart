@@ -30,7 +30,6 @@ class Routes {
   const Routes._();
 
   static const String initialRoute = AppStartupScreenRoute;
-  static const String fallbackRoute = NotFoundScreenRoute;
 
   static const String AppStartupScreenRoute = '/app-startup-screen';
   static const String LoginScreenRoute = '/login-screen';
@@ -82,14 +81,10 @@ class Routes {
     AddAnnouncementScreenRoute: (_) => const AddAnnouncementScreen(),
     QrConfirmationScreenRoute: (_) =>
         const QrConfirmationScreen(checkIn: false, eventId: ''),
-    NotFoundScreenRoute: (_) => const SizedBox.shrink(),
   };
 
   static RouteBuilder getRoute(String? routeName) {
-    print("Attempting to get route ${routeName}");
-    return routeExists(routeName)
-        ? _routesMap[routeName]!
-        : _routesMap[Routes.NotFoundScreenRoute]!;
+    return _routesMap[routeName]!;
   }
 
   static bool routeExists(String? routeName) {
