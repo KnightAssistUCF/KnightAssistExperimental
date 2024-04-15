@@ -1,6 +1,8 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:knightassist/src/features/auth/enums/user_role_enum.dart';
 import 'package:knightassist/src/global/providers/all_providers.dart';
 import 'package:knightassist/src/global/states/future_state.codegen.dart';
+import 'package:time/time.dart';
 
 // Models
 import '../../../core/networking/custom_exception.dart';
@@ -77,6 +79,41 @@ class EventsProvider {
   })  : _eventsRepository = eventsRepository,
         _ref = ref,
         super();
+
+  Future<List<EventModel>> getEventsList([JSON? queryParams]) async {
+    final authProv = _ref.watch(authProvider.notifier);
+    List<EventModel> temp;
+    if (authProv.currentUserRole == UserRole.VOLUNTEER) {
+      temp = await getAllEvents();
+    } else {
+      temp = await getOrgEvents(orgId: authProv.currentUserId);
+    }
+
+    temp = temp.reversed.toList();
+
+    if (queryParams != null) {
+      if (queryParams['upcoming'] != null) {
+        if (queryParams['upcoming']) {
+          temp = temp
+              .where((event) => event.startTime.isAfter(DateTime.now()))
+              .toList();
+        } else {
+          temp = temp
+              .where((event) => event.startTime.isBefore(DateTime.now()))
+              .toList();
+        }
+      }
+
+      if (queryParams['date'] != null) {
+        temp = temp
+            .where(
+                (event) => event.startTime.isAtSameDayAs(queryParams['date']))
+            .toList();
+      }
+    }
+
+    return temp;
+  }
 
   Future<List<EventModel>> getAllEvents([JSON? queryParams]) async {
     final imgProv = _ref.watch(imagesProvider);

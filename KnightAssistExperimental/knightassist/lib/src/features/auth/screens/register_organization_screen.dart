@@ -11,6 +11,7 @@ import '../../../global/states/auth_state.codegen.dart';
 import '../../../global/widgets/custom_dialog.dart';
 import '../../../global/widgets/custom_text_button.dart';
 import '../../../global/widgets/custom_text_field.dart';
+import '../../../helpers/constants/app_colors.dart';
 
 class RegisterOrganizationScreen extends HookConsumerWidget {
   const RegisterOrganizationScreen();
@@ -54,134 +55,144 @@ class RegisterOrganizationScreen extends HookConsumerWidget {
     );
 
     return Scaffold(
-      body: GestureDetector(
-        onTap: () => FocusScope.of(context).unfocus(),
-        child: ScrollableColumn(
-          children: [
-            Form(
-              key: formKey,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(25, 28, 25, 20),
-                child: Column(
+      body: SafeArea(
+        child: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: ScrollableColumn(
+            children: [
+              // Top Bar
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Image(
-                      image: AssetImage('assets/KnightAssistCoA3.png'),
-                      height: 60,
+                    // Back Icon
+                    InkResponse(
+                      radius: 26,
+                      child: const Icon(
+                        Icons.arrow_back_sharp,
+                        size: 32,
+                        color: Colors.white,
+                      ),
+                      onTap: () => AppRouter.pop(),
                     ),
-
-                    // Page Name
                     const Text(
                       'Register Organization',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 32,
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-
-                    const SizedBox(height: 20),
-
-                    // Fields here!
-                    Column(
-                      children: [
-                        // Email
-                        CustomTextField(
-                          controller: emailController,
-                          floatingText: 'Email',
-                          hintText: 'user@example.com',
-                          keyboardType: TextInputType.emailAddress,
-                          textInputAction: TextInputAction.next,
-                          validator: FormValidator.emailValidator,
-                        ),
-
-                        const SizedBox(height: 10),
-
-                        // Name
-                        CustomTextField(
-                          controller: nameController,
-                          floatingText: 'First Name',
-                          hintText: 'UCF',
-                          keyboardType: TextInputType.name,
-                          textInputAction: TextInputAction.next,
-                          validator: FormValidator.nameValidator,
-                        ),
-
-                        const SizedBox(height: 10),
-
-                        // Password
-                        CustomTextField(
-                          controller: passwordController,
-                          floatingText: 'Password',
-                          keyboardType: TextInputType.visiblePassword,
-                          textInputAction: TextInputAction.next,
-                          validator: FormValidator.passwordValidator,
-                        ),
-
-                        const SizedBox(height: 10),
-
-                        // Repeat password
-                        // TODO: Add logic to compare password fields
-                        CustomTextField(
-                          controller: repeatPasswordController,
-                          floatingText: 'Repeat Password',
-                          keyboardType: TextInputType.visiblePassword,
-                          textInputAction: TextInputAction.done,
-                          validator: FormValidator.passwordValidator,
-                        ),
-                      ],
-                    ),
-
-                    const Spacer(),
-
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 40, 20, 2),
-                      child: CustomTextButton(
-                        width: double.infinity,
-                        onPressed: () {
-                          if (formKey.currentState!.validate()) {
-                            formKey.currentState!.save();
-                            ref
-                                .read(authProvider.notifier)
-                                .registerOrganization(
-                                  email: emailController.text,
-                                  password: passwordController.text,
-                                  orgName: nameController.text,
-                                );
-                          }
-                        },
-                        child: Consumer(
-                          builder: (context, ref, child) {
-                            final authState = ref.watch(authProvider);
-                            if (authState is AUTHENTICATING) {
-                              return const Center(
-                                child: SpinKitRing(
-                                  color: Colors.white,
-                                  size: 30,
-                                  lineWidth: 4,
-                                  duration: Duration(milliseconds: 1100),
-                                ),
-                              );
-                            }
-                            return child!;
-                          },
-                          child: const Center(
-                            child: Text(
-                              'Confirm',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                                letterSpacing: 0.7,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
+                    const SizedBox(width: 32),
                   ],
                 ),
               ),
-            )
-          ],
+
+              Form(
+                key: formKey,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  child: Column(
+                    children: [
+                      // Email
+                      CustomTextField(
+                        controller: emailController,
+                        floatingText: 'Email',
+                        hintText: 'user@example.com',
+                        keyboardType: TextInputType.emailAddress,
+                        textInputAction: TextInputAction.next,
+                        validator: FormValidator.emailValidator,
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      // Name
+                      CustomTextField(
+                        controller: nameController,
+                        floatingText: 'Organization Name',
+                        hintText: 'UCF',
+                        keyboardType: TextInputType.name,
+                        textInputAction: TextInputAction.next,
+                        validator: FormValidator.nameValidator,
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      // Password
+                      CustomTextField(
+                        controller: passwordController,
+                        floatingText: 'Password',
+                        keyboardType: TextInputType.visiblePassword,
+                        textInputAction: TextInputAction.next,
+                        validator: FormValidator.passwordValidator,
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      // Repeat password
+                      // TODO: Add logic to compare password fields
+                      CustomTextField(
+                        controller: repeatPasswordController,
+                        floatingText: 'Repeat Password',
+                        keyboardType: TextInputType.visiblePassword,
+                        textInputAction: TextInputAction.done,
+                        validator: FormValidator.passwordValidator,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              const Spacer(),
+
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
+                child: CustomTextButton(
+                  width: double.infinity,
+                  color: AppColors.primaryColor,
+                  onPressed: () {
+                    if (formKey.currentState!.validate()) {
+                      formKey.currentState!.save();
+                      ref.read(authProvider.notifier).registerOrganization(
+                            email: emailController.text,
+                            password: passwordController.text,
+                            orgName: nameController.text,
+                          );
+                    }
+                  },
+                  child: Consumer(
+                    builder: (context, ref, child) {
+                      final authState = ref.watch(authProvider);
+                      if (authState is AUTHENTICATING) {
+                        return const Center(
+                          child: SpinKitRing(
+                            color: Colors.white,
+                            size: 30,
+                            lineWidth: 4,
+                            duration: Duration(milliseconds: 1100),
+                          ),
+                        );
+                      }
+                      return child!;
+                    },
+                    child: const Center(
+                      child: Text(
+                        'Confirm',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          letterSpacing: 0.7,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

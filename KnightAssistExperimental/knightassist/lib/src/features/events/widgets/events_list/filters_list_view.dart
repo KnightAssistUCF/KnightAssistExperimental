@@ -28,9 +28,11 @@ class FiltersListView extends HookConsumerWidget {
       controller: scrollController,
       padding: const EdgeInsets.symmetric(horizontal: 15),
       children: [
+        // Upcoming or not
+
         // Event Date
         CustomDatePicker(
-          firstDate: DateTime.now(),
+          firstDate: DateTime.now().subtract(const Duration(days: 365)),
           lastDate: DateTime.now().add(const Duration(days: 365)),
           dateNotifier: eventDateController,
           onDateChanged: (value) {

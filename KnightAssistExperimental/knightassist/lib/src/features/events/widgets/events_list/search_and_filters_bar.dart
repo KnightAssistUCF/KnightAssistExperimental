@@ -21,7 +21,7 @@ class SearchAndFiltersBar extends ConsumerWidget {
           // Search Field
           Expanded(
             child: CustomTextField(
-              contentPadding: const EdgeInsets.fromLTRB(12, 13, 1, 22),
+              contentPadding: const EdgeInsets.fromLTRB(12, 13, 1, 13),
               onChanged: (searchTerm) => ref
                   .read(searchFilterProvider.notifier)
                   .update((_) => searchTerm ?? ''),
@@ -31,7 +31,11 @@ class SearchAndFiltersBar extends ConsumerWidget {
               ),
               keyboardType: TextInputType.name,
               textInputAction: TextInputAction.search,
-              prefix: const Icon(Icons.search_rounded, size: 22),
+              prefix: const Icon(
+                Icons.search_rounded,
+                size: 22,
+                color: Colors.black,
+              ),
             ),
           ),
 

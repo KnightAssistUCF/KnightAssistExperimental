@@ -112,62 +112,63 @@ class EditEventScreen extends HookConsumerWidget {
                 ),
               ),
               Form(
-                  key: formKey,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 10),
-                    child: Column(
-                      children: [
-                        CustomTextField(
-                          controller: nameController,
-                          floatingText: 'Name',
-                          textInputAction: TextInputAction.next,
+                key: formKey,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  child: Column(
+                    children: [
+                      CustomTextField(
+                        controller: nameController,
+                        floatingText: 'Name',
+                        textInputAction: TextInputAction.next,
+                      ),
+                      const SizedBox(height: 20),
+                      CustomTextField(
+                        controller: descriptionController,
+                        floatingText: 'Description',
+                        multiline: true,
+                        textInputAction: TextInputAction.next,
+                      ),
+                      const SizedBox(height: 20),
+                      CustomTextField(
+                        controller: locationController,
+                        floatingText: 'Location',
+                        textInputAction: TextInputAction.next,
+                      ),
+                      const SizedBox(height: 20),
+                      CustomTextField(
+                        controller: startTimeController,
+                        floatingText: 'Start Time',
+                        textInputAction: TextInputAction.next,
+                        suffix: IconButton(
+                          color: Colors.black,
+                          icon: const Icon(Icons.calendar_today),
+                          onPressed: () => _selectStartTime(),
                         ),
-                        const SizedBox(height: 20),
-                        CustomTextField(
-                          controller: descriptionController,
-                          floatingText: 'Description',
-                          multiline: true,
-                          textInputAction: TextInputAction.next,
+                      ),
+                      const SizedBox(height: 20),
+                      CustomTextField(
+                        controller: endTimeController,
+                        floatingText: 'End Time',
+                        textInputAction: TextInputAction.next,
+                        suffix: IconButton(
+                          color: Colors.black,
+                          icon: const Icon(Icons.calendar_today),
+                          onPressed: () => _selectEndTime(),
                         ),
-                        const SizedBox(height: 20),
-                        CustomTextField(
-                          controller: locationController,
-                          floatingText: 'Location',
-                          textInputAction: TextInputAction.next,
-                        ),
-                        const SizedBox(height: 20),
-                        CustomTextField(
-                          controller: startTimeController,
-                          floatingText: 'Start Time',
-                          textInputAction: TextInputAction.next,
-                          suffix: IconButton(
-                            color: Colors.black,
-                            icon: const Icon(Icons.calendar_today),
-                            onPressed: () => _selectStartTime(),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        CustomTextField(
-                          controller: endTimeController,
-                          floatingText: 'End Time',
-                          textInputAction: TextInputAction.next,
-                          suffix: IconButton(
-                            color: Colors.black,
-                            icon: const Icon(Icons.calendar_today),
-                            onPressed: () => _selectEndTime(),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        CustomTextField(
-                          controller: maxVolunteersController,
-                          floatingText: 'Max Volunteers',
-                          keyboardType: TextInputType.number,
-                          textInputAction: TextInputAction.next,
-                        )
-                      ],
-                    ),
-                  )),
+                      ),
+                      const SizedBox(height: 20),
+                      CustomTextField(
+                        controller: maxVolunteersController,
+                        floatingText: 'Max Volunteers',
+                        keyboardType: TextInputType.number,
+                        textInputAction: TextInputAction.next,
+                      )
+                    ],
+                  ),
+                ),
+              ),
 
               const Spacer(),
 

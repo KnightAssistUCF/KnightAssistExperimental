@@ -31,39 +31,40 @@ class EventDetailsScreen extends HookConsumerWidget {
     final eventsProv = ref.watch(eventsProvider);
     final orgProvider = ref.watch(organizationsProvider);
 
-     Widget getOrgName() {
-          return FutureBuilder(
-              future: orgProvider.getOrgById(orgId: event!.sponsoringOrganizationId),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  if (snapshot.hasError) {
-                    return Center(
-                      child: Text(
-                        '${snapshot.error} occurred',
-                        style: const TextStyle(fontSize: 18),
-                      ),
-                    );
-                  } else if (snapshot.hasData) {
-                    final org = snapshot.data!;
-                    return TextButton(
-                      onPressed: () { 
-                        ref.read(currentOrganizationProvider.notifier).state = org;
-            AppRouter.pushNamed(Routes.OrganizationDetailsScreenRoute);
-                       },
-                      child: CustomText(
-                        org.name,
-                        maxLines: 10,
-                        textAlign: TextAlign.start,
-                        fontSize: 18,
-                      ),
-                    );
-                  }
-                }
-                return const Center(
-                  child: CircularProgressIndicator(),
+    Widget getOrgName() {
+      return FutureBuilder(
+          future:
+              orgProvider.getOrgById(orgId: event!.sponsoringOrganizationId),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text(
+                    '${snapshot.error} occurred',
+                    style: const TextStyle(fontSize: 18),
+                  ),
                 );
-              });
-        }
+              } else if (snapshot.hasData) {
+                final org = snapshot.data!;
+                return TextButton(
+                  onPressed: () {
+                    ref.read(currentOrganizationProvider.notifier).state = org;
+                    AppRouter.pushNamed(Routes.OrganizationDetailsScreenRoute);
+                  },
+                  child: CustomText(
+                    org.name,
+                    maxLines: 10,
+                    textAlign: TextAlign.start,
+                    fontSize: 18,
+                  ),
+                );
+              }
+            }
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          });
+    }
 
     ref.listen<FutureState<String>>(
       rsvpStateProvider,
@@ -116,21 +117,31 @@ class EventDetailsScreen extends HookConsumerWidget {
                     onTap: () => AppRouter.pop(),
                   ),
                   // Title
-                  /*Text(
-                    event!.name,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
+                  SizedBox(
+                    width: 275,
+                    child: CustomText(
+                      event!.name,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),*/
+                  ),
+
                   const SizedBox(width: 32),
                 ],
               ),
             ),
 
-            CachedNetworkImage(
-              imageUrl: event!.profilePicPath,
+            Container(
+              width: double.infinity,
+              constraints: const BoxConstraints(maxHeight: 500, minHeight: 200),
+              child: CachedNetworkImage(
+                imageUrl: event.profilePicPath,
+                fit: BoxFit.cover,
+              ),
             ),
 
             // Event Details
@@ -144,14 +155,14 @@ class EventDetailsScreen extends HookConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                    event!.name,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
+                      event.name,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                   getOrgName(),
+                    getOrgName(),
                     CustomText(
                       event.description,
                       maxLines: 10,

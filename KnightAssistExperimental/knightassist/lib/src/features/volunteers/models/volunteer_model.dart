@@ -49,7 +49,7 @@ class VolunteerModel {
           : [],
       eventHistoryIds: (json['eventsHistory'] != null)
           ? (json['eventsHistory'] as List<dynamic>)
-              .map((e) => e as String)
+              .map((e) => e as String? ?? '')
               .toList()
           : [],
       totalHours: json['totalVolunteerHours'] as num? ?? 0,

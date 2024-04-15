@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:knightassist/src/global/widgets/custom_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -45,14 +46,19 @@ class OrganizationDetailsScreen extends ConsumerWidget {
                       onTap: () => AppRouter.pop(),
                     ),
                     // Title
-                    /*Text(
-                      org!.name,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
+                    // Title
+                    SizedBox(
+                      width: 275,
+                      child: CustomText(
+                        org!.name,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),*/
+                    ),
                     const SizedBox(width: 32),
                   ],
                 ),

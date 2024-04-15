@@ -70,7 +70,7 @@ class AppColors {
 
   /// The primary [LinearGradient] for buttons in the app.
   static const Gradient buttonGradientPrimary = LinearGradient(
-    colors: [primaryColor, redColor],
+    colors: [primaryColor, secondaryColor],
   );
 
   /// The orange [LinearGradient] for disabled buttons in the app.

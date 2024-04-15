@@ -60,7 +60,7 @@ class OrganizationsListItem extends ConsumerWidget {
                       ),
                     ),
 
-                    // Organization image
+                    // Organization profile image
                     Positioned(
                       top: 15,
                       left: 5,
@@ -83,6 +83,7 @@ class OrganizationsListItem extends ConsumerWidget {
                           borderRadius: BorderRadius.circular(12),
                           child: CachedNetworkImage(
                             imageUrl: org.profilePicPath!,
+                            fit: BoxFit.cover,
                           ),
                         ),
                       ),
@@ -101,6 +102,7 @@ class OrganizationsListItem extends ConsumerWidget {
                         style: const TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 18,
+                          color: AppColors.textBlackColor,
                         ),
                       ),
                       Visibility(
@@ -117,7 +119,10 @@ class OrganizationsListItem extends ConsumerWidget {
                     org.description,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 3,
-                    style: const TextStyle(fontWeight: FontWeight.w400),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w400,
+                      color: AppColors.textBlackColor,
+                    ),
                     textAlign: TextAlign.start,
                   ),
                 ),
