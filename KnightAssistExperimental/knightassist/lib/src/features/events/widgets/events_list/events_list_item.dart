@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:knightassist/src/global/providers/all_providers.dart';
 import 'package:knightassist/src/global/widgets/custom_network_image.dart';
 import 'package:knightassist/src/global/widgets/custom_text.dart';
 import 'package:knightassist/src/helpers/constants/constants.dart';
@@ -24,7 +25,9 @@ class EventsListItem extends ConsumerWidget {
     return InkResponse(
       onTap: () {
         ref.read(currentEventProvider.notifier).state = event;
-        AppRouter.pushNamed(Routes.EventDetailsScreenRoute);
+        AppRouter.pushNamed(Routes.EventDetailsScreenRoute).then((value) {
+          ref.refresh(eventsProvider);
+        });
       },
       child: ClipRRect(
         borderRadius: Corners.rounded9,

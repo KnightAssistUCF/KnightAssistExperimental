@@ -49,6 +49,10 @@ final rsvpStateProvider = StateProvider<FutureState<String>>((ref) {
   return const FutureState<String>.idle();
 });
 
+final deleteEventStateProvider = StateProvider<FutureState<String>>((ref) {
+  return const FutureState<String>.idle();
+});
+
 final currentEventProvider = StateProvider<EventModel?>((ref) {
   return EventModel(
     id: '',
@@ -215,7 +219,7 @@ class EventsProvider {
     }
   }
 
-  Future<String> deleteEvent({
+  Future<void> deleteEvent({
     required String eventId,
     required String orgId,
   }) async {
@@ -223,7 +227,20 @@ class EventsProvider {
       'eventID': eventId,
       'organizationID': orgId,
     };
-    return await _eventsRepository.deleteEvent(data: data);
+
+    final deleteEventStateProv = _ref.read(deleteEventStateProvider.notifier);
+    deleteEventStateProv.state = const FutureState.idle();
+
+    await Future<void>.delayed(const Duration(milliseconds: 100)).then((_) {
+      deleteEventStateProv.state = const FutureState.loading();
+    });
+
+    try {
+      final response = await _eventsRepository.deleteEvent(data: data);
+      deleteEventStateProv.state = FutureState<String>.data(data: response);
+    } on CustomException catch (e) {
+      deleteEventStateProv.state = FutureState.failed(reason: e.message);
+    }
   }
 
   Future<List<EventModel>> getOrgEvents(

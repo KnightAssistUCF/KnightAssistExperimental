@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:knightassist/src/features/events/providers/events_provider.dart';
+import 'package:knightassist/src/features/events/providers/filter_providers.codegen.dart';
 import 'package:knightassist/src/features/organizations/providers/organizations_provider.dart';
 import 'package:knightassist/src/global/providers/all_providers.dart';
 import 'package:knightassist/src/global/states/future_state.codegen.dart';
@@ -95,6 +96,38 @@ class EventDetailsScreen extends HookConsumerWidget {
       },
     );
 
+    ref.listen<FutureState<String>>(
+      deleteEventStateProvider,
+      (previous, deleteEventState) async {
+        deleteEventState.maybeWhen(
+          data: (message) async {
+            await showDialog<bool>(
+              context: context,
+              builder: (ctx) => CustomDialog.alert(
+                title: 'Success',
+                body: 'Event deleted successfully',
+                buttonText: 'OK',
+                onButtonPressed: () {
+                  AppRouter.pop();
+                },
+              ),
+            );
+          },
+          failed: (reason) async {
+            await showDialog(
+              context: context,
+              builder: (ctx) => CustomDialog.alert(
+                title: 'Failed',
+                body: reason,
+                buttonText: 'Retry',
+              ),
+            );
+          },
+          orElse: () {},
+        );
+      },
+    );
+
     return Scaffold(
       body: SafeArea(
         child: ScrollableColumn(
@@ -137,7 +170,7 @@ class EventDetailsScreen extends HookConsumerWidget {
 
             Container(
               width: double.infinity,
-              constraints: const BoxConstraints(maxHeight: 500, minHeight: 200),
+              constraints: const BoxConstraints(maxHeight: 250, minHeight: 200),
               child: CachedNetworkImage(
                 imageUrl: event.profilePicPath,
                 fit: BoxFit.cover,
@@ -247,7 +280,7 @@ class EventDetailsScreen extends HookConsumerWidget {
               ),
             ),
 
-            // Edit Button if sponsoring org
+            // Edit button if sponsoring org
             Visibility(
               visible: authProv.currentUserRole == UserRole.ORGANIZATION &&
                   authProv.currentUserId == event.sponsoringOrganizationId,
@@ -269,6 +302,47 @@ class EventDetailsScreen extends HookConsumerWidget {
                   onPressed: () {
                     AppRouter.pushNamed(Routes.EditEventScreenRoute);
                   },
+                ),
+              ),
+            ),
+
+            // Delete button if sponsoring org
+            // TODO: Listen for event deleted
+            Visibility(
+              visible: authProv.currentUserRole == UserRole.ORGANIZATION &&
+                  authProv.currentUserId == event.sponsoringOrganizationId,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                child: CustomTextButton(
+                  color: AppColors.redColor,
+                  onPressed: () async {
+                    await showDialog<bool>(
+                      context: context,
+                      builder: (ctx) => CustomDialog.confirm(
+                        isDanger: true,
+                        title: 'Delete ${event.name}',
+                        body: 'Do you really want to delete this event?',
+                        falseButtonText: 'Cancel',
+                        trueButtonText: 'Delete',
+                        trueButtonPressed: () async {
+                          await eventsProv.deleteEvent(
+                              eventId: event.id,
+                              orgId: event.sponsoringOrganizationId);
+                        },
+                      ),
+                    );
+                  },
+                  child: const Center(
+                    child: Text(
+                      'Delete Event',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
+                        letterSpacing: 0.7,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
