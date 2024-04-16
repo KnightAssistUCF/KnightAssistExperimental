@@ -67,6 +67,9 @@ class DioService {
       if (response.data is Map && response.data['announcements'] != null) {
         return response.data['announcements'];
       }
+      if (response.data is Map && response.data['data'] != null) {
+        return response.data['data'];
+      }
       return response.data as T;
     } on Exception catch (ex) {
       throw CustomException.fromDioException(ex);

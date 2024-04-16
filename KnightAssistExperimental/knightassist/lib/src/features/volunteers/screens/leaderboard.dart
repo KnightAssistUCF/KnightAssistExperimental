@@ -1,433 +1,197 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:knightassist/src/features/volunteers/models/volunteer_model.dart';
+import 'package:knightassist/src/global/widgets/async_value_widget.dart';
+import 'package:knightassist/src/global/widgets/custom_circular_loader.dart';
+import 'package:knightassist/src/global/widgets/custom_drawer.dart';
+import 'package:knightassist/src/global/widgets/custom_refresh_indicator.dart';
+import 'package:knightassist/src/global/widgets/custom_top_bar.dart';
+import 'package:knightassist/src/helpers/constants/app_colors.dart';
 
-/*
+import '../../../global/widgets/empty_state_widget.dart';
+import '../../../global/widgets/error_response_handler.dart';
+import '../../../helpers/constants/app_styles.dart';
+import '../providers/volunteers_provider.dart';
 
-List<LeaderboardEntry> leaders = [];
-
-class leaderboard extends StatefulWidget {
-  const leaderboard({
-    super.key,
-  });
-
-  @override
-  State<leaderboard> createState() => _leaderboardState();
-}
-
-class _leaderboardState extends State<leaderboard> {
-  @override
-  void initState() {
-    super.initState();
-  }
+class LeaderboardScreen extends StatelessWidget {
+  LeaderboardScreen({super.key});
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
-    double h = MediaQuery.of(context).size.height;
-    double w = MediaQuery.of(context).size.width;
-    return Consumer(
-      builder: (context, ref, child) {
-        final leaderboardRepository = ref.watch(leaderboardRepositoryProvider);
-        leaderboardRepository.fetchLeaderboard().then((value) => setState(() {
-              leaders = value;
-            }));
-
-        final imagesRepository = ref.watch(imagesRepositoryProvider);
-        final authRepository = ref.watch(authRepositoryProvider);
-        final organizationsRepository =
-            ref.watch(organizationsRepositoryProvider);
-        organizationsRepository.fetchOrganizationsList();
-        final user = authRepository.currentUser;
-        bool isOrg = user?.role == "organization";
-
-        Widget getAppbarProfileImage() {
-          return FutureBuilder(
-              future: isOrg
-                  ? imagesRepository.retrieveImage('2', user!.id)
-                  : imagesRepository.retrieveImage('3', user!.id),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  if (snapshot.hasError) {
-                    return Center(
-                      child: Text(
-                        '${snapshot.error} occurred',
-                        style: const TextStyle(fontSize: 18),
-                      ),
-                    );
-                  } else if (snapshot.hasData) {
-                    final String imageUrl = snapshot.data!;
-                    return ClipRRect(
-                      borderRadius: BorderRadius.circular(25.0),
-                      child: Image(
-                          semanticLabel: 'Profile picture',
-                          image: NetworkImage(imageUrl),
-                          height: 20),
-                    );
-                  }
-                }
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              });
-        }
-
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text(
-              'Volunteer Leaderboard',
-              style: TextStyle(fontWeight: FontWeight.w600),
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      key: _scaffoldKey,
+      drawer: CustomDrawer(),
+      body: SafeArea(
+        child: Column(
+          children: [
+            CustomTopBar(
+              scaffoldKey: _scaffoldKey,
+              title: 'Leaderboard',
             ),
-            centerTitle: true,
-            automaticallyImplyLeading: true,
-            actions: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: IconButton(
-                  onPressed: () {},
-                  tooltip: 'View notifications',
-                  icon: const Icon(
-                    Icons.notifications_outlined,
-                    color: Colors.white,
-                    semanticLabel: 'Notifications',
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: GestureDetector(
-                  onTap: () {
-                    context.pushNamed(AppRoute.profileScreen.name);
-                  },
-                  child: Tooltip(
-                    message: 'Go to your profile',
-                    child: getAppbarProfileImage(),
-                  ),
-                ),
-              )
-            ],
-          ),
-          body: Container(
-              height: h,
-              child: Column(children: [
-                _topSection(w),
-                const Flexible(
-                  child: Board(),
-                ),
-              ])),
-          drawer: Drawer(
-            child: ListView(
-              children: [
-                ListTile(
-                  title: const Text('Home'),
-                  onTap: () {
-                    context.pushNamed(AppRoute.homeScreen.name);
-                  },
-                ),
-                ListTile(
-                  title: const Text('Calendar'),
-                  onTap: () {
-                    context.pushNamed(AppRoute.calendar.name);
-                  },
-                ),
-                ListTile(
-                  title: const Text('Organizations'),
-                  onTap: () {
-                    context.pushNamed(AppRoute.organizations.name);
-                  },
-                ),
-                ListTile(
-                  title: const Text('Events'),
-                  onTap: () {
-                    context.pushNamed(AppRoute.events.name);
-                  },
-                ),
-                ListTile(
-                  title: const Text('Announcements'),
-                  onTap: () {
-                    context.pushNamed(AppRoute.updates.name);
-                  },
-                ),
-                isOrg
-                    ? ListTile(
-                        title: const Text('Feedback'),
-                        onTap: () {
-                          context.pushNamed(AppRoute.feedbacklist.name);
-                        },
-                      )
-                    : ListTile(
-                        title: const Text('QR Scan'),
-                        onTap: () {
-                          context.pushNamed(AppRoute.qrScanner.name);
-                        },
-                      ),
-                ListTile(
-                  title: const Text('History'),
-                  onTap: () {
-                    context.pushNamed(AppRoute.eventHistory.name);
-                  },
-                ),
-                ListTile(
-                  title: const Text('Leaderboard'),
-                  onTap: () {
-                    context.pushNamed(AppRoute.leaderboard.name);
-                  },
-                ),
-                ListTile(
-                  title: const Text('Settings'),
-                  onTap: () {
-                    context.pushNamed(AppRoute.account.name);
-                  },
-                ),
-                ListTile(
-                  title: const Text('Sign Out'),
-                  onTap: () {
-                    final authRepository = ref.watch(authRepositoryProvider);
-                    authRepository.signOut();
-                    context.pushNamed(AppRoute.emailConfirm.name);
-                    //Navigator.pop(context);
-                  },
-                ),
-              ],
-            ),
-          ),
-        );
-      },
+            const SizedBox(height: 10),
+            const Expanded(
+              child: Leaderboard(),
+            )
+          ],
+        ),
+      ),
     );
   }
 }
 
-_topSection(double width) {
-  return Container(
-    //height: 200,
-    width: width,
-    color: const Color.fromARGB(255, 0, 108, 81),
-  );
+class Leaderboard extends ConsumerWidget {
+  const Leaderboard({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return CustomRefreshIndicator(
+      onRefresh: () async => ref.refresh(leaderboardProvider),
+      child: AsyncValueWidget<List<VolunteerModel>>(
+        value: ref.watch(leaderboardProvider),
+        loading: () => const Padding(
+          padding: EdgeInsets.only(top: 70),
+          child: CustomCircularLoader(),
+        ),
+        error: (error, st) {
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+            child: ErrorResponseHandler(
+              error: error,
+              retryCallback: () => ref.refresh(leaderboardProvider),
+              stackTrace: st,
+            ),
+          );
+        },
+        emptyOrNull: () => const EmptyStateWidget(
+          height: 395,
+          width: double.infinity,
+          margin: EdgeInsets.only(top: 20),
+          title: 'No volunteers found',
+        ),
+        data: (volunteers) {
+          return ListView.separated(
+            itemCount: volunteers.length,
+            physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
+            ),
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+            separatorBuilder: (_, __) => Insets.gapH20,
+            itemBuilder: (_, i) => LeaderboardItem(
+              volunteer: volunteers[i],
+              rank: i + 1,
+            ),
+          );
+        },
+      ),
+    );
+  }
 }
 
-class VolunteerCard extends StatelessWidget {
-  final LeaderboardEntry volunteer;
-  final int number;
+class LeaderboardItem extends ConsumerWidget {
+  final VolunteerModel volunteer;
+  final int rank;
 
-  const VolunteerCard(
-      {super.key, required this.volunteer, required this.number});
+  const LeaderboardItem({
+    super.key,
+    required this.volunteer,
+    required this.rank,
+  });
 
   Color? _getColor() {
-    if (number == 1) {
-      return Colors.yellow;
-    } else if (number == 2) {
-      return Colors.grey[500];
-    } else if (number == 3) {
-      return Colors.brown[200];
+    if (rank == 1) {
+      return Colors.amber;
+    } else if (rank == 2) {
+      return Colors.lightBlue;
+    } else if (rank == 3) {
+      return Colors.orange;
     } else {
-      return Colors.white;
+      return AppColors.tertiaryColor;
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+  String getTimeStringFromDouble(double value) {
+    if (value < 0) return 'Invalid Value';
+    int flooredValue = value.floor();
+    double decimalValue = value - flooredValue;
+    String hourValue = getHourString(flooredValue);
+    String minuteString = getMinuteString(decimalValue);
 
-    const style = TextStyle(fontSize: 20, fontWeight: FontWeight.normal);
-
-    return Consumer(
-      builder: (context, ref, child) {
-        final imagesRepository = ref.watch(imagesRepositoryProvider);
-
-        Widget getImage() {
-          return FutureBuilder(
-              future: imagesRepository.retrieveImage('3', volunteer.id),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  if (snapshot.hasError) {
-                    return Center(
-                      child: Text(
-                        '${snapshot.error} occurred',
-                        style: const TextStyle(fontSize: 18),
-                      ),
-                    );
-                  } else if (snapshot.hasData) {
-                    final String imageUrl = snapshot.data!;
-                    return ClipRRect(
-                        borderRadius: BorderRadius.circular(12.0),
-                        child:
-                            Image(image: NetworkImage(imageUrl), height: 75));
-                  }
-                }
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              });
-        }
-
-        return SingleChildScrollView(
-          child: ResponsiveCenter(
-            maxContentWidth: Breakpoint.tablet,
-            child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Card(
-                  color: _getColor(),
-                  elevation: 5,
-                  child: InkWell(
-                    onTap: () {},
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        leading: getImage(),
-                        title: Text(
-                          '${volunteer.firstName} ${volunteer.lastName}',
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 3,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.w600, fontSize: 18),
-                          textAlign: TextAlign.start,
-                        ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "${volunteer.totalVolunteerHours} hours",
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.w500, fontSize: 15),
-                              textAlign: TextAlign.start,
-                            ),
-                          ],
-                        ),
-                        trailing: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(60.0),
-                              color: _getColor(),
-                              border: Border.all()),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              number.toString(),
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.w800, fontSize: 20),
-                            ),
-                          ),
-                        ), // space to include org name
-                      ),
-                    ),
-                  ),
-                )),
-          ),
-        );
-      },
-    );
+    return '$hourValue:$minuteString';
   }
-}
 
-class Board extends StatefulWidget {
-  const Board({
-    super.key,
-  });
+  String getMinuteString(double decimalValue) {
+    return '${(decimalValue * 60).toInt()}'.padLeft(2, '0');
+  }
 
-  @override
-  _BoardState createState() => _BoardState();
-}
-
-class _BoardState extends State<Board> {
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-
-  @override
-  void initState() {
-    super.initState();
+  String getHourString(int flooredValue) {
+    return '$flooredValue';
   }
 
   @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer(
-      builder: (context, ref, child) {
-        final leaderboardRepository = ref.watch(leaderboardRepositoryProvider);
-        return Scaffold(
-          body: Container(
-            child: FutureBuilder<List<LeaderboardEntry>>(
-              future: leaderboardRepository.fetchLeaderboard(),
-              builder:
-                  (context, AsyncSnapshot<List<LeaderboardEntry>> snapshot) {
-                List<Widget> children;
-                if (snapshot.hasData) {
-                  //print(snapshot.data);
-                  children = [
-                    snapshot.data!.isEmpty
-                        ? const Center(
-                            child: Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text(
-                                "There are no volunteers to display on the leaderboard.",
-                                style: optionStyle,
-                              ),
-                            ),
-                          )
-                        : Container(
-                            height: 500,
-                            child: ListView.builder(
-                              itemCount: snapshot.data!.length,
-                              itemBuilder: (context, index) {
-                                return Container(
-                                    margin: const EdgeInsets.symmetric(
-                                      horizontal: 12.0,
-                                      vertical: 4.0,
-                                    ),
-                                    child: VolunteerCard(
-                                      volunteer:
-                                          snapshot.data!.elementAt(index),
-                                      number: index + 1,
-                                    ));
-                              },
-                            ),
-                          )
-                  ];
-                } else if (snapshot.hasError) {
-                  print(snapshot
-                      .error); // when the json response is empty it is read as a map
-                  children = <Widget>[
-                    const Icon(
-                      Icons.error_outline,
-                      color: Colors.red,
-                      size: 60,
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(top: 16),
-                      child: Text(
-                        'There are no volunteers to display on the leaderboard.',
-                        style: optionStyle,
-                      ),
-                    ),
-                  ];
-                } else {
-                  children = const <Widget>[
-                    SizedBox(
-                      width: 60,
-                      height: 60,
-                      child: CircularProgressIndicator(),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 16),
-                      child: Text('Awaiting result...'),
-                    ),
-                  ];
-                }
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: children,
-                  ),
-                );
-              },
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Card(
+      color: _getColor(),
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            CachedNetworkImage(
+              imageUrl: volunteer.profilePicPath!,
+              imageBuilder: (context, imageProvider) => Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                    )),
+              ),
             ),
-          ),
-        );
-      },
+            Column(
+              children: [
+                Text(
+                  '${volunteer.firstName} ${volunteer.lastName}',
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 3,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w600, fontSize: 18),
+                  textAlign: TextAlign.start,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "${getTimeStringFromDouble(volunteer.totalHours.toDouble())} hours",
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w500, fontSize: 15),
+                      textAlign: TextAlign.start,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(60.0),
+                  color: _getColor(),
+                  border: Border.all()),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  rank.toString(),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w800, fontSize: 20),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
-
-*/

@@ -1,5 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:knightassist/src/core/core.dart';
+import 'package:knightassist/src/features/auth/enums/user_role_enum.dart';
 import 'package:knightassist/src/features/auth/providers/auth_provider.dart';
 import 'package:knightassist/src/global/states/future_state.codegen.dart';
 
@@ -10,6 +11,17 @@ import '../repositories/volunteers_repository.dart';
 final userVolunteerProvider = FutureProvider.autoDispose((ref) async {
   final userId = ref.watch(authProvider.notifier).currentUserId;
   return await ref.watch(volunteersProvider).getVolunteer(volunteerId: userId);
+});
+
+final leaderboardProvider =
+    FutureProvider.autoDispose<List<VolunteerModel>>((ref) async {
+  final authProv = ref.watch(authProvider.notifier);
+  if (authProv.currentUserRole == UserRole.VOLUNTEER) {
+    return await ref.watch(volunteersProvider).getLeaderboard();
+  }
+  return await ref
+      .watch(volunteersProvider)
+      .getOrgLeaderboard(orgId: authProv.currentUserId);
 });
 
 class VolunteersProvider {

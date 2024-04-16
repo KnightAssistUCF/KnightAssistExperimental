@@ -34,7 +34,7 @@ class ProfileScreen extends HookConsumerWidget {
   }
 
   String getHourString(int flooredValue) {
-    return '${flooredValue % 24}';
+    return '$flooredValue';
   }
 
   @override

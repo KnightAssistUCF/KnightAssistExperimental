@@ -52,7 +52,10 @@ class VolunteerModel {
               .map((e) => e as String? ?? '')
               .toList()
           : [],
-      totalHours: json['totalVolunteerHours'] as num? ?? 0,
+      totalHours: (json['totalVolunteerHours'] != null &&
+              json['totalVolunteerHours'] is String)
+          ? double.parse(json['totalVolunteerHours'] as String)
+          : json['totalVolunteerHours'] as num? ?? 0,
       semesterHourGoal: json['semesterVolunteerHourGoal'] as num? ?? 0,
       categoryTags: (json['categoryTags'] != null)
           ? (json['categoryTags'] as List<dynamic>)

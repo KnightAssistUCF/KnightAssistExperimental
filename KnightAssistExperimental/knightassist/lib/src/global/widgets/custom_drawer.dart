@@ -81,6 +81,13 @@ class CustomDrawer extends HookConsumerWidget {
               ),
             ),
             ListTile(
+              title: const Text('Leaderboard'),
+              onTap: () {
+                AppRouter.popUntilRoot();
+                AppRouter.pushNamed(Routes.LeaderboardScreenRoute);
+              },
+            ),
+            ListTile(
               title: const Text('Profile'),
               onTap: () {
                 AppRouter.popUntilRoot();
