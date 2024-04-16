@@ -27,7 +27,7 @@ class QrConfirmationScreen extends StatelessWidget {
           onWillPop: () async => false,
           child: Container(
             decoration: const BoxDecoration(
-              gradient: AppColors.buttonGradientDanger,
+              gradient: AppColors.buttonGradientPrimary,
             ),
             padding:
                 EdgeInsets.only(bottom: Insets.bottomInsetsLow.height! + 5),
@@ -93,8 +93,7 @@ class QrConfirmationScreen extends StatelessWidget {
                                     width: double.infinity,
                                     onPressed: () {
                                       ref.invalidate(qrStateProvider);
-                                      AppRouter.popUntil(
-                                          Routes.HomeScreenRoute);
+                                      AppRouter.popUntilRoot();
                                     },
                                     color: AppColors.textWhite80Color,
                                     child: const Center(
@@ -120,8 +119,7 @@ class QrConfirmationScreen extends StatelessWidget {
                                       ref
                                           .read(currentEventProvider.notifier)
                                           .state = response;
-                                      AppRouter.popUntil(
-                                          Routes.HomeScreenRoute);
+                                      AppRouter.popUntilRoot();
                                       AppRouter.pushNamed(
                                           Routes.LeaveFeedbackScreenRoute);
                                     },
