@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:knightassist/src/config/routing/app_router.dart';
 import 'package:knightassist/src/global/providers/all_providers.dart';
 import 'package:knightassist/src/global/widgets/custom_text_button.dart';
 import 'package:knightassist/src/helpers/constants/app_colors.dart';
@@ -17,17 +18,13 @@ class RetryScanButton extends ConsumerWidget {
       child: CustomTextButton.outlined(
         width: double.infinity,
         onPressed: () {
-          if (checkIn) {
-            ref.read(qrProvider).checkIn(eventId: eventId);
-          } else {
-            ref.read(qrProvider).checkOut(eventId: eventId);
-          }
+          AppRouter.pop();
         },
         border: Border.all(width: 4, color: AppColors.textWhite80Color),
-        child: Center(
+        child: const Center(
           child: Text(
-            checkIn ? 'Retry Check In' : 'Retry Check Out',
-            style: const TextStyle(
+            'Retry Scan',
+            style: TextStyle(
               color: AppColors.textWhite80Color,
               fontSize: 15,
               letterSpacing: 0.7,

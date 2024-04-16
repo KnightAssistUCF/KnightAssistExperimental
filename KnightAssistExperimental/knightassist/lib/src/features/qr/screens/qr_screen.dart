@@ -104,7 +104,10 @@ class _QrScreenState extends ConsumerState<QrScreen> {
               flex: 1,
               child: Center(
                 child: (result != null)
-                    ? _buildCheckInOutButton()
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: _buildCheckInOutButton(),
+                      )
                     : const Text(
                         'Scan a code',
                         style: TextStyle(color: Colors.white),

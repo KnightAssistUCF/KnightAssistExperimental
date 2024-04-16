@@ -160,6 +160,15 @@ class QrConfirmationScreen extends StatelessWidget {
                             ),
                           ),
                         ),
+                        Expanded(
+                          child: Text(
+                            reason,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
                         RetryScanButton(checkIn: checkIn, eventId: eventId),
                       ],
                     ),
