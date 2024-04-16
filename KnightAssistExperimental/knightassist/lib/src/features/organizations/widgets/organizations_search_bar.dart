@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../global/widgets/custom_text_field.dart';
+import '../../../helpers/constants/app_colors.dart';
 import '../providers/search_providers.codegen.dart';
 
 class OrganizationsSearchBar extends ConsumerWidget {
@@ -17,10 +18,15 @@ class OrganizationsSearchBar extends ConsumerWidget {
           // Search Field
           Expanded(
             child: CustomTextField(
-              contentPadding: const EdgeInsets.fromLTRB(12, 13, 1, 22),
+              contentPadding: const EdgeInsets.fromLTRB(12, 13, 1, 13),
               onChanged: (searchTerm) => ref
-                  .read(searchProvider.notifier)
+                  .read(searchFilterProvider.notifier)
                   .update((_) => searchTerm ?? ''),
+              hintText: 'Search by name',
+              hintStyle: const TextStyle(
+                color: AppColors.textLightGreyColor,
+              ),
+              keyboardType: TextInputType.name,
               textInputAction: TextInputAction.search,
               prefix: const Icon(
                 Icons.search_rounded,
@@ -30,7 +36,7 @@ class OrganizationsSearchBar extends ConsumerWidget {
             ),
           ),
 
-          // If we add filter options, they will be here
+          // If we add filters, they will be here
         ],
       ),
     );

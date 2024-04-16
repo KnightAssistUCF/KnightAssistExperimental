@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+/*
+
 List<LeaderboardEntry> leaders = [];
 
 class leaderboard extends StatefulWidget {
@@ -427,3 +429,5 @@ class _BoardState extends State<Board> {
     );
   }
 }
+
+*/

@@ -83,7 +83,7 @@ class Routes {
     AddAnnouncementScreenRoute: (_) => const AddAnnouncementScreen(),
     QrConfirmationScreenRoute: (_) =>
         const QrConfirmationScreen(checkIn: false, eventId: ''),
-    LeaderboardScreenRoute: (_) => const leaderboard(),
+    // LeaderboardScreenRoute: (_) => const leaderboard(),
   };
 
   static RouteBuilder getRoute(String? routeName) {

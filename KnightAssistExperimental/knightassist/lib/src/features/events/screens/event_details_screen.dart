@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:knightassist/src/features/events/providers/events_provider.dart';
-import 'package:knightassist/src/features/events/providers/filter_providers.codegen.dart';
 import 'package:knightassist/src/features/organizations/providers/organizations_provider.dart';
 import 'package:knightassist/src/global/providers/all_providers.dart';
 import 'package:knightassist/src/global/states/future_state.codegen.dart';
@@ -78,7 +77,7 @@ class EventDetailsScreen extends HookConsumerWidget {
                       title: 'Success',
                       body: message,
                       buttonText: 'OK',
-                      onButtonPressed: () => AppRouter.pop(),
+                      onButtonPressed: () => AppRouter.pop(true),
                     ));
           },
           failed: (reason) async {
@@ -108,7 +107,7 @@ class EventDetailsScreen extends HookConsumerWidget {
                 body: 'Event deleted successfully',
                 buttonText: 'OK',
                 onButtonPressed: () {
-                  AppRouter.pop();
+                  AppRouter.pop(true);
                 },
               ),
             );

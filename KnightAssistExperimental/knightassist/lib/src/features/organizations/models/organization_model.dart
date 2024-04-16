@@ -12,10 +12,10 @@ class OrganizationModel {
     required this.categoryTags,
     required this.favorites,
     required this.announcements,
-    this.contacts,
+    required this.contacts,
     required this.isActive,
     required this.eventHappeningNow,
-    this.workingHours,
+    required this.workingHours,
   });
 
   final String id;
@@ -27,7 +27,7 @@ class OrganizationModel {
   final List<String> categoryTags;
   final List<String> favorites;
   final List<AnnouncementModel> announcements;
-  final ContactModel? contacts;
+  final ContactModel contacts;
   final bool isActive;
   final bool eventHappeningNow;
   final WorkingHoursModel? workingHours;
@@ -37,20 +37,35 @@ class OrganizationModel {
       id: json['_id'] as String,
       name: json['name'] as String,
       email: json['email'] as String,
-      description: json['description'] as String,
+      description: json['description'] as String? ?? '',
       profilePicPath: json['profilePicPath'] as String?,
       backgroundPicPath: json['backgroundURL'] as String?,
-      categoryTags: (json['categoryTags'] as List<dynamic>)
-          .map((e) => e as String)
-          .toList(),
-      favorites:
-          (json['favorites'] as List<dynamic>).map((e) => e as String).toList(),
-      announcements: (json['updates'] as List<dynamic>)
-          .map((e) => AnnouncementModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      contacts: (json['contacts'] != null)
-          ? ContactModel.fromJson(json['contactModel'] as Map<String, dynamic>)
-          : null,
+      categoryTags: (json['categoryTags'] != null)
+          ? (json['categoryTags'] as List<dynamic>)
+              .map((e) => e as String)
+              .toList()
+          : [],
+      favorites: (json['favorites'] != null)
+          ? (json['favorites'] as List<dynamic>)
+              .map((e) => e as String)
+              .toList()
+          : [],
+      announcements: (json['updates'] != null)
+          ? (json['updates'] as List<dynamic>)
+              .map((e) => AnnouncementModel.fromJson(e as Map<String, dynamic>))
+              .toList()
+          : [],
+      contacts: (json['contact'] != null)
+          ? ContactModel.fromJson(json['contact'] as Map<String, dynamic>)
+          : const ContactModel(
+              email: null,
+              phone: null,
+              website: null,
+              socialMedia: SocialMediaModel(
+                  facebook: null,
+                  twitter: null,
+                  instagram: null,
+                  linkedin: null)),
       isActive: json['isActive'] as bool,
       eventHappeningNow: json['eventHappeningNow'] as bool,
       workingHours: (json['workingHoursPerWeek'] != null)
@@ -63,10 +78,10 @@ class OrganizationModel {
 
 class ContactModel {
   const ContactModel({
-    this.socialMedia,
-    this.email,
-    this.phone,
-    this.website,
+    required this.socialMedia,
+    required this.email,
+    required this.phone,
+    required this.website,
   });
 
   final SocialMediaModel? socialMedia;
@@ -76,21 +91,23 @@ class ContactModel {
 
   static ContactModel fromJson(JSON json) {
     return ContactModel(
-      socialMedia: SocialMediaModel.fromJson(
-          json['socialMedia'] as Map<String, dynamic>),
-      email: json['email'] as String,
-      phone: json['phone'] as String,
-      website: json['website'] as String,
+      socialMedia: (json['socialMedia'] != null)
+          ? SocialMediaModel.fromJson(
+              json['socialMedia'] as Map<String, dynamic>)
+          : null,
+      email: json['email'] as String?,
+      phone: json['phone'] as String?,
+      website: json['website'] as String?,
     );
   }
 }
 
 class SocialMediaModel {
   const SocialMediaModel({
-    this.facebook,
-    this.twitter,
-    this.instagram,
-    this.linkedin,
+    required this.facebook,
+    required this.twitter,
+    required this.instagram,
+    required this.linkedin,
   });
 
   final String? facebook;
@@ -100,32 +117,32 @@ class SocialMediaModel {
 
   static SocialMediaModel fromJson(JSON json) {
     return SocialMediaModel(
-      facebook: json['facebook'] as String,
-      twitter: json['twitter'] as String,
-      instagram: json['instagram'] as String,
-      linkedin: json['linkedin'] as String,
+      facebook: json['facebook'] as String?,
+      twitter: json['twitter'] as String?,
+      instagram: json['instagram'] as String?,
+      linkedin: json['linkedin'] as String?,
     );
   }
 }
 
 class WorkingHoursModel {
   const WorkingHoursModel({
-    this.sunday,
-    this.monday,
-    this.tuesday,
-    this.wednesday,
-    this.thursday,
-    this.friday,
-    this.saturday,
+    required this.sunday,
+    required this.monday,
+    required this.tuesday,
+    required this.wednesday,
+    required this.thursday,
+    required this.friday,
+    required this.saturday,
   });
 
-  final WorkdayModel? sunday;
-  final WorkdayModel? monday;
-  final WorkdayModel? tuesday;
-  final WorkdayModel? wednesday;
-  final WorkdayModel? thursday;
-  final WorkdayModel? friday;
-  final WorkdayModel? saturday;
+  final WorkdayModel sunday;
+  final WorkdayModel monday;
+  final WorkdayModel tuesday;
+  final WorkdayModel wednesday;
+  final WorkdayModel thursday;
+  final WorkdayModel friday;
+  final WorkdayModel saturday;
 
   static WorkingHoursModel fromJson(JSON json) {
     return WorkingHoursModel(
@@ -143,17 +160,19 @@ class WorkingHoursModel {
 
 class WorkdayModel {
   const WorkdayModel({
-    this.start,
-    this.end,
+    required this.start,
+    required this.end,
   });
 
-  final String? start;
-  final String? end;
+  final DateTime? start;
+  final DateTime? end;
 
   static WorkdayModel fromJson(JSON json) {
     return WorkdayModel(
-      start: json['start'],
-      end: json['end'],
+      start: (json['start'] != null)
+          ? DateTime.parse(json['start'] as String)
+          : null,
+      end: (json['end'] != null) ? DateTime.parse(json['end'] as String) : null,
     );
   }
 }

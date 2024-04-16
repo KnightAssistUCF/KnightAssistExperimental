@@ -37,7 +37,13 @@ class OrganizationsListItem extends ConsumerWidget {
         child: InkResponse(
           onTap: () {
             ref.read(currentOrganizationProvider.notifier).state = org;
-            AppRouter.pushNamed(Routes.OrganizationDetailsScreenRoute);
+            AppRouter.pushNamed(Routes.OrganizationDetailsScreenRoute)
+                .then((value) {
+              if (value is bool && value) {
+                // ignore: unused_result
+                ref.refresh(organizationsProvider);
+              }
+            });
           },
           child: ClipRRect(
             borderRadius: Corners.rounded9,

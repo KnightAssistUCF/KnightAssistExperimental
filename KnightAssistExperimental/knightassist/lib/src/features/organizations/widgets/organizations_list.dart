@@ -17,9 +17,9 @@ class OrganizationsList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return CustomRefreshIndicator(
-      onRefresh: () async => ref.refresh(searchProvider),
+      onRefresh: () async => ref.refresh(filtersProvider),
       child: AsyncValueWidget<List<OrganizationModel>>(
-        value: ref.watch(searchedOrgsProvider),
+        value: ref.watch(filteredOrgsProvider),
         loading: () => const Padding(
           padding: EdgeInsets.only(top: 70),
           child: CustomCircularLoader(),
@@ -28,7 +28,7 @@ class OrganizationsList extends ConsumerWidget {
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
           child: ErrorResponseHandler(
             error: error,
-            retryCallback: () => ref.refresh(searchProvider),
+            retryCallback: () => ref.refresh(filtersProvider),
             stackTrace: st,
           ),
         ),
@@ -39,8 +39,8 @@ class OrganizationsList extends ConsumerWidget {
           title: 'No organizations found',
           subtitle: 'Try changing the search term',
         ),
-        data: (searchedOrganizations) {
-          final orgs = searchedOrganizations;
+        data: (filteredOrgs) {
+          final orgs = ref.watch(searchedOrgsProvider(filteredOrgs));
           return ListView.separated(
             itemCount: orgs.length,
             physics: const BouncingScrollPhysics(

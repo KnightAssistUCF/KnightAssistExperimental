@@ -1,4 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:knightassist/src/features/auth/enums/user_role_enum.dart';
+import 'package:knightassist/src/features/organizations/providers/organizations_provider.dart';
 import 'package:knightassist/src/global/providers/all_providers.dart';
 import '../../../core/core.dart';
 import '../../../global/states/future_state.codegen.dart';
@@ -8,9 +10,14 @@ import '../repositories/feedback_repository.dart';
 // Only call this if user role is org
 final orgFeedbackProvider =
     FutureProvider.autoDispose<List<FeedbackModel>>((ref) async {
-  final userId = ref.watch(authProvider.notifier).currentUserId;
+  final authProv = ref.watch(authProvider.notifier);
   final feedbackProv = ref.watch(feedbackProvider);
-  return await feedbackProv.getAllForOrg(orgId: userId);
+
+  if (authProv.currentUserRole == UserRole.ORGANIZATION) {
+    return await feedbackProv.getAllForOrg(orgId: authProv.currentUserId);
+  }
+  final currentOrg = ref.watch(currentOrganizationProvider);
+  return await feedbackProv.getAllForOrg(orgId: currentOrg!.id);
 });
 
 final feedbackStateProvider = StateProvider<FutureState<String>>((ref) {

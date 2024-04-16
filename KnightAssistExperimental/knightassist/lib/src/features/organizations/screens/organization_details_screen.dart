@@ -1,6 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:knightassist/src/features/events/models/event_model.dart';
+import 'package:knightassist/src/features/events/providers/feedback_provider.dart';
+import 'package:knightassist/src/features/events/widgets/feedback_list/feedback_list.dart';
+import 'package:knightassist/src/global/widgets/async_value_widget.dart';
+import 'package:knightassist/src/global/widgets/custom_refresh_indicator.dart';
 import 'package:knightassist/src/global/widgets/custom_text.dart';
+import 'package:knightassist/src/global/widgets/responsive_center.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -10,8 +17,13 @@ import 'package:knightassist/src/global/providers/all_providers.dart';
 import 'package:knightassist/src/global/widgets/scrollable_column.dart';
 
 import '../../../config/routing/routing.dart';
+import '../../../global/widgets/custom_circular_loader.dart';
+import '../../../global/widgets/empty_state_widget.dart';
+import '../../../global/widgets/error_response_handler.dart';
 import '../../../global/widgets/tag.dart';
+import '../../../helpers/constants/app_colors.dart';
 import '../../../helpers/constants/app_sizes.dart';
+import '../../../helpers/constants/app_styles.dart';
 import '../../auth/enums/user_role_enum.dart';
 import '../widgets/favorite_button.dart';
 
@@ -46,7 +58,6 @@ class OrganizationDetailsScreen extends ConsumerWidget {
                       onTap: () => AppRouter.pop(),
                     ),
                     // Title
-                    // Title
                     SizedBox(
                       width: 275,
                       child: CustomText(
@@ -77,7 +88,7 @@ class OrganizationDetailsScreen extends ConsumerWidget {
                         Column(
                           children: [
                             CachedNetworkImage(
-                              imageUrl: org!.backgroundPicPath!,
+                              imageUrl: org.backgroundPicPath!,
                               imageBuilder: (context, imageProvider) =>
                                   Container(
                                 height: 200,
@@ -183,15 +194,16 @@ class _TabBarOrgState extends State<TabBarOrg> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 4,
       child: Scaffold(
         body: Column(
           children: [
             const TabBar(
               tabs: [
-                Tab(icon: Text("About")),
-                Tab(icon: Text("Contact")),
-                Tab(icon: Text("Tags")),
+                Tab(icon: Icon(Icons.person)),
+                Tab(icon: Icon(Icons.phone_rounded)),
+                Tab(icon: Icon(Icons.tag)),
+                Tab(icon: Icon(Icons.messenger))
               ],
             ),
             Expanded(
@@ -204,7 +216,7 @@ class _TabBarOrgState extends State<TabBarOrg> with TickerProviderStateMixin {
                         child: Text(
                           organization.description,
                           style: const TextStyle(
-                            fontSize: 20,
+                            fontSize: 18,
                             color: Colors.white,
                           ),
                         ),
@@ -213,226 +225,259 @@ class _TabBarOrgState extends State<TabBarOrg> with TickerProviderStateMixin {
                   ),
                   ListView(
                     children: [
-                      Wrap(
-                        alignment: WrapAlignment.center,
-                        children: [
-                          organization.contacts?.socialMedia?.instagram == ''
-                              ? const SizedBox(
-                                  height: 0,
-                                )
-                              : IconButton(
-                                  onPressed: () async {
-                                    final Uri url = Uri.parse(organization
-                                            .contacts?.socialMedia?.instagram ??
-                                        '');
-                                    if (!await launchUrl(url)) {
-                                      throw Exception('Could not launch $url');
-                                    }
-                                  },
-                                  icon:
-                                      const FaIcon(FontAwesomeIcons.instagram)),
-                          organization.contacts?.socialMedia?.facebook == ''
-                              ? const SizedBox(
-                                  height: 0,
-                                )
-                              : IconButton(
-                                  onPressed: () async {
-                                    final Uri url = Uri.parse(organization
-                                            .contacts?.socialMedia?.facebook ??
-                                        '');
-                                    if (!await launchUrl(url)) {
-                                      throw Exception('Could not launch $url');
-                                    }
-                                  },
-                                  icon:
-                                      const FaIcon(FontAwesomeIcons.facebook)),
-                          organization.contacts?.socialMedia?.twitter == ''
-                              ? const SizedBox(
-                                  height: 0,
-                                )
-                              : IconButton(
-                                  onPressed: () async {
-                                    final Uri url = Uri.parse(organization
-                                            .contacts?.socialMedia?.twitter ??
-                                        '');
-                                    if (!await launchUrl(url)) {
-                                      throw Exception('Could not launch $url');
-                                    }
-                                  },
-                                  icon:
-                                      const FaIcon(FontAwesomeIcons.xTwitter)),
-                          organization.contacts?.socialMedia?.linkedin == ''
-                              ? const SizedBox(
-                                  height: 0,
-                                )
-                              : IconButton(
-                                  onPressed: () async {
-                                    final Uri url = Uri.parse(organization
-                                            .contacts?.socialMedia?.linkedin ??
-                                        '');
-                                    if (!await launchUrl(url)) {
-                                      throw Exception('Could not launch $url');
-                                    }
-                                  },
-                                  icon: const FaIcon(FontAwesomeIcons.linkedin))
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          alignment: Alignment.centerLeft,
-                          child: TextButton(
-                            onPressed: () async {
-                              final Uri url = Uri.parse(
-                                  'mailto:${organization.contacts?.email}?subject=Hello from KnightAssist&body=I am interested in volunteering with your organization!	');
-                              if (!await launchUrl(url)) {
-                                throw Exception('Could not launch $url');
-                              }
-                            },
-                            child: Wrap(children: [
-                              const Icon(Icons.email_outlined),
-                              Text(
-                                organization.contacts?.email ?? '',
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.white,
+                      organization.contacts.socialMedia == null &&
+                              organization.contacts.email == null &&
+                              organization.contacts.phone == null &&
+                              organization.contacts.website == null &&
+                              organization.workingHours == null
+                          ? const Padding(
+                              padding: EdgeInsets.all(8),
+                              child: Text(
+                                "This organization has no tags.",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 18,
                                 ),
                               ),
-                            ]),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          alignment: Alignment.centerLeft,
-                          child: TextButton(
-                            onPressed: () async {
-                              final Uri url = Uri.parse(
-                                  'tel:${organization.contacts?.phone}');
-                              if (!await launchUrl(url)) {
-                                throw Exception('Could not launch $url');
-                              }
-                            },
-                            child: Wrap(children: [
-                              const Icon(Icons.phone_rounded),
-                              Text(
-                                organization.contacts?.phone ?? '',
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.white,
-                                ),
+                            )
+                          : const SizedBox.shrink(),
+                      organization.contacts.socialMedia != null
+                          ? Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Wrap(
+                                alignment: WrapAlignment.center,
+                                children: [
+                                  organization.contacts.socialMedia!.facebook !=
+                                          null
+                                      ? IconButton(
+                                          onPressed: () async {
+                                            final Uri url = Uri.parse(
+                                                organization.contacts
+                                                    .socialMedia!.facebook!);
+                                            if (!await launchUrl(url)) {
+                                              throw Exception(
+                                                  'Could not launch $url');
+                                            }
+                                          },
+                                          icon: const FaIcon(
+                                              FontAwesomeIcons.facebook),
+                                        )
+                                      : const SizedBox.shrink(),
+                                  organization.contacts.socialMedia!.twitter !=
+                                          null
+                                      ? IconButton(
+                                          onPressed: () async {
+                                            final Uri url = Uri.parse(
+                                                organization.contacts
+                                                    .socialMedia!.twitter!);
+                                            if (!await launchUrl(url)) {
+                                              throw Exception(
+                                                  'Could not launch $url');
+                                            }
+                                          },
+                                          icon: const FaIcon(
+                                              FontAwesomeIcons.xTwitter),
+                                        )
+                                      : const SizedBox.shrink(),
+                                  organization.contacts.socialMedia!
+                                              .instagram !=
+                                          null
+                                      ? IconButton(
+                                          onPressed: () async {
+                                            final Uri url = Uri.parse(
+                                                organization.contacts
+                                                    .socialMedia!.instagram!);
+                                            if (!await launchUrl(url)) {
+                                              throw Exception(
+                                                  'Could not launch $url');
+                                            }
+                                          },
+                                          icon: const FaIcon(
+                                              FontAwesomeIcons.instagram),
+                                        )
+                                      : const SizedBox.shrink(),
+                                  organization.contacts.socialMedia!.linkedin !=
+                                          null
+                                      ? IconButton(
+                                          onPressed: () async {
+                                            final Uri url = Uri.parse(
+                                                organization.contacts
+                                                    .socialMedia!.linkedin!);
+                                            if (!await launchUrl(url)) {
+                                              throw Exception(
+                                                  'Could not launch $url');
+                                            }
+                                          },
+                                          icon: const FaIcon(
+                                              FontAwesomeIcons.linkedin),
+                                        )
+                                      : const SizedBox.shrink(),
+                                ],
                               ),
-                            ]),
-                          ),
-                        ),
-                      ),
-                      organization.contacts?.website == ''
-                          ? const SizedBox(height: 0)
-                          : Padding(
+                            )
+                          : const SizedBox.shrink(),
+                      organization.contacts.email != null
+                          ? Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                alignment: Alignment.centerLeft,
-                                child: TextButton(
-                                  onPressed: () async {
-                                    final Uri url = Uri.parse(
-                                        organization.contacts?.website ?? '');
-                                    if (!await launchUrl(url)) {
-                                      throw Exception('Could not launch $url');
-                                    }
-                                  },
-                                  child: Wrap(children: [
-                                    const Icon(Icons.computer),
-                                    Text(
-                                      organization.contacts?.website ?? '',
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.white,
-                                      ),
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.email_outlined,
+                                    size: 24,
+                                    color: AppColors.primaryColor,
+                                  ),
+                                  Insets.gapW10,
+                                  Expanded(
+                                    child: CustomText(
+                                      organization.contacts.email!,
+                                      maxLines: 2,
+                                      fontSize: 14,
+                                      color: AppColors.textWhite80Color,
                                     ),
-                                  ]),
-                                ),
+                                  ),
+                                ],
                               ),
-                            ),
-                      const Text("Working Hours per Week",
-                          style: TextStyle(color: Colors.white)),
-                      const Text("Monday:",
-                          style: TextStyle(color: Colors.white)),
-                      organization.workingHours?.monday?.start == null
-                          ? const SizedBox(height: 0)
-                          : Text(organization.workingHours!.monday!.start!,
-                              style: TextStyle(color: Colors.white)),
-                      const Text("-", style: TextStyle(color: Colors.white)),
-                      organization.workingHours?.monday?.end == null
-                          ? const SizedBox(height: 0)
-                          : Text(organization.workingHours!.monday!.end!,
-                              style: TextStyle(color: Colors.white)),
-                      const Text("Tuesday:",
-                          style: TextStyle(color: Colors.white)),
-                      organization.workingHours?.tuesday?.start == null
-                          ? const SizedBox(height: 0)
-                          : Text(organization.workingHours!.tuesday!.start!,
-                              style: TextStyle(color: Colors.white)),
-                      const Text("-", style: TextStyle(color: Colors.white)),
-                      organization.workingHours?.tuesday?.end == null
-                          ? const SizedBox(height: 0)
-                          : Text(organization.workingHours!.tuesday!.end!,
-                              style: TextStyle(color: Colors.white)),
-                      const Text("Wednesday:",
-                          style: TextStyle(color: Colors.white)),
-                      organization.workingHours?.wednesday?.start == null
-                          ? const SizedBox(height: 0)
-                          : Text(organization.workingHours!.wednesday!.start!,
-                              style: TextStyle(color: Colors.white)),
-                      const Text("-", style: TextStyle(color: Colors.white)),
-                      organization.workingHours?.wednesday?.end == null
-                          ? const SizedBox(height: 0)
-                          : Text(organization.workingHours!.wednesday!.end!,
-                              style: TextStyle(color: Colors.white)),
-                      const Text("Thursday:",
-                          style: TextStyle(color: Colors.white)),
-                      organization.workingHours?.thursday?.start == null
-                          ? const SizedBox(height: 0)
-                          : Text(organization.workingHours!.thursday!.start!,
-                              style: TextStyle(color: Colors.white)),
-                      const Text("-", style: TextStyle(color: Colors.white)),
-                      organization.workingHours?.thursday?.end == null
-                          ? const SizedBox(height: 0)
-                          : Text(organization.workingHours!.thursday!.end!,
-                              style: TextStyle(color: Colors.white)),
-                      const Text("Friday:",
-                          style: TextStyle(color: Colors.white)),
-                      organization.workingHours?.friday?.start == null
-                          ? const SizedBox(height: 0)
-                          : Text(organization.workingHours!.friday!.start!,
-                              style: TextStyle(color: Colors.white)),
-                      const Text("-", style: TextStyle(color: Colors.white)),
-                      organization.workingHours?.friday?.end == null
-                          ? const SizedBox(height: 0)
-                          : Text(organization.workingHours!.friday!.end!,
-                              style: TextStyle(color: Colors.white)),
-                      const Text("Saturday:",
-                          style: TextStyle(color: Colors.white)),
-                      organization.workingHours?.saturday?.start == null
-                          ? const SizedBox(height: 0)
-                          : Text(organization.workingHours!.saturday!.start!,
-                              style: TextStyle(color: Colors.white)),
-                      const Text("-", style: TextStyle(color: Colors.white)),
-                      organization.workingHours?.saturday?.end == null
-                          ? const SizedBox(height: 0)
-                          : Text(organization.workingHours!.saturday!.end!,
-                              style: TextStyle(color: Colors.white)),
-                      const Text("Sunday:",
-                          style: TextStyle(color: Colors.white)),
-                      organization.workingHours?.sunday?.start == null
-                          ? const SizedBox(height: 0)
-                          : Text(organization.workingHours!.sunday!.start!,
-                              style: TextStyle(color: Colors.white)),
-                      const Text("-", style: TextStyle(color: Colors.white)),
-                      organization.workingHours?.sunday?.end == null
-                          ? const SizedBox(height: 0)
-                          : Text(organization.workingHours!.sunday!.end!,
-                              style: TextStyle(color: Colors.white)),
+                            )
+                          : const SizedBox.shrink(),
+                      organization.contacts.phone != null
+                          ? Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.phone_rounded,
+                                    size: 24,
+                                    color: AppColors.primaryColor,
+                                  ),
+                                  Insets.gapW10,
+                                  Expanded(
+                                    child: CustomText(
+                                      organization.contacts.phone!,
+                                      maxLines: 2,
+                                      fontSize: 14,
+                                      color: AppColors.textWhite80Color,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : const SizedBox.shrink(),
+                      organization.contacts.website != null
+                          ? Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Row(
+                                children: [
+                                  const FaIcon(
+                                    FontAwesomeIcons.globe,
+                                    size: 24,
+                                    color: AppColors.primaryColor,
+                                  ),
+                                  Insets.gapW10,
+                                  Expanded(
+                                    child: CustomText(
+                                      organization.contacts.website!,
+                                      maxLines: 2,
+                                      fontSize: 14,
+                                      color: AppColors.textWhite80Color,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : const SizedBox.shrink(),
+                      organization.workingHours != null
+                          ? Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    "Working Hours per Week:",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14),
+                                  ),
+                                  organization.workingHours!.monday.start !=
+                                              null &&
+                                          organization
+                                                  .workingHours!.monday.end !=
+                                              null
+                                      ? CustomText(
+                                          'Monday: ${TimeOfDay.fromDateTime(organization.workingHours!.monday.start!).format(context)} - ${TimeOfDay.fromDateTime(organization.workingHours!.monday.end!).format(context)}',
+                                          maxLines: 2,
+                                          fontSize: 14,
+                                        )
+                                      : const SizedBox.shrink(),
+                                  organization.workingHours!.tuesday.start !=
+                                              null &&
+                                          organization
+                                                  .workingHours!.tuesday.end !=
+                                              null
+                                      ? CustomText(
+                                          'Tuesday: ${TimeOfDay.fromDateTime(organization.workingHours!.tuesday.start!).format(context)} - ${TimeOfDay.fromDateTime(organization.workingHours!.tuesday.end!).format(context)}',
+                                          maxLines: 2,
+                                          fontSize: 14,
+                                        )
+                                      : const SizedBox.shrink(),
+                                  organization.workingHours!.wednesday.start !=
+                                              null &&
+                                          organization.workingHours!.wednesday
+                                                  .end !=
+                                              null
+                                      ? CustomText(
+                                          'Wednesday: ${TimeOfDay.fromDateTime(organization.workingHours!.wednesday.start!).format(context)} - ${TimeOfDay.fromDateTime(organization.workingHours!.wednesday.end!).format(context)}',
+                                          maxLines: 2,
+                                          fontSize: 14,
+                                        )
+                                      : const SizedBox.shrink(),
+                                  organization.workingHours!.thursday.start !=
+                                              null &&
+                                          organization
+                                                  .workingHours!.thursday.end !=
+                                              null
+                                      ? CustomText(
+                                          'Thursday: ${TimeOfDay.fromDateTime(organization.workingHours!.thursday.start!).format(context)} - ${TimeOfDay.fromDateTime(organization.workingHours!.thursday.end!).format(context)}',
+                                          maxLines: 2,
+                                          fontSize: 14,
+                                        )
+                                      : const SizedBox.shrink(),
+                                  organization.workingHours!.friday.start !=
+                                              null &&
+                                          organization
+                                                  .workingHours!.friday.end !=
+                                              null
+                                      ? CustomText(
+                                          'Friday: ${TimeOfDay.fromDateTime(organization.workingHours!.friday.start!).format(context)} - ${TimeOfDay.fromDateTime(organization.workingHours!.friday.end!).format(context)}',
+                                          maxLines: 2,
+                                          fontSize: 14,
+                                        )
+                                      : const SizedBox.shrink(),
+                                  organization.workingHours!.saturday.start !=
+                                              null &&
+                                          organization
+                                                  .workingHours!.saturday.end !=
+                                              null
+                                      ? CustomText(
+                                          'Saturday: ${TimeOfDay.fromDateTime(organization.workingHours!.saturday.start!).format(context)} - ${TimeOfDay.fromDateTime(organization.workingHours!.saturday.end!).format(context)}',
+                                          maxLines: 2,
+                                          fontSize: 14,
+                                        )
+                                      : const SizedBox.shrink(),
+                                  organization.workingHours!.sunday.start !=
+                                              null &&
+                                          organization
+                                                  .workingHours!.sunday.end !=
+                                              null
+                                      ? CustomText(
+                                          'Sunday: ${TimeOfDay.fromDateTime(organization.workingHours!.sunday.start!).format(context)} - ${TimeOfDay.fromDateTime(organization.workingHours!.sunday.end!).format(context)}',
+                                          maxLines: 2,
+                                          fontSize: 14,
+                                        )
+                                      : const SizedBox.shrink(),
+                                ],
+                              ),
+                            )
+                          : const SizedBox.shrink(),
                     ],
                   ),
                   ListView(
@@ -444,9 +489,10 @@ class _TabBarOrgState extends State<TabBarOrg> with TickerProviderStateMixin {
                                   padding: EdgeInsets.all(8.0),
                                   child: Text(
                                     "This organization has no tags.",
+                                    textAlign: TextAlign.center,
                                     style: TextStyle(
-                                        fontSize: Sizes.p20,
-                                        color: Colors.white),
+                                      fontSize: 18,
+                                    ),
                                   ),
                                 )
                               : Wrap(children: [
@@ -455,10 +501,142 @@ class _TabBarOrgState extends State<TabBarOrg> with TickerProviderStateMixin {
                                 ])),
                     ],
                   ),
+                  ListView(
+                    children: const [
+                      SizedBox(
+                        height: 240,
+                        width: 100,
+                        child: LocalFeedbackList(),
+                      )
+                    ],
+                  ),
                 ],
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class LocalFeedbackList extends ConsumerWidget {
+  const LocalFeedbackList({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return AsyncValueWidget(
+      value: ref.watch(orgFeedbackProvider),
+      loading: () => const Padding(
+        padding: EdgeInsets.all(8),
+        child: CustomCircularLoader(),
+      ),
+      error: (error, st) => Padding(
+        padding: const EdgeInsets.all(8),
+        child: ErrorResponseHandler(
+          error: error,
+          retryCallback: () => ref.refresh(orgFeedbackProvider),
+          stackTrace: st,
+        ),
+      ),
+      emptyOrNull: () => const EmptyStateWidget(
+        height: 395,
+        width: double.infinity,
+        margin: EdgeInsets.only(top: 8),
+        title: 'No feedback found',
+      ),
+      data: (feedback) {
+        return ListView.builder(
+          itemCount: feedback.length,
+          scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
+          physics: const ClampingScrollPhysics(),
+          padding: const EdgeInsets.all(8),
+          itemBuilder: (_, i) => LocalFeedbackListItem(feedback: feedback[i]),
+        );
+      },
+    );
+  }
+}
+
+class LocalFeedbackListItem extends StatelessWidget {
+  final FeedbackModel feedback;
+
+  const LocalFeedbackListItem({super.key, required this.feedback});
+
+  @override
+  Widget build(BuildContext context) {
+    return ResponsiveCenter(
+      maxContentWidth: 220,
+      child: SingleChildScrollView(
+        child: Card(
+          shape: RoundedRectangleBorder(
+            side: const BorderSide(
+              color: Colors.black26,
+              width: 1.0,
+            ),
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          elevation: 5,
+          child: Padding(
+            padding: const EdgeInsets.all(0.05),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    feedback.eventName,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w600, fontSize: 18),
+                    textAlign: TextAlign.start,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    feedback.volunteerName,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w500, fontSize: 16),
+                    textAlign: TextAlign.start,
+                  ),
+                ),
+                RatingBarIndicator(
+                  rating: feedback.rating.toDouble(),
+                  itemSize: 20.0,
+                  direction: Axis.horizontal,
+                  itemCount: 5,
+                  itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                  itemBuilder: (context, _) => const Icon(
+                    Icons.star,
+                    color: Colors.amber,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    feedback.content,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 3,
+                    style: const TextStyle(fontWeight: FontWeight.w400),
+                    textAlign: TextAlign.start,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    TimeOfDay.fromDateTime(feedback.timeSubmitted)
+                        .format(context),
+                    style: const TextStyle(fontWeight: FontWeight.w400),
+                    textAlign: TextAlign.start,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

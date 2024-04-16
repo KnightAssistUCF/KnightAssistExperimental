@@ -6,7 +6,7 @@ part of 'filter_providers.codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$filteredEventsHash() => r'4b796e973927070d54d28677adcc82fc213a0cca';
+String _$filteredEventsHash() => r'425cbd443fe26c8a026b0f77393090b2b18f32e4';
 
 /// See also [filteredEvents].
 @ProviderFor(filteredEvents)

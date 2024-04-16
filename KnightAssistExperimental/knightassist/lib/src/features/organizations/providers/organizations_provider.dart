@@ -1,6 +1,7 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:knightassist/src/features/events/providers/events_provider.dart';
 import 'package:knightassist/src/global/providers/all_providers.dart';
+import 'package:knightassist/src/helpers/typedefs.dart';
 
 import '../../../global/states/edit_state.codegen.dart';
 import '../models/organization_model.dart';
@@ -53,23 +54,17 @@ class OrganizationsProvider {
         _ref = ref,
         super();
 
-  Future<List<OrganizationModel>> getAllOrgs([String? searchTerm]) async {
+  Future<List<OrganizationModel>> getAllOrgs([JSON? queryParams]) async {
     final imgProv = _ref.watch(imagesProvider);
-    final queryParams = <String, Object>{
-      if (searchTerm != null) 'searchTerm': searchTerm,
-    };
     List<OrganizationModel> temp = await _organizationsRepository
         .fetchAllOrganizations(queryParameters: queryParams);
     for (OrganizationModel o in temp) {
       o.profilePicPath = await imgProv.retrieveImage(type: '2', id: o.id);
       o.backgroundPicPath = await imgProv.retrieveImage(type: '4', id: o.id);
     }
-    if (searchTerm != null) {
-      temp = temp
-          .where((element) =>
-              element.name.toLowerCase().contains(searchTerm.toLowerCase()))
-          .toList();
-    }
+
+    // Handle future queryParams here
+
     return temp;
   }
 

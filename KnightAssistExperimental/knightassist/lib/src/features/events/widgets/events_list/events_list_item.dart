@@ -26,7 +26,10 @@ class EventsListItem extends ConsumerWidget {
       onTap: () {
         ref.read(currentEventProvider.notifier).state = event;
         AppRouter.pushNamed(Routes.EventDetailsScreenRoute).then((value) {
-          ref.refresh(eventsProvider);
+          if (value is bool && value) {
+            // ignore: unused_result
+            ref.refresh(eventsProvider);
+          }
         });
       },
       child: ClipRRect(
@@ -125,87 +128,6 @@ class EventsListItem extends ConsumerWidget {
           ),
         ),
       ),
-      /*
-      child: Card(
-        child: Padding(
-            padding: const EdgeInsets.all(Sizes.p16),
-            child: Column(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: CachedNetworkImage(
-                    imageUrl: event.profilePicPath,
-                    imageBuilder: (context, imageProvider) => Container(
-                      width: 120,
-                      height: 120,
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                        image: imageProvider,
-                        fit: BoxFit.cover,
-                      )),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Text(
-                  event.name,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 18,
-                      color: AppColors.textWhite80Color),
-                  textAlign: TextAlign.start,
-                ),
-                Text(
-                  event.location,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w400,
-                      color: AppColors.textWhite80Color),
-                  textAlign: TextAlign.start,
-                ),
-
-                /*
-                // Edit Button if sponsoring org
-                Visibility(
-                  visible: authProv.currentUserRole == UserRole.ORGANIZATION &&
-                      authProv.currentUserId == event.sponsoringOrganizationId,
-                  child: CustomTextButton(
-                    child: const Center(
-                      child: Text(
-                        'Edit Event',
-                      ),
-                    ),
-                    onPressed: () {
-                      ref
-                          .read(currentEventProvider.notifier)
-                          .update((_) => event);
-                      AppRouter.pushNamed(Routes.EditEventScreenRoute);
-                    },
-                  ),
-                ),
-
-                // RSVP button if student
-                Visibility(
-                  visible: authProv.currentUserRole == UserRole.VOLUNTEER,
-                  child: CustomTextButton(
-                    child: const Center(
-                      child: Text(
-                        'RSVP',
-                      ),
-                    ),
-                    onPressed: () {
-                      // RSVP dialog
-                    },
-                  ),
-                ),
-                */
-              ],
-            )),
-      ),
-      */
     );
   }
 }
