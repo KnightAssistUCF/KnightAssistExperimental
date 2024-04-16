@@ -8,6 +8,7 @@ import 'package:knightassist/src/features/events/screens/feedback_list_screen.da
 import 'package:knightassist/src/features/events/screens/leave_feedback_screen.dart';
 import 'package:knightassist/src/features/qr/screens/qr_confirmation_screen.dart';
 import 'package:knightassist/src/features/qr/screens/qr_screen.dart';
+import 'package:knightassist/src/features/volunteers/screens/leaderboard.dart';
 
 import '../../features/auth/screens/forgot_password_screen.dart';
 import '../../features/auth/screens/login_screen.dart';
@@ -56,6 +57,7 @@ class Routes {
       '/announcements-list-screen';
   static const String AddAnnouncementScreenRoute = '/add-announcement-screen';
   static const String QrConfirmationScreenRoute = '/qr-confirmation-screen';
+  static const String LeaderboardScreenRoute = '/leaderboard-screen';
 
   static final Map<String, RouteBuilder> _routesMap = {
     AppStartupScreenRoute: (_) => const AppStartupScreen(),
@@ -81,6 +83,7 @@ class Routes {
     AddAnnouncementScreenRoute: (_) => const AddAnnouncementScreen(),
     QrConfirmationScreenRoute: (_) =>
         const QrConfirmationScreen(checkIn: false, eventId: ''),
+    LeaderboardScreenRoute: (_) => const leaderboard(),
   };
 
   static RouteBuilder getRoute(String? routeName) {
