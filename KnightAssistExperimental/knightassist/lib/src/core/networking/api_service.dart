@@ -155,7 +155,7 @@ class ApiService implements ApiInterface {
     required T Function(JSON response) converter,
   }) async {
     //Entire map of response
-    final dataMap = await _dioService.patch(
+    final dataMap = await _dioService.post(
       endpoint: endpoint,
       data: data,
       options: Options(

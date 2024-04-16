@@ -1,9 +1,13 @@
+import 'package:chip_list/chip_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:knightassist/src/global/widgets/custom_text.dart';
 import 'package:knightassist/src/helpers/constants/app_colors.dart';
+import 'package:knightassist/src/helpers/constants/tags.dart';
+import 'package:knightassist/src/helpers/extensions/datetime_extension.dart';
 
 import '../../../config/routing/routing.dart';
 import '../../../global/providers/all_providers.dart';
@@ -31,6 +35,8 @@ class AddEventScreen extends HookConsumerWidget {
 
     DateTime startTime = DateTime.now();
     DateTime endTime = DateTime.now();
+
+    final List<int> chosenTags = [];
 
     ref.listen<EditState>(
       eventStateProvider,
@@ -99,6 +105,7 @@ class AddEventScreen extends HookConsumerWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 20, vertical: 10),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CustomTextField(
                           controller: nameController,
@@ -126,50 +133,77 @@ class AddEventScreen extends HookConsumerWidget {
                           textInputAction: TextInputAction.next,
                         ),
                         const SizedBox(height: 20),
-                        CustomTextButton(
-                          color: AppColors.primaryColor,
-                          child: const Center(
-                            child: Text(
-                              'Pick Start Time',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                                letterSpacing: 0.7,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                          onPressed: () {
-                            DatePicker.showDateTimePicker(
-                              context,
-                              onConfirm: (time) {
-                                startTime = time;
-                              },
+                        StatefulBuilder(
+                          builder: (context, setState) {
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                CustomText(
+                                  'Start Time: ${startTime.toDateString()}',
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                IconButton(
+                                    onPressed: () {
+                                      DatePicker.showDateTimePicker(
+                                        context,
+                                        onConfirm: (time) {
+                                          setState(() => startTime = time);
+                                        },
+                                      );
+                                    },
+                                    icon: const Icon(Icons.edit))
+                              ],
                             );
                           },
                         ),
-                        const SizedBox(height: 20),
-                        CustomTextButton(
-                          color: AppColors.primaryColor,
-                          child: const Center(
-                            child: Text(
-                              'Pick End Time',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                                letterSpacing: 0.7,
-                                fontWeight: FontWeight.w600,
+                        StatefulBuilder(builder: (context, setState) {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              CustomText(
+                                'End Time: ${endTime.toDateString()}',
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                ),
                               ),
-                            ),
+                              IconButton(
+                                  onPressed: () {
+                                    DatePicker.showDateTimePicker(
+                                      context,
+                                      onConfirm: (time) {
+                                        setState(() => endTime = time);
+                                      },
+                                    );
+                                  },
+                                  icon: const Icon(Icons.edit))
+                            ],
+                          );
+                        }),
+                        const SizedBox(height: 20),
+                        const Text(
+                          'Choose Content Tags',
+                          style: TextStyle(color: AppColors.primaryColor),
+                        ),
+                        const SizedBox(height: 10),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ChipList(
+                            listOfChipNames: tags,
+                            supportsMultiSelect: true,
+                            activeBgColorList: const [AppColors.primaryColor],
+                            activeTextColorList: const [
+                              AppColors.textWhite80Color
+                            ],
+                            inactiveTextColorList: const [
+                              AppColors.textBlackColor
+                            ],
+                            shouldWrap: true,
+                            listOfChipIndicesCurrentlySeclected: chosenTags,
+                            runSpacing: 2,
+                            spacing: 2,
                           ),
-                          onPressed: () {
-                            DatePicker.showDateTimePicker(
-                              context,
-                              onConfirm: (time) {
-                                endTime = time;
-                              },
-                            );
-                          },
                         ),
                       ],
                     ),
@@ -184,6 +218,12 @@ class AddEventScreen extends HookConsumerWidget {
                   onPressed: () async {
                     if (formKey.currentState!.validate()) {
                       formKey.currentState!.save();
+
+                      final List<String> newTags = [];
+                      for (int i in chosenTags) {
+                        newTags.add(tags[i]);
+                      }
+
                       ref.read(eventsProvider).createEvent(
                           name: nameController.text,
                           description: descriptionController.text,
@@ -192,7 +232,7 @@ class AddEventScreen extends HookConsumerWidget {
                           profilePicPath: '',
                           startTime: startTime,
                           endTime: endTime,
-                          eventTags: [],
+                          eventTags: newTags,
                           maxAttendees:
                               int.parse(maxVolunteersController.text));
                     }

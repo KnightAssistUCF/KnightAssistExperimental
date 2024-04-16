@@ -1,4 +1,7 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:knightassist/src/core/core.dart';
+import 'package:knightassist/src/features/auth/providers/auth_provider.dart';
+import 'package:knightassist/src/global/states/future_state.codegen.dart';
 
 import '../../../global/providers/all_providers.dart';
 import '../models/volunteer_model.dart';
@@ -33,22 +36,38 @@ class VolunteersProvider {
     return temp;
   }
 
-  Future<String> editVolunteer({
+  Future<void> editVolunteer({
     required String volunteerId,
     String? firstName,
     String? lastName,
     String? email,
     String? password,
+    List<String>? categoryTags,
+    bool? recieveEmails,
   }) async {
     final data = {
       'id': volunteerId,
-      'firstName': firstName,
-      'lastName': lastName,
-      'email': email,
-      'password': password,
+      if (firstName != null) 'firstName': firstName,
+      if (lastName != null) 'lastName': lastName,
+      if (email != null) 'email': email,
+      if (password != null) 'password': password,
+      if (categoryTags != null) 'categoryTags': categoryTags,
+      if (recieveEmails != null) 'recieveEmails': recieveEmails,
     };
-    if (data.isEmpty) return "nothing to update";
-    return await _volunteersRepository.update(data: data);
+
+    final editProfileStateProv = _ref.read(editProfileStateProvider.notifier);
+    editProfileStateProv.state = const FutureState.idle();
+
+    await Future<void>.delayed(const Duration(milliseconds: 100)).then((_) {
+      editProfileStateProv.state = const FutureState.loading();
+    });
+
+    try {
+      final response = await _volunteersRepository.update(data: data);
+      editProfileStateProv.state = FutureState.data(data: response);
+    } on CustomException catch (e) {
+      editProfileStateProv.state = FutureState.failed(reason: e.message);
+    }
   }
 
   Future<String> deleteVolunteer({

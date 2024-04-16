@@ -1,13 +1,18 @@
+import 'package:chip_list/chip_list.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:knightassist/src/helpers/constants/app_colors.dart';
+import 'package:knightassist/src/helpers/constants/tags.dart';
+import 'package:knightassist/src/helpers/extensions/datetime_extension.dart';
 
 import '../../../config/routing/routing.dart';
 import '../../../global/providers/all_providers.dart';
 import '../../../global/states/edit_state.codegen.dart';
 import '../../../global/widgets/custom_dialog.dart';
+import '../../../global/widgets/custom_text.dart';
 import '../../../global/widgets/custom_text_button.dart';
 import '../../../global/widgets/custom_text_field.dart';
 import '../../../global/widgets/scrollable_column.dart';
@@ -27,33 +32,17 @@ class EditEventScreen extends HookConsumerWidget {
     final descriptionController =
         useTextEditingController(text: event.description);
     final locationController = useTextEditingController(text: event.location);
-    final startTimeController =
-        useTextEditingController(text: event.startTime.toIso8601String());
-    final endTimeController =
-        useTextEditingController(text: event.endTime.toIso8601String());
     final maxVolunteersController =
         useTextEditingController(text: event.maxAttendees.toString());
 
-    _selectStartTime() async {
-      final DateTime? picked = await showDatePicker(
-          context: context,
-          initialDate: DateTime.parse(startTimeController.text),
-          firstDate: DateTime(2000),
-          lastDate: DateTime(2100));
-      if (picked != null &&
-          picked != DateTime.parse(startTimeController.text)) {
-        startTimeController.text = picked.toIso8601String();
-      }
-    }
+    DateTime startTime = event.startTime;
+    DateTime endTime = event.endTime;
 
-    _selectEndTime() async {
-      final DateTime? picked = await showDatePicker(
-          context: context,
-          initialDate: DateTime.parse(endTimeController.text),
-          firstDate: DateTime(2000),
-          lastDate: DateTime(2100));
-      if (picked != null && picked != DateTime.parse(endTimeController.text)) {
-        endTimeController.text = picked.toIso8601String();
+    final List<int> chosenTags = [];
+
+    for (int i = 0; i < tags.length; i++) {
+      if (event.eventTags.contains(tags[i])) {
+        chosenTags.add(i);
       }
     }
 
@@ -117,6 +106,7 @@ class EditEventScreen extends HookConsumerWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       CustomTextField(
                         controller: nameController,
@@ -138,33 +128,84 @@ class EditEventScreen extends HookConsumerWidget {
                       ),
                       const SizedBox(height: 20),
                       CustomTextField(
-                        controller: startTimeController,
-                        floatingText: 'Start Time',
-                        textInputAction: TextInputAction.next,
-                        suffix: IconButton(
-                          color: Colors.black,
-                          icon: const Icon(Icons.calendar_today),
-                          onPressed: () => _selectStartTime(),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      CustomTextField(
-                        controller: endTimeController,
-                        floatingText: 'End Time',
-                        textInputAction: TextInputAction.next,
-                        suffix: IconButton(
-                          color: Colors.black,
-                          icon: const Icon(Icons.calendar_today),
-                          onPressed: () => _selectEndTime(),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      CustomTextField(
                         controller: maxVolunteersController,
                         floatingText: 'Max Volunteers',
                         keyboardType: TextInputType.number,
                         textInputAction: TextInputAction.next,
-                      )
+                      ),
+                      const SizedBox(height: 20),
+                      StatefulBuilder(
+                        builder: (context, setState) {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              CustomText(
+                                'Start Time: ${startTime.toDateString()}',
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                ),
+                              ),
+                              IconButton(
+                                  onPressed: () {
+                                    DatePicker.showDateTimePicker(
+                                      context,
+                                      onConfirm: (time) {
+                                        setState(() => startTime = time);
+                                      },
+                                    );
+                                  },
+                                  icon: const Icon(Icons.edit))
+                            ],
+                          );
+                        },
+                      ),
+                      StatefulBuilder(builder: (context, setState) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            CustomText(
+                              'End Time: ${endTime.toDateString()}',
+                              style: const TextStyle(
+                                fontSize: 18,
+                              ),
+                            ),
+                            IconButton(
+                                onPressed: () {
+                                  DatePicker.showDateTimePicker(
+                                    context,
+                                    onConfirm: (time) {
+                                      setState(() => endTime = time);
+                                    },
+                                  );
+                                },
+                                icon: const Icon(Icons.edit))
+                          ],
+                        );
+                      }),
+                      const SizedBox(height: 20),
+                      const Text(
+                        'Choose Content Tags',
+                        style: TextStyle(color: AppColors.primaryColor),
+                      ),
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ChipList(
+                          listOfChipNames: tags,
+                          supportsMultiSelect: true,
+                          activeBgColorList: const [AppColors.primaryColor],
+                          activeTextColorList: const [
+                            AppColors.textWhite80Color
+                          ],
+                          inactiveTextColorList: const [
+                            AppColors.textBlackColor
+                          ],
+                          shouldWrap: true,
+                          listOfChipIndicesCurrentlySeclected: chosenTags,
+                          runSpacing: 2,
+                          spacing: 2,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -181,11 +222,20 @@ class EditEventScreen extends HookConsumerWidget {
                   onPressed: () async {
                     if (formKey.currentState!.validate()) {
                       formKey.currentState!.save();
+
+                      final List<String> newTags = [];
+                      for (int i in chosenTags) {
+                        newTags.add(tags[i]);
+                      }
+
                       ref.read(eventsProvider).editEvent(
                             eventId: event.id,
                             orgId: event.sponsoringOrganizationId,
                             name: nameController.text,
                             description: descriptionController.text,
+                            startTime: startTime,
+                            endTime: endTime,
+                            eventTags: newTags,
                           );
                     }
                   },

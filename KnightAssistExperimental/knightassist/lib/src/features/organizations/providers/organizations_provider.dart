@@ -3,7 +3,10 @@ import 'package:knightassist/src/features/events/providers/events_provider.dart'
 import 'package:knightassist/src/global/providers/all_providers.dart';
 import 'package:knightassist/src/helpers/typedefs.dart';
 
+import '../../../core/core.dart';
 import '../../../global/states/edit_state.codegen.dart';
+import '../../../global/states/future_state.codegen.dart';
+import '../../auth/providers/auth_provider.dart';
 import '../models/organization_model.dart';
 import '../repositories/organizations_repository.dart';
 
@@ -81,13 +84,13 @@ class OrganizationsProvider {
     return temp;
   }
 
-  // TODO: Finish update org function
-  Future<String> editOrg({
+  Future<void> editOrg({
     required String orgId,
     String? name,
     String? email,
     String? password,
     String? description,
+    List<String>? categoryTags,
   }) async {
     final data = <String, Object>{
       'id': orgId,
@@ -95,8 +98,23 @@ class OrganizationsProvider {
       if (email != null) 'email': email,
       if (password != null) 'password': password,
       if (description != null) 'description': description,
+      if (categoryTags != null) 'categoryTags': categoryTags,
     };
-    return await _organizationsRepository.editOrganization(data: data);
+
+    final editProfileStateProv = _ref.read(editProfileStateProvider.notifier);
+    editProfileStateProv.state = const FutureState.idle();
+
+    await Future<void>.delayed(const Duration(milliseconds: 100)).then((_) {
+      editProfileStateProv.state = const FutureState.loading();
+    });
+
+    try {
+      final response =
+          await _organizationsRepository.editOrganization(data: data);
+      editProfileStateProv.state = FutureState.data(data: response);
+    } on CustomException catch (e) {
+      editProfileStateProv.state = FutureState.failed(reason: e.message);
+    }
   }
 
   Future<String> deleteOrg({
