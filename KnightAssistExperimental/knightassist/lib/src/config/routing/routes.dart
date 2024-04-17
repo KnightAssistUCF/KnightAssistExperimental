@@ -58,6 +58,7 @@ class Routes {
   static const String AddAnnouncementScreenRoute = '/add-announcement-screen';
   static const String QrConfirmationScreenRoute = '/qr-confirmation-screen';
   static const String LeaderboardScreenRoute = '/leaderboard-screen';
+  static const String OrgEventsListScreenRoute = '/org-events-list-screen';
 
   static final Map<String, RouteBuilder> _routesMap = {
     AppStartupScreenRoute: (_) => const AppStartupScreen(),

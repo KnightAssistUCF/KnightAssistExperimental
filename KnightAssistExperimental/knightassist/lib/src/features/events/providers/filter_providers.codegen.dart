@@ -9,6 +9,7 @@ part 'filter_providers.codegen.g.dart';
 
 final searchFilterProvider = StateProvider.autoDispose<String>((ref) => '');
 final eventDateFilterProvider = StateProvider<DateTime?>((ref) => null);
+final orgFilterProvider = StateProvider.autoDispose<String>((ref) => '');
 
 final filtersProvider = Provider<JSON>(
   (ref) {
@@ -39,5 +40,19 @@ List<EventModel> searchedEvents(
   }
   return filteredEvents
       .where((event) => event.name.toLowerCase().contains(_searchTerm))
+      .toList();
+}
+
+@riverpod
+List<EventModel> orgEvents(
+  OrgEventsRef ref,
+  List<EventModel> orgEvents,
+) {
+  final _org = ref.watch(orgFilterProvider);
+  if (_org.isEmpty) {
+    return orgEvents;
+  }
+  return orgEvents
+      .where((event) => event.sponsoringOrganizationId == _org)
       .toList();
 }

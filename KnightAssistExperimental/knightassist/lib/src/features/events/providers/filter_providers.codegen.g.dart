@@ -173,5 +173,129 @@ class _SearchedEventsProviderElement
   List<EventModel> get filteredEvents =>
       (origin as SearchedEventsProvider).filteredEvents;
 }
+
+String _$orgEventsHash() => r'77bcfa4ae465c1b7d78be1a287e9fa9c18ed15ef';
+
+/// See also [orgEvents].
+@ProviderFor(orgEvents)
+const orgEventsProvider = OrgEventsFamily();
+
+/// See also [orgEvents].
+class OrgEventsFamily extends Family<List<EventModel>> {
+  /// See also [orgEvents].
+  const OrgEventsFamily();
+
+  /// See also [orgEvents].
+  OrgEventsProvider call(
+    List<EventModel> orgEvents,
+  ) {
+    return OrgEventsProvider(
+      orgEvents,
+    );
+  }
+
+  @override
+  OrgEventsProvider getProviderOverride(
+    covariant OrgEventsProvider provider,
+  ) {
+    return call(
+      provider.orgEvents,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'orgEventsProvider';
+}
+
+/// See also [orgEvents].
+class OrgEventsProvider extends AutoDisposeProvider<List<EventModel>> {
+  /// See also [orgEvents].
+  OrgEventsProvider(
+    List<EventModel> orgEvents,
+  ) : this._internal(
+          (ref) => orgEvents,
+          from: orgEventsProvider,
+          name: r'orgEventsProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$orgEventsHash,
+          dependencies: OrgEventsFamily._dependencies,
+          allTransitiveDependencies: OrgEventsFamily._allTransitiveDependencies,
+          orgEvents: orgEvents,
+        );
+
+  OrgEventsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.orgEvents,
+  }) : super.internal();
+
+  final List<EventModel> orgEvents;
+
+  @override
+  Override overrideWith(
+    List<EventModel> Function(OrgEventsRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: OrgEventsProvider._internal(
+        (ref) => create(ref as OrgEventsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        orgEvents: orgEvents,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<List<EventModel>> createElement() {
+    return _OrgEventsProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is OrgEventsProvider && other.orgEvents == orgEvents;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, orgEvents.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin OrgEventsRef on AutoDisposeProviderRef<List<EventModel>> {
+  /// The parameter `orgEvents` of this provider.
+  List<EventModel> get orgEvents;
+}
+
+class _OrgEventsProviderElement
+    extends AutoDisposeProviderElement<List<EventModel>> with OrgEventsRef {
+  _OrgEventsProviderElement(super.provider);
+
+  @override
+  List<EventModel> get orgEvents => (origin as OrgEventsProvider).orgEvents;
+}
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
