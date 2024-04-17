@@ -9,6 +9,7 @@ import 'package:knightassist/src/global/states/future_state.codegen.dart';
 import 'package:knightassist/src/global/widgets/custom_dialog.dart';
 import 'package:knightassist/src/global/widgets/custom_text.dart';
 import 'package:knightassist/src/helpers/extensions/extensions.dart';
+import 'package:time/time.dart';
 
 import '../../../config/routing/routing.dart';
 import '../../../global/widgets/async_value_widget.dart';
@@ -231,11 +232,17 @@ class EventDetailsScreen extends HookConsumerWidget {
                           size: 23,
                         ),
                         Insets.gapW(7),
-                        CustomText(
-                          event.startTime.toDateString('d MMM, y'),
-                          textAlign: TextAlign.center,
-                          fontSize: 18,
-                        )
+                        (event.startTime.date == event.endTime.date)
+                            ? CustomText(
+                                event.startTime.toDateString('d MMM, y'),
+                                textAlign: TextAlign.center,
+                                fontSize: 18,
+                              )
+                            : CustomText(
+                                '${event.startTime.toDateString('d MMM, y')} - ${event.endTime.toDateString('d MMM, y')}',
+                                textAlign: TextAlign.center,
+                                fontSize: 18,
+                              )
                       ],
                     ),
 

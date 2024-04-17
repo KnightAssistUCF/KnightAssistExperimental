@@ -18,6 +18,7 @@ class FiltersBottomSheet extends ConsumerWidget {
 
   void _onResetTap(WidgetRef ref) {
     ref
+      ..invalidate(eventDateFilterProvider)
       ..invalidate(searchFilterProvider)
       ..invalidate(filtersProvider);
     AppRouter.pop();
@@ -36,19 +37,20 @@ class FiltersBottomSheet extends ConsumerWidget {
         leading: Consumer(
           builder: (_, ref, child) {
             final hasFilters = ref.watch(
-              // length 2 because is_active is always present + any additional filters
-              filtersProvider.select((value) => value.length >= 2),
+              filtersProvider.select((value) => value.isNotEmpty),
             );
             return hasFilters ? child! : const SizedBox(width: 50, height: 30);
           },
-          child: GestureDetector(
-            onTap: () => _onResetTap(ref),
-            child: const Padding(
-              padding: EdgeInsets.all(15),
+          child: CustomTextButton.gradient(
+            width: 60,
+            height: 30,
+            gradient: AppColors.buttonGradientPrimary,
+            onPressed: () => _onResetTap(ref),
+            child: const Center(
               child: CustomText(
                 'Reset',
-                fontSize: 16,
-                color: AppColors.primaryColor,
+                fontSize: 13,
+                color: Colors.white,
               ),
             ),
           ),
