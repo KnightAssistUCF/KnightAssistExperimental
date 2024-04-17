@@ -1,4 +1,5 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:knightassist/src/features/auth/enums/user_role_enum.dart';
 import 'package:knightassist/src/global/providers/all_providers.dart';
 import 'package:knightassist/src/global/states/future_state.codegen.dart';
 
@@ -6,12 +7,17 @@ import '../../../core/core.dart';
 import '../models/announcement_model.dart';
 import '../repositories/announcements_repository.dart';
 
-final favOrgAnnouncementsProvider =
+final announcementsListProvider =
     FutureProvider.autoDispose<List<AnnouncementModel>>((ref) async {
-  final userId = ref.watch(authProvider.notifier).currentUserId;
+  final authProv = ref.watch(authProvider.notifier);
+  if (authProv.currentUserRole == UserRole.VOLUNTEER) {
+    return await ref
+        .watch(announcementsProvider)
+        .getFavoritedOrgAnnouncements(userId: authProv.currentUserId);
+  }
   return await ref
       .watch(announcementsProvider)
-      .getFavoritedOrgAnnouncements(userId: userId);
+      .getOwnOrgAnnouncements(orgId: authProv.currentUserId);
 });
 
 final announcementStateProvider = StateProvider<FutureState<String>>((ref) {
@@ -115,6 +121,16 @@ class AnnouncementsProvider {
       'studentID': userId,
     };
     return _announcementsRepository.fetchFavoritedOrgAnnouncements(
+        queryParameters: queryParams);
+  }
+
+  Future<List<AnnouncementModel>> getOwnOrgAnnouncements({
+    required String orgId,
+  }) async {
+    final queryParams = <String, Object>{
+      'organizationID': orgId,
+    };
+    return _announcementsRepository.fetchOwnOrgAnnouncements(
         queryParameters: queryParams);
   }
 }

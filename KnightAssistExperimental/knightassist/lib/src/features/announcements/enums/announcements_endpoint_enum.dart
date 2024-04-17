@@ -3,6 +3,7 @@
 enum AnnouncementsEndpoint {
   FETCH_ALL_ANNOUNCEMENTS,
   FETCH_FAVORITED_ORG_ANNOUNCEMENTS,
+  FETCH_OWN_ORG_ANNOUNCEMENTS,
   FETCH_ANNOUNCEMENT,
   ADD_ANNOUNCEMENT,
   EDIT_ANNOUNCEMENT,
@@ -16,6 +17,8 @@ enum AnnouncementsEndpoint {
         return 'loadAllOrgAnnouncements';
       case AnnouncementsEndpoint.FETCH_FAVORITED_ORG_ANNOUNCEMENTS:
         return 'favoritedOrgsAnnouncements';
+      case AnnouncementsEndpoint.FETCH_OWN_ORG_ANNOUNCEMENTS:
+        return 'loadOwnOrgAnnouncements';
       case AnnouncementsEndpoint.FETCH_ANNOUNCEMENT:
         return 'searchForAnnouncement';
       case AnnouncementsEndpoint.ADD_ANNOUNCEMENT:

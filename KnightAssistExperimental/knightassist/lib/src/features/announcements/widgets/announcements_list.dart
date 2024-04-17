@@ -17,9 +17,9 @@ class AnnouncementsList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return CustomRefreshIndicator(
-      onRefresh: () async => ref.refresh(favOrgAnnouncementsProvider),
+      onRefresh: () async => ref.refresh(announcementsListProvider),
       child: AsyncValueWidget<List<AnnouncementModel>>(
-        value: ref.watch(favOrgAnnouncementsProvider),
+        value: ref.watch(announcementsListProvider),
         loading: () => const Padding(
           padding: EdgeInsets.only(top: 70),
           child: CustomCircularLoader(),
@@ -29,7 +29,7 @@ class AnnouncementsList extends ConsumerWidget {
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
             child: ErrorResponseHandler(
               error: error,
-              retryCallback: () => ref.refresh(favOrgAnnouncementsProvider),
+              retryCallback: () => ref.refresh(announcementsListProvider),
               stackTrace: st,
             ),
           );

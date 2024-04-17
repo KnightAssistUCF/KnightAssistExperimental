@@ -80,4 +80,15 @@ class AnnouncementsRepository {
       converter: (responseBody) => AnnouncementModel.fromJson(responseBody),
     );
   }
+
+  Future<List<AnnouncementModel>> fetchOwnOrgAnnouncements({
+    required JSON queryParameters,
+  }) async {
+    return await _apiService.getCollectionData(
+      endpoint: AnnouncementsEndpoint.FETCH_OWN_ORG_ANNOUNCEMENTS.route(),
+      queryParams: queryParameters,
+      cancelToken: _cancelToken,
+      converter: (responseBody) => AnnouncementModel.fromJson(responseBody),
+    );
+  }
 }

@@ -56,6 +56,13 @@ class CustomDrawer extends HookConsumerWidget {
                     },
                   ),
                   ListTile(
+                    title: const Text('Leaderboard'),
+                    onTap: () {
+                      AppRouter.popUntilRoot();
+                      AppRouter.pushNamed(Routes.LeaderboardScreenRoute);
+                    },
+                  ),
+                  ListTile(
                     title: const Text('QR Scanner'),
                     onTap: () {
                       AppRouter.popUntilRoot();
@@ -76,17 +83,25 @@ class CustomDrawer extends HookConsumerWidget {
                       AppRouter.popUntilRoot();
                       AppRouter.pushNamed(Routes.FeedbackListScreenRoute);
                     },
-                  )
+                  ),
+                  ListTile(
+                    title: const Text('Announcements'),
+                    onTap: () {
+                      AppRouter.popUntilRoot();
+                      AppRouter.pushNamed(Routes.AnnouncementsListScreenRoute);
+                    },
+                  ),
+                  ListTile(
+                    title: const Text('Leaderboard'),
+                    onTap: () {
+                      AppRouter.popUntilRoot();
+                      AppRouter.pushNamed(Routes.LeaderboardScreenRoute);
+                    },
+                  ),
                 ],
               ),
             ),
-            ListTile(
-              title: const Text('Leaderboard'),
-              onTap: () {
-                AppRouter.popUntilRoot();
-                AppRouter.pushNamed(Routes.LeaderboardScreenRoute);
-              },
-            ),
+
             ListTile(
               title: const Text('Profile'),
               onTap: () {
