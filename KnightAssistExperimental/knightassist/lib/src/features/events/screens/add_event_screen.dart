@@ -12,6 +12,7 @@ import 'package:knightassist/src/global/widgets/custom_text.dart';
 import 'package:knightassist/src/helpers/constants/app_colors.dart';
 import 'package:knightassist/src/helpers/constants/tags.dart';
 import 'package:knightassist/src/helpers/extensions/datetime_extension.dart';
+import 'package:knightassist/src/helpers/form_validator.dart';
 
 import '../../../config/routing/routing.dart';
 import '../../../global/providers/all_providers.dart';
@@ -22,7 +23,6 @@ import '../../../global/widgets/custom_text_field.dart';
 import '../../../global/widgets/scrollable_column.dart';
 import '../providers/events_provider.dart';
 
-// TODO: Add tags
 class AddEventScreen extends HookConsumerWidget {
   const AddEventScreen({Key? key}) : super(key: key);
 
@@ -32,10 +32,10 @@ class AddEventScreen extends HookConsumerWidget {
     final authProv = ref.watch(authProvider.notifier);
 
     // Controllers
-    final nameController = useTextEditingController();
-    final descriptionController = useTextEditingController();
-    final locationController = useTextEditingController();
-    final maxVolunteersController = useTextEditingController();
+    final nameController = useTextEditingController(text: '');
+    final descriptionController = useTextEditingController(text: '');
+    final locationController = useTextEditingController(text: '');
+    final maxVolunteersController = useTextEditingController(text: '');
 
     DateTime startTime = DateTime.now();
     DateTime endTime = DateTime.now();
@@ -107,117 +107,95 @@ class AddEventScreen extends HookConsumerWidget {
                 ),
               ),
               Form(
-                  key: formKey,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        StatefulBuilder(
-                          builder: (context, setState) {
-                            return Column(
-                              children: [
-                                Container(
-                                  width: double.infinity,
-                                  child: (_image != null)
-                                      ? Image(image: FileImage(_image!))
-                                      : const SizedBox.shrink(),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(20),
-                                  child: CustomTextButton(
-                                    color: AppColors.primaryColor,
-                                    padding: const EdgeInsets.all(10),
-                                    onPressed: () async {
-                                      final pickedImage =
-                                          await _picker.pickImage(
-                                              source: ImageSource.gallery,
-                                              imageQuality: 50);
-                                      if (pickedImage == null) {
-                                        return;
-                                      }
-                                      final File fileImage =
-                                          File(pickedImage.path);
-                                      setState(() {
-                                        _image = fileImage;
-                                      });
-                                    },
-                                    child: const Center(
-                                      child: Text(
-                                        'Pick Image',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 15,
-                                          letterSpacing: 0.7,
-                                          fontWeight: FontWeight.w600,
-                                        ),
+                key: formKey,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      StatefulBuilder(
+                        builder: (context, setState) {
+                          return Column(
+                            children: [
+                              Container(
+                                width: double.infinity,
+                                child: (_image != null)
+                                    ? Image(image: FileImage(_image!))
+                                    : const SizedBox.shrink(),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(20),
+                                child: CustomTextButton(
+                                  color: AppColors.primaryColor,
+                                  padding: const EdgeInsets.all(10),
+                                  onPressed: () async {
+                                    final pickedImage = await _picker.pickImage(
+                                        source: ImageSource.gallery,
+                                        imageQuality: 50);
+                                    if (pickedImage == null) {
+                                      return;
+                                    }
+                                    final File fileImage =
+                                        File(pickedImage.path);
+                                    setState(() {
+                                      _image = fileImage;
+                                    });
+                                  },
+                                  child: const Center(
+                                    child: Text(
+                                      'Pick Image',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 15,
+                                        letterSpacing: 0.7,
+                                        fontWeight: FontWeight.w600,
                                       ),
                                     ),
                                   ),
                                 ),
-                              ],
-                            );
-                          },
-                        ),
-                        CustomTextField(
-                          controller: nameController,
-                          floatingText: 'Name',
-                          textInputAction: TextInputAction.next,
-                        ),
-                        const SizedBox(height: 20),
-                        CustomTextField(
-                          controller: descriptionController,
-                          floatingText: 'Description',
-                          multiline: true,
-                          textInputAction: TextInputAction.next,
-                        ),
-                        const SizedBox(height: 20),
-                        CustomTextField(
-                          controller: locationController,
-                          floatingText: 'Location',
-                          textInputAction: TextInputAction.next,
-                        ),
-                        const SizedBox(height: 20),
-                        CustomTextField(
-                          controller: maxVolunteersController,
-                          floatingText: 'Max Volunteers',
-                          keyboardType: TextInputType.number,
-                          textInputAction: TextInputAction.next,
-                        ),
-                        const SizedBox(height: 20),
-                        StatefulBuilder(
-                          builder: (context, setState) {
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                CustomText(
-                                  'Start: ${startTime.toDateString()}',
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                  ),
-                                ),
-                                IconButton(
-                                    onPressed: () {
-                                      DatePicker.showDateTimePicker(
-                                        currentTime: DateTime.now().toLocal(),
-                                        context,
-                                        onConfirm: (time) {
-                                          setState(() => startTime = time.toLocal());
-                                        },
-                                      );
-                                    },
-                                    icon: const Icon(Icons.edit))
-                              ],
-                            );
-                          },
-                        ),
-                        StatefulBuilder(builder: (context, setState) {
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                      CustomTextField(
+                        controller: nameController,
+                        floatingText: 'Name',
+                        textInputAction: TextInputAction.next,
+                        validator: FormValidator.defaultValidator,
+                      ),
+                      const SizedBox(height: 20),
+                      CustomTextField(
+                        controller: descriptionController,
+                        floatingText: 'Description',
+                        multiline: true,
+                        textInputAction: TextInputAction.next,
+                        validator: FormValidator.defaultValidator,
+                      ),
+                      const SizedBox(height: 20),
+                      CustomTextField(
+                        controller: locationController,
+                        floatingText: 'Location',
+                        textInputAction: TextInputAction.next,
+                        validator: FormValidator.defaultValidator,
+                      ),
+                      const SizedBox(height: 20),
+                      CustomTextField(
+                        controller: maxVolunteersController,
+                        floatingText: 'Max Volunteers',
+                        keyboardType: TextInputType.number,
+                        textInputAction: TextInputAction.done,
+                        validator: FormValidator.defaultValidator,
+                      ),
+                      const SizedBox(height: 20),
+                      StatefulBuilder(
+                        builder: (context, setState) {
                           return Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               CustomText(
-                                'End: ${endTime.toDateString()}',
+                                'Start: ${startTime.toDateString()}',
                                 style: const TextStyle(
                                   fontSize: 18,
                                 ),
@@ -228,41 +206,66 @@ class AddEventScreen extends HookConsumerWidget {
                                       currentTime: DateTime.now().toLocal(),
                                       context,
                                       onConfirm: (time) {
-                                        setState(() => endTime = time);
+                                        setState(() => startTime = time);
                                       },
                                     );
                                   },
                                   icon: const Icon(Icons.edit))
                             ],
                           );
-                        }),
-                        const SizedBox(height: 20),
-                        const Text(
-                          'Choose Content Tags',
-                          style: TextStyle(color: AppColors.primaryColor),
+                        },
+                      ),
+                      StatefulBuilder(builder: (context, setState) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            CustomText(
+                              'End: ${endTime.toDateString()}',
+                              style: const TextStyle(
+                                fontSize: 18,
+                              ),
+                            ),
+                            IconButton(
+                                onPressed: () {
+                                  DatePicker.showDateTimePicker(
+                                    context,
+                                    onConfirm: (time) {
+                                      setState(() => endTime = time);
+                                    },
+                                  );
+                                },
+                                icon: const Icon(Icons.edit))
+                          ],
+                        );
+                      }),
+                      const SizedBox(height: 20),
+                      const Text(
+                        'Choose Content Tags',
+                        style: TextStyle(color: AppColors.primaryColor),
+                      ),
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ChipList(
+                          listOfChipNames: tags,
+                          supportsMultiSelect: true,
+                          activeBgColorList: const [AppColors.primaryColor],
+                          activeTextColorList: const [
+                            AppColors.textWhite80Color
+                          ],
+                          inactiveTextColorList: const [
+                            AppColors.textBlackColor
+                          ],
+                          shouldWrap: true,
+                          listOfChipIndicesCurrentlySeclected: chosenTags,
+                          runSpacing: 2,
+                          spacing: 2,
                         ),
-                        const SizedBox(height: 10),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ChipList(
-                            listOfChipNames: tags,
-                            supportsMultiSelect: true,
-                            activeBgColorList: const [AppColors.primaryColor],
-                            activeTextColorList: const [
-                              AppColors.textWhite80Color
-                            ],
-                            inactiveTextColorList: const [
-                              AppColors.textBlackColor
-                            ],
-                            shouldWrap: true,
-                            listOfChipIndicesCurrentlySeclected: chosenTags,
-                            runSpacing: 2,
-                            spacing: 2,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
 
               // Confirm button
               Padding(
@@ -273,6 +276,16 @@ class AddEventScreen extends HookConsumerWidget {
                   onPressed: () async {
                     if (formKey.currentState!.validate()) {
                       formKey.currentState!.save();
+
+                      if (chosenTags.isEmpty) {
+                        await showDialog(
+                            context: context,
+                            builder: (ctx) => const CustomDialog.alert(
+                                title: 'Invalid Event',
+                                body: 'Pick at least one tag.',
+                                buttonText: 'OK'));
+                        return;
+                      }
 
                       final List<String> newTags = [];
                       for (int i in chosenTags) {
@@ -293,9 +306,10 @@ class AddEventScreen extends HookConsumerWidget {
                               maxAttendees:
                                   int.parse(maxVolunteersController.text));
                       if (response is String) {
-                        await ref
-                            .read(imagesProvider)
-                            .storeImage(type: "1", id: response, file: _image!);
+                        if (_image != null) {
+                          await ref.read(imagesProvider).storeImage(
+                              type: "1", id: response, file: _image!);
+                        }
                       }
                     }
                   },

@@ -37,6 +37,8 @@ class FormValidator {
   /// The error message for invalid identification input.
   static const _invalidIdError = 'Please enter a valid identification';
 
+  static const _invalidDefaultError = 'Please enter a valid input';
+
   /// A method containing validation logic for email input.
   static String? emailValidator(String? email) {
     if (email == null || email.isEmpty) {
@@ -79,6 +81,11 @@ class FormValidator {
   static String? nameValidator(String? name) {
     if (name != null && name.isValidName) return null;
     return _invalidNameError;
+  }
+
+  static String? defaultValidator(String? text) {
+    if (text != '') return null;
+    return _invalidDefaultError;
   }
 
   /// A method containing validation logic for contact number input.

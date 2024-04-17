@@ -12,6 +12,7 @@ import 'package:knightassist/src/global/states/future_state.codegen.dart';
 import 'package:knightassist/src/helpers/constants/app_colors.dart';
 import 'package:knightassist/src/helpers/constants/tags.dart';
 import 'package:knightassist/src/helpers/extensions/datetime_extension.dart';
+import 'package:knightassist/src/helpers/form_validator.dart';
 
 import '../../../config/routing/routing.dart';
 import '../../../global/providers/all_providers.dart';
@@ -170,6 +171,7 @@ class EditEventScreen extends HookConsumerWidget {
                         controller: nameController,
                         floatingText: 'Name',
                         textInputAction: TextInputAction.next,
+                        validator: FormValidator.defaultValidator,
                       ),
                       const SizedBox(height: 20),
                       CustomTextField(
@@ -177,12 +179,14 @@ class EditEventScreen extends HookConsumerWidget {
                         floatingText: 'Description',
                         multiline: true,
                         textInputAction: TextInputAction.next,
+                        validator: FormValidator.defaultValidator,
                       ),
                       const SizedBox(height: 20),
                       CustomTextField(
                         controller: locationController,
                         floatingText: 'Location',
                         textInputAction: TextInputAction.next,
+                        validator: FormValidator.defaultValidator,
                       ),
                       const SizedBox(height: 20),
                       CustomTextField(
@@ -190,6 +194,7 @@ class EditEventScreen extends HookConsumerWidget {
                         floatingText: 'Max Volunteers',
                         keyboardType: TextInputType.number,
                         textInputAction: TextInputAction.next,
+                        validator: FormValidator.defaultValidator,
                       ),
                       const SizedBox(height: 20),
                       StatefulBuilder(
@@ -282,6 +287,16 @@ class EditEventScreen extends HookConsumerWidget {
                   onPressed: () async {
                     if (formKey.currentState!.validate()) {
                       formKey.currentState!.save();
+
+                      if (chosenTags.isEmpty) {
+                        await showDialog(
+                            context: context,
+                            builder: (ctx) => const CustomDialog.alert(
+                                title: 'Invalid Event',
+                                body: 'Pick at least one tag.',
+                                buttonText: 'OK'));
+                        return;
+                      }
 
                       final List<String> newTags = [];
                       for (int i in chosenTags) {
