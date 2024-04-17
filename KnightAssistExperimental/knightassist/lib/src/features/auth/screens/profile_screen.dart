@@ -249,38 +249,81 @@ class ProfileScreen extends HookConsumerWidget {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    // Org Name
-                                    Text(
-                                      org.name,
-                                      style: const TextStyle(
-                                        color: AppColors.primaryColor,
-                                        fontSize: 26,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-
-                                    const SizedBox(height: 10),
-
-                                    CachedNetworkImage(
-                                      imageUrl: org.profilePicPath!,
-                                      imageBuilder: (context, imageProvider) =>
-                                          Container(
-                                        width: 100,
-                                        height: 100,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          image: DecorationImage(
-                                            image: imageProvider,
-                                            fit: BoxFit.cover,
+                                    Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        Column(
+                                          children: [
+                                            CachedNetworkImage(
+                                              imageUrl: org.backgroundPicPath!,
+                                              imageBuilder:
+                                                  (context, imageProvider) =>
+                                                      Container(
+                                                height: 200,
+                                                decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                    fit: BoxFit.fill,
+                                                    image: imageProvider,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(height: 10),
+                                            Padding(
+                                              padding: const EdgeInsets.all(8),
+                                              child: Wrap(
+                                                children: [
+                                                  Text(
+                                                    org.name,
+                                                    style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: Colors.white,
+                                                      fontSize: 26,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Positioned(
+                                          top: 150,
+                                          child: CachedNetworkImage(
+                                            imageUrl: org.profilePicPath!,
+                                            imageBuilder:
+                                                (context, imageProvider) =>
+                                                    Container(
+                                              padding: const EdgeInsets.all(5),
+                                              height: 64,
+                                              width: 64,
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  shape: BoxShape.circle,
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.grey
+                                                          .withOpacity(0.5),
+                                                      spreadRadius: 2,
+                                                      blurRadius: 5,
+                                                      offset: const Offset(0,
+                                                          3), // changes position of shadow
+                                                    ),
+                                                  ],
+                                                  image: DecorationImage(
+                                                    fit: BoxFit.cover,
+                                                    image: imageProvider,
+                                                  )),
+                                            ),
                                           ),
                                         ),
-                                      ),
+                                      ],
                                     ),
                                     const SizedBox(height: 5),
 
                                     GestureDetector(
-                                      onTap: () {
-                                        AppRouter.push(ImagePickerScreen(
+                                      onTap: () async {
+                                        await AppRouter.push(ImagePickerScreen(
                                                 type: "2",
                                                 id: authProv.currentUserId,
                                                 ogImagePath:
@@ -308,8 +351,8 @@ class ProfileScreen extends HookConsumerWidget {
                                     const SizedBox(height: 5),
 
                                     GestureDetector(
-                                      onTap: () {
-                                        AppRouter.push(ImagePickerScreen(
+                                      onTap: () async {
+                                        await AppRouter.push(ImagePickerScreen(
                                                 type: "4",
                                                 id: authProv.currentUserId,
                                                 ogImagePath:
