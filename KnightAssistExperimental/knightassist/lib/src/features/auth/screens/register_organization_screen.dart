@@ -77,7 +77,7 @@ class RegisterOrganizationScreen extends HookConsumerWidget {
                       onTap: () => AppRouter.pop(),
                     ),
                     const Text(
-                      'Register Organization',
+                      'Register Org',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 26,
