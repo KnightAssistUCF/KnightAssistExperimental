@@ -260,6 +260,14 @@ class ProfileScreen extends HookConsumerWidget {
                                     ),
 
                                     const SizedBox(height: 15),
+
+                                      Text(
+                                      '${org.favorites.length.toString()} followers',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
