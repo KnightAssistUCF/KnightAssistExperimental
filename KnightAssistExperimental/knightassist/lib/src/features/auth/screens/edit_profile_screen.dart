@@ -20,7 +20,7 @@ import '../../../helpers/constants/app_colors.dart';
 import '../providers/auth_provider.dart';
 
 class EditProfileScreen extends HookConsumerWidget {
-  const EditProfileScreen({super.key});
+  EditProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

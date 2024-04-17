@@ -2,11 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:knightassist/src/features/auth/enums/user_role_enum.dart';
+import 'package:knightassist/src/features/images/screens/image_picker_screen.dart';
 import 'package:knightassist/src/features/organizations/providers/organizations_provider.dart';
 import 'package:knightassist/src/features/volunteers/providers/volunteers_provider.dart';
 import 'package:knightassist/src/global/providers/all_providers.dart';
 import 'package:knightassist/src/global/widgets/async_value_widget.dart';
-import 'package:knightassist/src/global/widgets/custom_network_image.dart';
 import 'package:knightassist/src/global/widgets/scrollable_column.dart';
 import 'package:knightassist/src/helpers/constants/app_colors.dart';
 
@@ -126,6 +126,36 @@ class ProfileScreen extends HookConsumerWidget {
                                         ),
                                       ),
                                     ),
+                                    const SizedBox(height: 5),
+
+                                    GestureDetector(
+                                      onTap: () {
+                                        AppRouter.push(ImagePickerScreen(
+                                                type: "3",
+                                                id: authProv.currentUserId,
+                                                ogImagePath:
+                                                    volunteer.profilePicPath!))
+                                            .then(
+                                          (value) {
+                                            if (value != null && value) {
+                                              if (authProv.currentUserRole ==
+                                                  UserRole.VOLUNTEER) {
+                                                // ignore: unused_result
+                                                ref.refresh(
+                                                    userVolunteerProvider);
+                                              } else {
+                                                // ignore: unused_result
+                                                ref.refresh(userOrgProvider);
+                                              }
+                                            }
+                                          },
+                                        );
+                                      },
+                                      child: const CustomText(
+                                        'Edit Image',
+                                        color: AppColors.primaryColor,
+                                      ),
+                                    ),
 
                                     const SizedBox(height: 20),
 
@@ -195,6 +225,7 @@ class ProfileScreen extends HookConsumerWidget {
                                               fontSize: 28,
                                             ),
                                           ),
+                                    const SizedBox(height: 20),
                                   ],
                                 ),
                               ),
@@ -247,6 +278,36 @@ class ProfileScreen extends HookConsumerWidget {
                                         ),
                                       ),
                                     ),
+                                    const SizedBox(height: 5),
+
+                                    GestureDetector(
+                                      onTap: () {
+                                        AppRouter.push(ImagePickerScreen(
+                                                type: "2",
+                                                id: authProv.currentUserId,
+                                                ogImagePath:
+                                                    org.profilePicPath!))
+                                            .then(
+                                          (value) {
+                                            if (value != null && value) {
+                                              if (authProv.currentUserRole ==
+                                                  UserRole.VOLUNTEER) {
+                                                // ignore: unused_result
+                                                ref.refresh(
+                                                    userVolunteerProvider);
+                                              } else {
+                                                // ignore: unused_result
+                                                ref.refresh(userOrgProvider);
+                                              }
+                                            }
+                                          },
+                                        );
+                                      },
+                                      child: const CustomText(
+                                        'Edit Image',
+                                        color: AppColors.primaryColor,
+                                      ),
+                                    ),
 
                                     const SizedBox(height: 20),
 
@@ -267,8 +328,9 @@ class ProfileScreen extends HookConsumerWidget {
                           });
                     },
                   ),
+
             Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
               child: CustomTextButton(
                 color: AppColors.primaryColor,
                 onPressed: () {

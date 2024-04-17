@@ -148,7 +148,7 @@ final feedbackProvider = Provider<FeedbackProvider>((ref) {
 
 final imagesProvider = Provider<ImagesProvider>((ref) {
   final imagesRepository = ref.watch(_imagesRepositoryProvider);
-  return ImagesProvider(imagesRepository);
+  return ImagesProvider(imagesRepository: imagesRepository, ref: ref);
 });
 
 final organizationsProvider = Provider<OrganizationsProvider>((ref) {

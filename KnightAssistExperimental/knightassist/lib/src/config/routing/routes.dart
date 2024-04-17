@@ -74,7 +74,7 @@ class Routes {
     OrganizationDetailsScreenRoute: (_) => const OrganizationDetailsScreen(),
     EditOrganizationScreenRoute: (_) => const EditOrganizationScreen(),
     ProfileScreenRoute: (_) => const ProfileScreen(),
-    EditProfileScreenRoute: (_) => const EditProfileScreen(),
+    EditProfileScreenRoute: (_) => EditProfileScreen(),
     QrScreenRoute: (_) => const QrScreen(),
     LeaveFeedbackScreenRoute: (_) => const LeaveFeedbackScreen(),
     AnnouncementsListScreenRoute: (_) => AnnouncementsListScreen(),

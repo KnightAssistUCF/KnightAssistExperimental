@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:knightassist/src/features/images/enums/images_endpoint_enum.dart';
 
@@ -27,10 +25,8 @@ class ImagesRepository {
     );
   }
 
-  // TODO: Add file handling to store image
   Future<String> store({
     required JSON data,
-    required File file,
   }) async {
     return await _apiService.setData(
       endpoint: ImagesEndpoint.STORE_IMAGE.route(),
