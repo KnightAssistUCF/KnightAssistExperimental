@@ -504,7 +504,7 @@ class _TabBarOrgState extends State<TabBarOrg> with TickerProviderStateMixin {
                   ListView(
                     children: const [
                       SizedBox(
-                        height: 240,
+                        height: 310,
                         width: 100,
                         child: LocalFeedbackList(),
                       )
