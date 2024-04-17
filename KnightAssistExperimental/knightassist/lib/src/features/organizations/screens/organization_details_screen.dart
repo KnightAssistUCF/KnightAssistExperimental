@@ -546,13 +546,41 @@ class LocalFeedbackList extends ConsumerWidget {
         title: 'No feedback found',
       ),
       data: (feedback) {
-        return ListView.builder(
-          itemCount: feedback.length,
-          scrollDirection: Axis.horizontal,
-          shrinkWrap: true,
-          physics: const ClampingScrollPhysics(),
-          padding: const EdgeInsets.all(8),
-          itemBuilder: (_, i) => LocalFeedbackListItem(feedback: feedback[i]),
+        num ratingSum = 0;
+        num avgRating = 0;
+        for (int i = 0; i < feedback.length; i++) {
+         ratingSum += feedback[i].rating;
+        }
+        avgRating = ratingSum / feedback.length;
+        String avgRatingText = avgRating.toStringAsFixed(2); // show 2 decimal places
+        return Column(
+          children: [
+            Text(
+              'Average Rating: $avgRatingText',
+              style: const TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 18,
+              )),
+              RatingBarIndicator(
+                  rating: avgRating.toDouble(),
+                  itemSize: 20.0,
+                  direction: Axis.horizontal,
+                  itemCount: 5,
+                  itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                  itemBuilder: (context, _) => const Icon(
+                    Icons.star,
+                    color: Colors.amber,
+                  ),
+                ),
+            ListView.builder(
+            itemCount: feedback.length,
+            scrollDirection: Axis.horizontal,
+            shrinkWrap: true,
+            physics: const ClampingScrollPhysics(),
+            padding: const EdgeInsets.all(8),
+            itemBuilder: (_, i) => LocalFeedbackListItem(feedback: feedback[i]),
+          ),
+          ]
         );
       },
     );
