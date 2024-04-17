@@ -92,6 +92,13 @@ class _QrScreenState extends ConsumerState<QrScreen> {
     }
 
     return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(0),
+        child: AppBar(
+          backgroundColor: AppColors.primaryColor,
+          elevation: 0,
+        ),
+      ),
       resizeToAvoidBottomInset: false,
       key: _scaffoldKey,
       drawer: CustomDrawer(),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:knightassist/src/helpers/constants/app_colors.dart';
 
 import '../../../global/widgets/custom_drawer.dart';
 import '../../../global/widgets/custom_top_bar.dart';
@@ -11,6 +12,13 @@ class EventHistoryListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(0),
+        child: AppBar(
+          backgroundColor: AppColors.primaryColor,
+          elevation: 0,
+        ),
+      ),
       resizeToAvoidBottomInset: false,
       key: _scaffoldKey,
       drawer: CustomDrawer(),

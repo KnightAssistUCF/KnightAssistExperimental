@@ -22,11 +22,17 @@ class HomeScreen extends HookConsumerWidget {
   HomeScreen({super.key});
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authProv = ref.watch(authProvider.notifier);
     return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(0),
+        child: AppBar(
+          backgroundColor: AppColors.primaryColor,
+          elevation: 0,
+        ),
+      ),
       resizeToAvoidBottomInset: false,
       key: _scaffoldKey,
       drawer: CustomDrawer(),

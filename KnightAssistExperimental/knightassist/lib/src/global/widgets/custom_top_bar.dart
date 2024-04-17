@@ -24,86 +24,88 @@ class CustomTopBar extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authProv = ref.watch(authProvider.notifier);
 
-    return Container(
-      width: double.infinity,
-      decoration: const BoxDecoration(
-        color: AppColors.primaryColor,
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(25),
-          bottomRight: Radius.circular(25),
+    return SafeArea(
+      child: Container(
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          color: AppColors.primaryColor,
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(25),
+            bottomRight: Radius.circular(25),
+          ),
         ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          // Drawer icon
-          InkResponse(
-            radius: 26,
-            child: const Padding(
-              padding: EdgeInsets.only(left: 20, top: 10, bottom: 15),
-              child: Icon(
-                Icons.menu,
-                size: 32,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // Drawer icon
+            InkResponse(
+              radius: 26,
+              child: const Padding(
+                padding: EdgeInsets.only(left: 20, top: 10, bottom: 15),
+                child: Icon(
+                  Icons.menu,
+                  size: 32,
+                  color: Colors.white,
+                ),
+              ),
+              onTap: () => scaffoldKey.currentState!.openDrawer(),
+            ),
+      
+            // Page Title
+            Text(
+              title,
+              style: const TextStyle(
                 color: Colors.white,
+                fontSize: 26,
+                fontWeight: FontWeight.bold,
               ),
             ),
-            onTap: () => scaffoldKey.currentState!.openDrawer(),
-          ),
-
-          // Page Title
-          Text(
-            title,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 26,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-
-          // Profile Icon
-          InkResponse(
-            radius: 26,
-            child: Padding(
-                padding: const EdgeInsets.only(right: 20, top: 10, bottom: 15),
-                child: AsyncValueWidget(
-                  value: (authProv.currentUserRole == UserRole.VOLUNTEER)
-                      ? ref.watch(userVolunteerProvider)
-                      : ref.watch(userOrgProvider),
-                  loading: () => const CustomCircularLoader(
-                    color: Colors.white,
-                  ),
-                  error: (error, st) => ErrorResponseHandler(
-                    error: error,
-                    stackTrace: st,
-                    retryCallback: () =>
-                        (authProv.currentUserRole == UserRole.VOLUNTEER)
-                            ? ref.refresh(userVolunteerProvider)
-                            : ref.refresh(userOrgProvider),
-                  ),
-                  data: (user) {
-                    return CachedNetworkImage(
-                      imageUrl: (authProv.currentUserRole == UserRole.VOLUNTEER)
-                          ? (user as VolunteerModel).profilePicPath!
-                          : (user as OrganizationModel).profilePicPath!,
-                      imageBuilder: (context, imageProvider) => Container(
-                        width: 32,
-                        height: 32,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: imageProvider,
-                            fit: BoxFit.cover,
+      
+            // Profile Icon
+            InkResponse(
+              radius: 26,
+              child: Padding(
+                  padding: const EdgeInsets.only(right: 20, top: 10, bottom: 15),
+                  child: AsyncValueWidget(
+                    value: (authProv.currentUserRole == UserRole.VOLUNTEER)
+                        ? ref.watch(userVolunteerProvider)
+                        : ref.watch(userOrgProvider),
+                    loading: () => const CustomCircularLoader(
+                      color: Colors.white,
+                    ),
+                    error: (error, st) => ErrorResponseHandler(
+                      error: error,
+                      stackTrace: st,
+                      retryCallback: () =>
+                          (authProv.currentUserRole == UserRole.VOLUNTEER)
+                              ? ref.refresh(userVolunteerProvider)
+                              : ref.refresh(userOrgProvider),
+                    ),
+                    data: (user) {
+                      return CachedNetworkImage(
+                        imageUrl: (authProv.currentUserRole == UserRole.VOLUNTEER)
+                            ? (user as VolunteerModel).profilePicPath!
+                            : (user as OrganizationModel).profilePicPath!,
+                        imageBuilder: (context, imageProvider) => Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                )),
-            onTap: () {
-              AppRouter.pushNamed(Routes.ProfileScreenRoute);
-            },
-          ),
-        ],
+                      );
+                    },
+                  )),
+              onTap: () {
+                AppRouter.pushNamed(Routes.ProfileScreenRoute);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
