@@ -113,7 +113,7 @@ class ApiService implements ApiInterface {
   @override
   Future<T> setData<T>({
     required String endpoint,
-    required JSON data,
+    required Object data,
     CancelToken? cancelToken,
     bool requiresAuthToken = true,
     required T Function(JSON response) converter,
@@ -126,7 +126,6 @@ class ApiService implements ApiInterface {
           headers: <String, Object?>{'requiresAuthToken': requiresAuthToken}),
       cancelToken: cancelToken,
     );
-
     return converter(dataMap);
   }
 

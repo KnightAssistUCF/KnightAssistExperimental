@@ -59,7 +59,8 @@ class EditEventScreen extends HookConsumerWidget {
         successful: () {
           nameController.clear();
           descriptionController.clear();
-          AppRouter.pop();
+          ref.refresh(eventsProvider);
+          AppRouter.popUntil(Routes.EventsListScreenRoute);
         },
         failed: (reason) async {
           await showDialog<bool>(
@@ -293,6 +294,8 @@ class EditEventScreen extends HookConsumerWidget {
                             startTime: startTime,
                             endTime: endTime,
                             eventTags: newTags,
+                            maxAttendees:
+                                int.parse(maxVolunteersController.text),
                           );
 
                       await ref

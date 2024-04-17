@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:knightassist/src/core/core.dart';
 import 'package:knightassist/src/features/qr/providers/qr_provider.dart';
@@ -31,6 +32,7 @@ class ImagesProvider {
       'typeOfImage': type,
       'id': id,
     };
+
     return await _imagesRepository.fetch(queryParameters: queryParams);
   }
 
@@ -39,11 +41,18 @@ class ImagesProvider {
     required String id,
     required File file,
   }) async {
-    final data = <String, Object>{
+    String fileName = file.path.split('/').last;
+    var fileExt = fileName.split('.').last;
+
+    final FormData formData = FormData.fromMap(<String, dynamic>{
       'typeOfImage': type,
       'id': id,
-      'file': await MultipartFile.fromFile(file.path),
-    };
+      'profilePic': await MultipartFile.fromFile(
+        file.path,
+        filename: fileName,
+        contentType: MediaType("image", fileExt),
+      ),
+    });
     final imageStateProv = _ref.read(qrStateProvider.notifier);
     imageStateProv.state = const FutureState.idle();
 
@@ -52,7 +61,7 @@ class ImagesProvider {
     });
 
     try {
-      final response = _imagesRepository.store(data: data);
+      final response = _imagesRepository.store(data: formData);
       imageStateProv.state = FutureState.data(data: response);
     } on CustomException catch (e) {
       imageStateProv.state = FutureState.failed(reason: e.message);
