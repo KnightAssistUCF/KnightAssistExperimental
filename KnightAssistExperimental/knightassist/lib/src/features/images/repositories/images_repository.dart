@@ -26,13 +26,13 @@ class ImagesRepository {
   }
 
   Future<String> store({
-    required JSON data,
+    required FormData data,
   }) async {
     return await _apiService.setData(
       endpoint: ImagesEndpoint.STORE_IMAGE.route(),
       data: data,
       cancelToken: _cancelToken,
-      converter: (response) => response as String,
+      converter: (response) => response['message'] as String,
     );
   }
 
@@ -43,7 +43,7 @@ class ImagesRepository {
       endpoint: ImagesEndpoint.DELETE_IMAGE.route(),
       data: data,
       cancelToken: _cancelToken,
-      converter: (response) => response as String,
+      converter: (response) => response['message'] as String,
     );
   }
 }
