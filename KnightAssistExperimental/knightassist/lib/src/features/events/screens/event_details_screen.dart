@@ -151,7 +151,7 @@ class EventDetailsScreen extends HookConsumerWidget {
                   ),
                   // Title
                   SizedBox(
-                    width: 275,
+                    width: 250,
                     child: CustomText(
                       event!.name,
                       textAlign: TextAlign.center,

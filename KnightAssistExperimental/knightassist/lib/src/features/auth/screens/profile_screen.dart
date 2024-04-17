@@ -304,7 +304,38 @@ class ProfileScreen extends HookConsumerWidget {
                                         );
                                       },
                                       child: const CustomText(
-                                        'Edit Image',
+                                        'Edit Profile Image',
+                                        color: AppColors.primaryColor,
+                                      ),
+                                    ),
+
+                                    const SizedBox(height: 5),
+
+                                    GestureDetector(
+                                      onTap: () {
+                                        AppRouter.push(ImagePickerScreen(
+                                                type: "4",
+                                                id: authProv.currentUserId,
+                                                ogImagePath:
+                                                    org.backgroundPicPath!))
+                                            .then(
+                                          (value) {
+                                            if (value != null && value) {
+                                              if (authProv.currentUserRole ==
+                                                  UserRole.VOLUNTEER) {
+                                                // ignore: unused_result
+                                                ref.refresh(
+                                                    userVolunteerProvider);
+                                              } else {
+                                                // ignore: unused_result
+                                                ref.refresh(userOrgProvider);
+                                              }
+                                            }
+                                          },
+                                        );
+                                      },
+                                      child: const CustomText(
+                                        'Edit Background Image',
                                         color: AppColors.primaryColor,
                                       ),
                                     ),
@@ -322,7 +353,7 @@ class ProfileScreen extends HookConsumerWidget {
 
                                     const SizedBox(height: 15),
 
-                                      Text(
+                                    Text(
                                       '${org.favorites.length.toString()} followers',
                                       style: const TextStyle(
                                         color: Colors.white,

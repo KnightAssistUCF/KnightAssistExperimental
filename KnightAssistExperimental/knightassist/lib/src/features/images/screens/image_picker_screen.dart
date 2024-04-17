@@ -33,7 +33,6 @@ class ImagePickerScreen extends ConsumerStatefulWidget {
 class _ImagePickerScreenState extends ConsumerState<ImagePickerScreen> {
   final ImagePicker _picker = ImagePicker();
   File? _image;
-  bool uploadStatus = false;
 
   _imageFromGallery() async {
     final pickedImage =

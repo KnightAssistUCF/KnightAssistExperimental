@@ -1,9 +1,13 @@
+import 'dart:io';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chip_list/chip_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:knightassist/src/global/widgets/custom_text.dart';
 import 'package:knightassist/src/helpers/constants/app_colors.dart';
 import 'package:knightassist/src/helpers/constants/tags.dart';
@@ -37,6 +41,9 @@ class AddEventScreen extends HookConsumerWidget {
     DateTime endTime = DateTime.now();
 
     final List<int> chosenTags = [];
+
+    final ImagePicker _picker = ImagePicker();
+    File? _image;
 
     ref.listen<EditState>(
       eventStateProvider,
@@ -107,6 +114,52 @@ class AddEventScreen extends HookConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        StatefulBuilder(
+                          builder: (context, setState) {
+                            return Column(
+                              children: [
+                                Container(
+                                  width: double.infinity,
+                                  child: (_image != null)
+                                      ? Image(image: FileImage(_image!))
+                                      : const SizedBox.shrink(),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(20),
+                                  child: CustomTextButton(
+                                    color: AppColors.primaryColor,
+                                    padding: const EdgeInsets.all(10),
+                                    onPressed: () async {
+                                      final pickedImage =
+                                          await _picker.pickImage(
+                                              source: ImageSource.gallery,
+                                              imageQuality: 50);
+                                      if (pickedImage == null) {
+                                        return;
+                                      }
+                                      final File fileImage =
+                                          File(pickedImage.path);
+                                      setState(() {
+                                        _image = fileImage;
+                                      });
+                                    },
+                                    child: const Center(
+                                      child: Text(
+                                        'Pick Image',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 15,
+                                          letterSpacing: 0.7,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
                         CustomTextField(
                           controller: nameController,
                           floatingText: 'Name',
@@ -139,7 +192,7 @@ class AddEventScreen extends HookConsumerWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 CustomText(
-                                  'Start Time: ${startTime.toDateString()}',
+                                  'Start: ${startTime.toDateString()}',
                                   style: const TextStyle(
                                     fontSize: 18,
                                   ),
@@ -163,7 +216,7 @@ class AddEventScreen extends HookConsumerWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               CustomText(
-                                'End Time: ${endTime.toDateString()}',
+                                'End: ${endTime.toDateString()}',
                                 style: const TextStyle(
                                   fontSize: 18,
                                 ),
@@ -224,17 +277,24 @@ class AddEventScreen extends HookConsumerWidget {
                         newTags.add(tags[i]);
                       }
 
-                      ref.read(eventsProvider).createEvent(
-                          name: nameController.text,
-                          description: descriptionController.text,
-                          location: locationController.text,
-                          sponsoringOrganization: authProv.currentUserId,
-                          profilePicPath: '',
-                          startTime: startTime,
-                          endTime: endTime,
-                          eventTags: newTags,
-                          maxAttendees:
-                              int.parse(maxVolunteersController.text));
+                      final response = await ref
+                          .read(eventsProvider)
+                          .createEvent(
+                              name: nameController.text,
+                              description: descriptionController.text,
+                              location: locationController.text,
+                              sponsoringOrganization: authProv.currentUserId,
+                              profilePicPath: '',
+                              startTime: startTime,
+                              endTime: endTime,
+                              eventTags: newTags,
+                              maxAttendees:
+                                  int.parse(maxVolunteersController.text));
+                      if (response is String) {
+                        await ref
+                            .read(imagesProvider)
+                            .storeImage(type: "1", id: response, file: _image!);
+                      }
                     }
                   },
                   child: Consumer(

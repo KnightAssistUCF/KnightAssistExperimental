@@ -142,7 +142,7 @@ class EventsProvider {
     return temp;
   }
 
-  Future<void> createEvent({
+  Future<String?> createEvent({
     required String name,
     required String description,
     required String location,
@@ -173,8 +173,9 @@ class EventsProvider {
     });
 
     try {
-      await _eventsRepository.addEvent(data: data);
+      final response = await _eventsRepository.addEvent(data: data);
       eventStateProv.state = const EditState.successful();
+      return response;
     } on CustomException catch (e) {
       eventStateProv.state = EditState.failed(reason: e.message);
     }
