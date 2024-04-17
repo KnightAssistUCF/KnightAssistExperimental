@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:knightassist/src/core/core.dart';
-import 'package:knightassist/src/features/qr/providers/qr_provider.dart';
 import 'package:knightassist/src/global/states/future_state.codegen.dart';
 
 import '../repositories/images_repository.dart';
@@ -53,7 +52,7 @@ class ImagesProvider {
         contentType: MediaType("image", fileExt),
       ),
     });
-    final imageStateProv = _ref.read(qrStateProvider.notifier);
+    final imageStateProv = _ref.read(imageStateProvider.notifier);
     imageStateProv.state = const FutureState.idle();
 
     await Future<void>.delayed(const Duration(milliseconds: 100)).then((_) {
@@ -61,8 +60,8 @@ class ImagesProvider {
     });
 
     try {
-      final response = _imagesRepository.store(data: formData);
-      imageStateProv.state = FutureState.data(data: response);
+      final response = await _imagesRepository.store(data: formData);
+      imageStateProv.state = FutureState<String>.data(data: response);
     } on CustomException catch (e) {
       imageStateProv.state = FutureState.failed(reason: e.message);
     }

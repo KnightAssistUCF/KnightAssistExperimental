@@ -129,24 +129,22 @@ class ProfileScreen extends HookConsumerWidget {
                                     const SizedBox(height: 5),
 
                                     GestureDetector(
-                                      onTap: () {
-                                        AppRouter.push(ImagePickerScreen(
+                                      onTap: () async {
+                                        await AppRouter.push(ImagePickerScreen(
                                                 type: "3",
                                                 id: authProv.currentUserId,
                                                 ogImagePath:
                                                     volunteer.profilePicPath!))
                                             .then(
                                           (value) {
-                                            if (value != null && value) {
-                                              if (authProv.currentUserRole ==
-                                                  UserRole.VOLUNTEER) {
-                                                // ignore: unused_result
-                                                ref.refresh(
-                                                    userVolunteerProvider);
-                                              } else {
-                                                // ignore: unused_result
-                                                ref.refresh(userOrgProvider);
-                                              }
+                                            if (authProv.currentUserRole ==
+                                                UserRole.VOLUNTEER) {
+                                              // ignore: unused_result
+                                              ref.refresh(
+                                                  userVolunteerProvider);
+                                            } else {
+                                              // ignore: unused_result
+                                              ref.refresh(userOrgProvider);
                                             }
                                           },
                                         );
@@ -289,16 +287,14 @@ class ProfileScreen extends HookConsumerWidget {
                                                     org.profilePicPath!))
                                             .then(
                                           (value) {
-                                            if (value != null && value) {
-                                              if (authProv.currentUserRole ==
-                                                  UserRole.VOLUNTEER) {
-                                                // ignore: unused_result
-                                                ref.refresh(
-                                                    userVolunteerProvider);
-                                              } else {
-                                                // ignore: unused_result
-                                                ref.refresh(userOrgProvider);
-                                              }
+                                            if (authProv.currentUserRole ==
+                                                UserRole.VOLUNTEER) {
+                                              // ignore: unused_result
+                                              ref.refresh(
+                                                  userVolunteerProvider);
+                                            } else {
+                                              // ignore: unused_result
+                                              ref.refresh(userOrgProvider);
                                             }
                                           },
                                         );
@@ -320,16 +316,14 @@ class ProfileScreen extends HookConsumerWidget {
                                                     org.backgroundPicPath!))
                                             .then(
                                           (value) {
-                                            if (value != null && value) {
-                                              if (authProv.currentUserRole ==
-                                                  UserRole.VOLUNTEER) {
-                                                // ignore: unused_result
-                                                ref.refresh(
-                                                    userVolunteerProvider);
-                                              } else {
-                                                // ignore: unused_result
-                                                ref.refresh(userOrgProvider);
-                                              }
+                                            if (authProv.currentUserRole ==
+                                                UserRole.VOLUNTEER) {
+                                              // ignore: unused_result
+                                              ref.refresh(
+                                                  userVolunteerProvider);
+                                            } else {
+                                              // ignore: unused_result
+                                              ref.refresh(userOrgProvider);
                                             }
                                           },
                                         );
