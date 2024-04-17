@@ -33,6 +33,16 @@ class AnnouncementsListItem extends ConsumerWidget {
               textAlign: TextAlign.start,
             ),
             const SizedBox(height: 5),
+             Text(
+              announcement.organizationName ?? '',
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              style: const TextStyle(
+                fontWeight: FontWeight.w400,
+                color: AppColors.textWhite80Color,
+              ),
+              textAlign: TextAlign.start,
+            ),
             Text(
               announcement.date.toDateString(),
               overflow: TextOverflow.ellipsis,
