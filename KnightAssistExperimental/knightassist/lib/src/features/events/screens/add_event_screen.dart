@@ -200,9 +200,10 @@ class AddEventScreen extends HookConsumerWidget {
                                 IconButton(
                                     onPressed: () {
                                       DatePicker.showDateTimePicker(
+                                        currentTime: DateTime.now().toLocal(),
                                         context,
                                         onConfirm: (time) {
-                                          setState(() => startTime = time);
+                                          setState(() => startTime = time.toLocal());
                                         },
                                       );
                                     },
@@ -224,6 +225,7 @@ class AddEventScreen extends HookConsumerWidget {
                               IconButton(
                                   onPressed: () {
                                     DatePicker.showDateTimePicker(
+                                      currentTime: DateTime.now().toLocal(),
                                       context,
                                       onConfirm: (time) {
                                         setState(() => endTime = time);
@@ -285,8 +287,8 @@ class AddEventScreen extends HookConsumerWidget {
                               location: locationController.text,
                               sponsoringOrganization: authProv.currentUserId,
                               profilePicPath: '',
-                              startTime: startTime,
-                              endTime: endTime,
+                              startTime: startTime.toUtc(),
+                              endTime: endTime.toUtc(),
                               eventTags: newTags,
                               maxAttendees:
                                   int.parse(maxVolunteersController.text));

@@ -205,9 +205,10 @@ class EditEventScreen extends HookConsumerWidget {
                               IconButton(
                                   onPressed: () {
                                     DatePicker.showDateTimePicker(
+                                      currentTime: event.startTime,
                                       context,
                                       onConfirm: (time) {
-                                        setState(() => startTime = time);
+                                        setState(() => startTime = time.toLocal());
                                       },
                                     );
                                   },
@@ -229,9 +230,10 @@ class EditEventScreen extends HookConsumerWidget {
                             IconButton(
                                 onPressed: () {
                                   DatePicker.showDateTimePicker(
+                                    currentTime: event.endTime,
                                     context,
                                     onConfirm: (time) {
-                                      setState(() => endTime = time);
+                                      setState(() => endTime = time.toLocal());
                                     },
                                   );
                                 },
@@ -290,8 +292,8 @@ class EditEventScreen extends HookConsumerWidget {
                             orgId: event.sponsoringOrganizationId,
                             name: nameController.text,
                             description: descriptionController.text,
-                            startTime: startTime,
-                            endTime: endTime,
+                            startTime: startTime.toUtc(),
+                            endTime: endTime.toUtc(),
                             eventTags: newTags,
                           );
 

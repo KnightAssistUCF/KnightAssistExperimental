@@ -50,8 +50,8 @@ class EventModel {
           .map((e) => e as String)
           .toList(),
       profilePicPath: json['profilePicPath'] as String,
-      startTime: DateTime.parse(json['startTime'] as String),
-      endTime: DateTime.parse(json['endTime'] as String),
+      startTime: DateTime.parse(json['startTime'] as String).toLocal(),
+      endTime: DateTime.parse(json['endTime'] as String).toLocal(),
       checkedInVolunteers: (json['checkedInStudents'] as List<dynamic>)
           .map((e) =>
               CheckedInVolunteerModel.fromJson(e as Map<String, dynamic>))
@@ -88,10 +88,10 @@ class CheckedInVolunteerModel {
         id: json['_id'] as String,
         studentId: json['studentId'] as String,
         checkInTime: (json['checkInTime'] != null)
-            ? DateTime.parse(json['checkInTime'] as String)
+            ? DateTime.parse(json['checkInTime'] as String).toLocal()
             : null,
         checkOutTime: (json['checkOutTime'] != null)
-            ? DateTime.parse(json['checkOutTime'] as String)
+            ? DateTime.parse(json['checkOutTime'] as String).toLocal()
             : null,
         wereHoursAdjusted:
             json['wereHoursAdjusted_ForSudent_ForThisEvent'] as bool);
@@ -133,7 +133,7 @@ class FeedbackModel {
       rating: json['rating'] as num,
       content: json['feedbackText'] as String,
       wasReadByUser: json['wasReadByUser'] as bool,
-      timeSubmitted: DateTime.parse(json['timeFeedbackSubmitted'] as String),
+      timeSubmitted: DateTime.parse(json['timeFeedbackSubmitted'] as String).toLocal(),
     );
   }
 }
@@ -211,10 +211,10 @@ class EventHistoryModel {
     String strCheckIn = numberCheckIn.split('-').reversed.join('-');
     String removeCheckIn = numberCheckIn.replaceAll('-', '');
 
-    DateTime checkInDT = DateTime.parse(strCheckIn);
+    DateTime checkInDT = DateTime.parse(strCheckIn).toLocal();
 
     DateTime checkInFull = DateTime(checkInDT.year, checkInDT.month,
-        checkInDT.day, checkInTime.hour, checkInTime.minute);
+        checkInDT.day, checkInTime.hour, checkInTime.minute).toLocal();
 
     return EventHistoryModel(
       id: json['ID'] as String,
